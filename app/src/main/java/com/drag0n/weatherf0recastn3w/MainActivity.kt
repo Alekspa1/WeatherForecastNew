@@ -21,8 +21,8 @@ import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
 
 class MainActivity : AppCompatActivity() {
-    lateinit var binding: ActivityMainBinding
-    lateinit var adapter: DaysAdapter
+    private lateinit var binding: ActivityMainBinding
+    private lateinit var adapter: DaysAdapter
     val model: MainViewModel by viewModels()
 
 
@@ -80,7 +80,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<WeatherWeek>, t: Throwable) {
-                Toast.makeText(this@MainActivity, "Данные недоступны, попробуйе позже", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@MainActivity, "Данные недоступны, попробуйте позже", Toast.LENGTH_SHORT).show()
             }
         })
 
