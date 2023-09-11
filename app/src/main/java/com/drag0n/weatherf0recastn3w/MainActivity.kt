@@ -64,7 +64,6 @@ class MainActivity : AppCompatActivity() {
 
 
     } // Функция для запроса данных о текущей погоде
-
     private fun getApiWeek(city: String) {
         val apiInterface = ApiWeather.create().getWeatherWeek(city, Const.APIKEY)
         apiInterface.enqueue(object : Callback<WeatherWeek> {
@@ -86,7 +85,6 @@ class MainActivity : AppCompatActivity() {
         })
 
     } // Функция для погоды за неделю
-
     @RequiresApi(Build.VERSION_CODES.O)
     private fun init() {
         val rc = binding.rcDay
@@ -101,7 +99,7 @@ class MainActivity : AppCompatActivity() {
             val tempMinMax =
                 "Min: ${(it.main.temp_min * 10.0).roundToInt() / 10.0}°C/Max: ${(it.main.temp_max * 10.0).roundToInt() / 10.0}°C"
             val tempCurent = "${(it.main.temp * 10.0).roundToInt() / 10.0}°C"
-            val date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("MMM dd"))
+            val date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd MMM"))
             val url = it.weather[0].icon
             binding.tvCity.text = it.name
             binding.tvData.text = date.toString()
