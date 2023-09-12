@@ -11,17 +11,32 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface ApiWeather {
+    @GET("weather?&&units=metric&lang=ru")
+    fun getWeatherDayNowLocation(
+        @Query("lat") lat: String,
+        @Query("lon") lon: String,
+        @Query("appid") api: String
+    ): Call<WeatherDayNow>
+    @GET("forecast?&&units=metric&lang=ru")
+    fun getWeatherWeekLocation(
+        @Query("lat") lat: String,
+        @Query("lon") lon: String,
+        @Query("appid") api: String
+    ): Call<WeatherWeek>
+
     @GET("weather?&units=metric&lang=ru")
-    fun getWeatherDayNow(
+    fun getWeatherDayNowCity(
         @Query("q") city: String,
         @Query("appid") api: String
     ): Call<WeatherDayNow>
 
     @GET("forecast?&units=metric&lang=ru")
-    fun getWeatherWeek(
-        @Query("q") city: String,
+    fun getWeatherWeekCity(
+        @Query("q") lat: String,
         @Query("appid") api: String
     ): Call<WeatherWeek>
+
+
 
 
 
