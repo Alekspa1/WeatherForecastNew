@@ -9,9 +9,6 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
-import android.view.WindowManager
-import android.widget.HorizontalScrollView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -235,10 +232,8 @@ class MainActivity : AppCompatActivity(), DaysAdapter.Listener { // Заканч
 
     } // Функция для запроса данных о текущей погоде другого города
 
-    override fun onClick(day: Spisok) {
-        DialogManager.alertDialog(this, day)
-            Toast.makeText(this, day.dt_txt, Toast.LENGTH_SHORT).show()
-
+    override fun onClick(weather: WeatherWeek, pos: Int) {
+        DialogManager.infoForecact(this, weather, pos)
     }
 
 }

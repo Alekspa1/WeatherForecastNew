@@ -19,7 +19,7 @@ class DaysAdapter(private val weather: WeatherWeek, val listener: Listener) : Re
         val context = item.context
 
 
-        fun bind(day: Spisok, listener: Listener) = with(binding) {
+        fun bind(day: Spisok, listener: Listener, weather: WeatherWeek, pos: Int) = with(binding) {
             val url = day.weather[0].icon
             val temp = "${(day.main.temp* 10.0).roundToInt() / 10.0}°C"
             tvCond.text = day.weather[0].description
@@ -30,7 +30,7 @@ class DaysAdapter(private val weather: WeatherWeek, val listener: Listener) : Re
                 .load("https://openweathermap.org/img/wn/$url@2x.png")
                 .into(imDec)
             root.setOnClickListener {
-                listener.onClick(day)
+                listener.onClick(weather, pos)
 
             }
         }
@@ -43,7 +43,7 @@ class DaysAdapter(private val weather: WeatherWeek, val listener: Listener) : Re
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        holder.bind(weather.list[position], listener)
+        holder.bind(weather.list[position], listener, weather, position)
 
     }
 
@@ -51,6 +51,6 @@ class DaysAdapter(private val weather: WeatherWeek, val listener: Listener) : Re
         return weather.list.size
     }
     interface Listener{
-        fun onClick(day: Spisok)
+        fun onClick(weather: WeatherWeek, pos: Int)
     }
 }
