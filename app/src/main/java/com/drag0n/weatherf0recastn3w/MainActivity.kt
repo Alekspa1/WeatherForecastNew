@@ -1,10 +1,14 @@
 package com.drag0n.weatherf0recastn3w
 
 import android.Manifest
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.LocationManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -85,6 +89,23 @@ class MainActivity : AppCompatActivity() {
         chekPermissionLocation()
 
     }
+
+    private fun chekLocation(){
+        if(isLocationEnabled()){
+            getLocation()
+        } else {
+            DialogManager.locationSettingsDialog(this, object : DialogManager.Listener{
+                override fun onClick() {
+                    startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+                }
+
+            })
+        }
+    } // Функция проверяет включено ли GPS
+    private fun isLocationEnabled(): Boolean {
+        val lm = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return lm.isProviderEnabled(LocationManager.GPS_PROVIDER)
+    } // Функция узнает включено ли GPS
     private fun getLocation(){
         val ct = CancellationTokenSource()
         if (ActivityCompat.checkSelfPermission(
@@ -99,7 +120,6 @@ class MainActivity : AppCompatActivity() {
         }
         fLocotionClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, ct.token )
             .addOnCompleteListener{
-                //Const.city ="lat=${it.result.latitude}&lon=${it.result.longitude}"
                 Const.lat = it.result.latitude.toString()
                 Const.lon = it.result.longitude.toString()
                 getApiWeekLocation(Const.lat, Const.lon)
@@ -150,11 +170,11 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-    } // Функция для погоды за неделю
+    } // Функция для запроса погоды за неделю
     @RequiresApi(Build.VERSION_CODES.O)
     private fun chekPermissionLocation(){
         if(Const.isPermissionGranted(this, Manifest.permission.ACCESS_FINE_LOCATION)){
-            getLocation()
+            chekLocation()
         } else{
             pLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
@@ -179,7 +199,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-    } // Функция для погоды за неделю для другого города
+    } // Функция для запроса погоды за неделю для другого города
     private fun getApiDayNowCity(city: String) {
         val apiInterface = ApiWeather.create().getWeatherDayNowCity(city, Const.APIKEY)
         apiInterface.enqueue(object : Callback<WeatherDayNow> {
@@ -198,7 +218,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-    } // Функция для погоды для другого города
+    } // Функция для запроса данных о текущей погоде другого города
 
 } // Заканчивает MainActivity
 
