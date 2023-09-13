@@ -9,6 +9,9 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
+import android.view.WindowManager
+import android.widget.HorizontalScrollView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -18,6 +21,7 @@ import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.drag0n.weatherf0recastn3w.Data.WeatherDayNow.WeatherDayNow
+import com.drag0n.weatherf0recastn3w.Data.WeatherWeek.Spisok
 import com.drag0n.weatherf0recastn3w.Data.WeatherWeek.WeatherWeek
 import com.drag0n.weatherf0recastn3w.adapter.DaysAdapter
 import com.drag0n.weatherf0recastn3w.databinding.ActivityMainBinding
@@ -32,7 +36,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), DaysAdapter.Listener { // Заканчивает MainActivity
     private lateinit var binding: ActivityMainBinding
     private lateinit var adapter: DaysAdapter
     lateinit var pLauncher: ActivityResultLauncher<String>
@@ -50,7 +54,7 @@ class MainActivity : AppCompatActivity() {
         val rc = binding.rcDay
         rc.layoutManager = LinearLayoutManager(this)
         model.liveDataCurrentWeek.observe(this) {
-            adapter = DaysAdapter(it)
+            adapter = DaysAdapter(it, this)
             rc.adapter = adapter
         } // Заполнение погоды на неделю
         model.liveDataCurrent.observe(this) {
@@ -79,6 +83,17 @@ class MainActivity : AppCompatActivity() {
         binding.ibSync.setOnClickListener {
             chekPermissionLocation()
         }
+        binding.ibSearch.setOnClickListener {
+            DialogManager.nameSitySearchDialog(this, object : DialogManager.Listener{
+                override fun onClick(city: String?) {
+                    if (city != null) {
+                        getApiWeekCity(city)
+                        getApiDayNowCity(city)
+                    }
+                }
+            } )
+
+        }
         chekPermissionLocation()
 
     } // OnCreate
@@ -95,7 +110,7 @@ class MainActivity : AppCompatActivity() {
             getLocation()
         } else {
             DialogManager.locationSettingsDialog(this, object : DialogManager.Listener{
-                override fun onClick() {
+                override fun onClick(city: String?) {
                     startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
                 }
 
@@ -220,5 +235,11 @@ class MainActivity : AppCompatActivity() {
 
     } // Функция для запроса данных о текущей погоде другого города
 
-} // Заканчивает MainActivity
+    override fun onClick(day: Spisok) {
+        DialogManager.alertDialog(this, day)
+            Toast.makeText(this, day.dt_txt, Toast.LENGTH_SHORT).show()
+
+    }
+
+}
 
