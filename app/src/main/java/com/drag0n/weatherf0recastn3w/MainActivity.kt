@@ -1,6 +1,7 @@
 package com.drag0n.weatherf0recastn3w
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -57,6 +58,7 @@ class MainActivity : AppCompatActivity(), DaysAdapter.Listener { // Заканч
     private var interstitialAd: InterstitialAd? = null
     private var interstitialAdLoader: InterstitialAdLoader? = null
 
+
     private lateinit var binding: ActivityMainBinding
     private lateinit var adapter: DaysAdapter
     private lateinit var inAnimation: Animation
@@ -78,7 +80,7 @@ class MainActivity : AppCompatActivity(), DaysAdapter.Listener { // Заканч
 
 // яндекс реклама
         MobileAds.initialize(this){ Log.d("MyLog", "Пучком") } // банер
-        binding.yaMob.setAdUnitId("demo-banner-yandex")
+        binding.yaMob.setAdUnitId(Const.baner)
         binding.yaMob.setAdSize(BannerAdSize.stickySize(this, 350))
         val adRequest = AdRequest.Builder().build()
         binding.yaMob.loadAd(adRequest)
@@ -163,7 +165,7 @@ class MainActivity : AppCompatActivity(), DaysAdapter.Listener { // Заканч
 
 
     private fun loadInterstitialAd() {
-        val adRequestConfiguration = AdRequestConfiguration.Builder("demo-interstitial-yandex").build()
+        val adRequestConfiguration = AdRequestConfiguration.Builder(Const.mezstr).build()
         interstitialAdLoader?.loadAd(adRequestConfiguration)
     }
     private fun showAd() {
@@ -343,8 +345,8 @@ class MainActivity : AppCompatActivity(), DaysAdapter.Listener { // Заканч
 
     } // Функция для запроса данных о текущей погоде другого города
 
+    @SuppressLint("ResourceAsColor")
     override fun onClick(weather: WeatherWeek, pos: Int) {
-        DialogManager.infoForecact(this, weather, pos)
 
     }
 
