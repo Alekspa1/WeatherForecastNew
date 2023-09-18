@@ -23,7 +23,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
 
-class DaysAdapter(private val weather: WeatherWeek, val listener: Listener) : RecyclerView.Adapter<DaysAdapter.Holder>() {
+class DaysAdapter(private val weather: WeatherWeek) : RecyclerView.Adapter<DaysAdapter.Holder>() {
 
     class Holder(item: View) : RecyclerView.ViewHolder(item), AnimationListener {
         val binding = ItemDaysAdapterBinding.bind(item)
@@ -31,14 +31,16 @@ class DaysAdapter(private val weather: WeatherWeek, val listener: Listener) : Re
         private var flag: Boolean = false
         private lateinit var inAnimation: Animation
         private lateinit var outAnimation: Animation
+        private lateinit var inAnimationRotate: Animation
 
 
 
         @SuppressLint("SimpleDateFormat", "SetTextI18n")
         @RequiresApi(Build.VERSION_CODES.O)
-        fun bind(day: Spisok, listener: Listener, weather: WeatherWeek, pos: Int) = with(binding) {
+        fun bind(day: Spisok, weather: WeatherWeek, pos: Int) = with(binding) {
             inAnimation = AnimationUtils.loadAnimation(context, R.anim.scale_in)
            outAnimation = AnimationUtils.loadAnimation(context, R.anim.scale_out)
+           inAnimationRotate = AnimationUtils.loadAnimation(context, R.anim.rotate_in)
             outAnimation.setAnimationListener(this@Holder)
             val url = day.weather[0].icon
             val temp = "${(day.main.temp* 10.0).roundToInt() / 10.0}°C"
@@ -77,9 +79,9 @@ class DaysAdapter(private val weather: WeatherWeek, val listener: Listener) : Re
 
             root.setOnClickListener {
 
-                listener.onClick(weather, pos)
                 when {
                     !flag -> {
+                        root.startAnimation(inAnimationRotate)
                         card.visibility = View.VISIBLE
                         card.startAnimation(inAnimation)
                         flag = true
@@ -89,8 +91,6 @@ class DaysAdapter(private val weather: WeatherWeek, val listener: Listener) : Re
                         flag = false
                     }
                 }
-
-
             }
         }
 
@@ -100,6 +100,10 @@ class DaysAdapter(private val weather: WeatherWeek, val listener: Listener) : Re
 
         override fun onAnimationEnd(p0: Animation?) {
             binding.card.visibility = View.GONE
+            Log.d("MyLog", p0.toString())
+            if (p0 != null) {
+                Log.d("MyLog", p0.duration.toString())
+            }
 
         }
 
@@ -116,15 +120,12 @@ class DaysAdapter(private val weather: WeatherWeek, val listener: Listener) : Re
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        holder.bind(weather.list[position], listener, weather, position)
+        holder.bind(weather.list[position],weather, position)
 
     }
 
     override fun getItemCount(): Int {
         return weather.list.size
-    }
-    interface Listener{
-        fun onClick(weather: WeatherWeek, pos: Int)
     }
 
 }

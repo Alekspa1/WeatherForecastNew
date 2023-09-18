@@ -53,7 +53,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
 
-class MainActivity : AppCompatActivity(), DaysAdapter.Listener { // Заканчивает MainActivity
+class MainActivity : AppCompatActivity() { // Заканчивает MainActivity
 
     private var interstitialAd: InterstitialAd? = null
     private var interstitialAdLoader: InterstitialAdLoader? = null
@@ -108,7 +108,7 @@ class MainActivity : AppCompatActivity(), DaysAdapter.Listener { // Заканч
         rc.layoutManager = LinearLayoutManager(this)
         model.liveDataCurrentWeek.observe(this) {
 
-            adapter = DaysAdapter(it, this)
+            adapter = DaysAdapter(it)
             rc.adapter = adapter
         } // Заполнение погоды на неделю
         model.liveDataCurrent.observe(this) {
@@ -345,10 +345,6 @@ class MainActivity : AppCompatActivity(), DaysAdapter.Listener { // Заканч
 
     } // Функция для запроса данных о текущей погоде другого города
 
-    @SuppressLint("ResourceAsColor")
-    override fun onClick(weather: WeatherWeek, pos: Int) {
-
-    }
 
 
 }
