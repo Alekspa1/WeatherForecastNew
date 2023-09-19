@@ -72,14 +72,14 @@ class MainActivity : AppCompatActivity() { // Заканчивает MainActivit
     override fun onCreate(savedInstanceState: Bundle?) {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
-        pLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()){}
+        pLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {}
         fLocotionClient = LocationServices.getFusedLocationProviderClient(this)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
 
 // яндекс реклама
-        MobileAds.initialize(this){ Log.d("MyLog", "Пучком") } // банер
+        MobileAds.initialize(this) { Log.d("MyLog", "Пучком") } // банер
         binding.yaMob.setAdUnitId(Const.baner)
         binding.yaMob.setAdSize(BannerAdSize.stickySize(this, 350))
         val adRequest = AdRequest.Builder().build()
@@ -113,18 +113,23 @@ class MainActivity : AppCompatActivity() { // Заканчивает MainActivit
         } // Заполнение погоды на неделю
         model.liveDataCurrent.observe(this) {
 
-            when(it.weather[0].id){
-                200,201,202,210,211,212,221,230,231,232 -> binding.root.setBackgroundResource(R.drawable.img_1) // гроза
-                300,301,302,310,311,312,313,314,321 -> binding.root.setBackgroundResource(R.drawable.img_2) // морось
-                500,501,502,503,504,511,520,521,522,531 -> binding.root.setBackgroundResource(R.drawable.img_3) // дождь
-                600,601,602,611,612,613,615,616,620,621,622 -> binding.root.setBackgroundResource(R.drawable.img_3) // снег
+            when (it.weather[0].id) {
+                200, 201, 202, 210, 211, 212, 221, 230, 231, 232 -> binding.root.setBackgroundResource(
+                    R.drawable.img_1
+                ) // гроза
+                300, 301, 302, 310, 311, 312, 313, 314, 321 -> binding.root.setBackgroundResource(R.drawable.img_2) // морось
+                500, 501, 502, 503, 504, 511, 520, 521, 522, 531 -> binding.root.setBackgroundResource(
+                    R.drawable.img_3
+                ) // дождь
+                600, 601, 602, 611, 612, 613, 615, 616, 620, 621, 622 -> binding.root.setBackgroundResource(
+                    R.drawable.img_3
+                ) // снег
                 800 -> binding.root.setBackgroundResource(R.drawable.img_5) // Чистое небо
                 else -> binding.root.setBackgroundResource(R.drawable.img)
             } // Меняет фон
 
             binding.root.visibility = View.VISIBLE
-            binding.root.startAnimation(inAnimation)
-            val tempMinMax = "Ощущается как: ${(it.main.feels_like * 10.0).roundToInt()/ 10.0}°C"
+            val tempMinMax = "Ощущается как: ${(it.main.feels_like * 10.0).roundToInt() / 10.0}°C"
             val tempCurent = "${(it.main.temp * 10.0).roundToInt() / 10.0}°C"
             val date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd MMM"))
             val url = it.weather[0].icon
@@ -146,16 +151,16 @@ class MainActivity : AppCompatActivity() { // Заканчивает MainActivit
 
         }
         binding.ibSearch.setOnClickListener {
-            DialogManager.nameSitySearchDialog(this, object : DialogManager.Listener{
+            DialogManager.nameSitySearchDialog(this, object : DialogManager.Listener {
                 override fun onClick(city: String?) {
                     if (city != null) {
                         getApiWeekCity(city)
                         getApiDayNowCity(city)
                         binding.root.startAnimation(outAnimation)
-                        showAd()
+
                     }
                 }
-            } )
+            })
 
         }
         chekPermissionLocation()
@@ -163,11 +168,16 @@ class MainActivity : AppCompatActivity() { // Заканчивает MainActivit
 
     } // OnCreate
 
+    override fun onResume() {
+        super.onResume()
+        getLocation()
+    }
 
     private fun loadInterstitialAd() {
         val adRequestConfiguration = AdRequestConfiguration.Builder(Const.mezstr).build()
         interstitialAdLoader?.loadAd(adRequestConfiguration)
     }
+
     private fun showAd() {
         interstitialAd?.apply {
             setAdEventListener(object : InterstitialAdEventListener {
@@ -200,12 +210,14 @@ class MainActivity : AppCompatActivity() { // Заканчивает MainActivit
             show(this@MainActivity)
         }
     }
+
     override fun onDestroy() {
         super.onDestroy()
         interstitialAdLoader?.setAdLoadListener(null)
         interstitialAdLoader = null
         destroyInterstitialAd()
     }
+
     private fun destroyInterstitialAd() {
         interstitialAd?.setAdEventListener(null)
         interstitialAd = null
@@ -214,11 +226,11 @@ class MainActivity : AppCompatActivity() { // Заканчивает MainActivit
 
     @RequiresApi(Build.VERSION_CODES.O)
 
-    private fun chekLocation(){
-        if(isLocationEnabled()){
+    private fun chekLocation() {
+        if (isLocationEnabled()) {
             getLocation()
         } else {
-            DialogManager.locationSettingsDialog(this, object : DialogManager.Listener{
+            DialogManager.locationSettingsDialog(this, object : DialogManager.Listener {
                 override fun onClick(city: String?) {
                     startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
                 }
@@ -226,11 +238,13 @@ class MainActivity : AppCompatActivity() { // Заканчивает MainActivit
             })
         }
     } // Функция проверяет включено ли GPS
+
     private fun isLocationEnabled(): Boolean {
         val lm = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return lm.isProviderEnabled(LocationManager.GPS_PROVIDER)
     } // Функция узнает включено ли GPS
-    private fun getLocation(){
+
+    private fun getLocation() {
         val ct = CancellationTokenSource()
         if (ActivityCompat.checkSelfPermission(
                 this,
@@ -242,14 +256,15 @@ class MainActivity : AppCompatActivity() { // Заканчивает MainActivit
         ) {
             return
         }
-        fLocotionClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, ct.token )
-            .addOnCompleteListener{
+        fLocotionClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, ct.token)
+            .addOnCompleteListener {
                 Const.lat = it.result.latitude.toString()
                 Const.lon = it.result.longitude.toString()
                 getApiWeekLocation(Const.lat, Const.lon)
                 getApiDayNowLocation(Const.lat, Const.lon)
             }
     } // Функция для получения геолокации
+
     private fun getApiDayNowLocation(lat: String, lon: String) {
         val apiInterface = ApiWeather.create().getWeatherDayNowLocation(lat, lon, Const.APIKEY)
         apiInterface.enqueue(object : Callback<WeatherDayNow> {
@@ -258,8 +273,7 @@ class MainActivity : AppCompatActivity() { // Заканчивает MainActivit
                 val data = response.body()
                 if (data != null) {
                     model.liveDataCurrent.value = data
-                }
-                else Toast.makeText(
+                } else Toast.makeText(
                     this@MainActivity,
                     "Ошибка получения данных",
                     Toast.LENGTH_SHORT
@@ -275,6 +289,7 @@ class MainActivity : AppCompatActivity() { // Заканчивает MainActivit
 
 
     } // Функция для запроса данных о текущей погоде
+
     private fun getApiWeekLocation(lat: String, lon: String) {
         val apiInterface = ApiWeather.create().getWeatherWeekLocation(lat, lon, Const.APIKEY)
         apiInterface.enqueue(object : Callback<WeatherWeek> {
@@ -291,19 +306,25 @@ class MainActivity : AppCompatActivity() { // Заканчивает MainActivit
             }
 
             override fun onFailure(call: Call<WeatherWeek>, t: Throwable) {
-                Toast.makeText(this@MainActivity, "Данные недоступны, попробуйте позже", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this@MainActivity,
+                    "Данные недоступны, попробуйте позже",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         })
 
     } // Функция для запроса погоды за неделю
+
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun chekPermissionLocation(){
-        if(Const.isPermissionGranted(this, Manifest.permission.ACCESS_FINE_LOCATION)){
+    private fun chekPermissionLocation() {
+        if (Const.isPermissionGranted(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
             chekLocation()
-        } else{
+        } else {
             pLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
     } // проверяет есть ли разрешение геолокации
+
     private fun getApiWeekCity(city: String) {
         val apiInterface = ApiWeather.create().getWeatherWeekCity(city, Const.APIKEY)
         apiInterface.enqueue(object : Callback<WeatherWeek> {
@@ -320,11 +341,16 @@ class MainActivity : AppCompatActivity() { // Заканчивает MainActivit
             }
 
             override fun onFailure(call: Call<WeatherWeek>, t: Throwable) {
-                Toast.makeText(this@MainActivity, "Данные недоступны, попробуйте позже", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this@MainActivity,
+                    "Данные недоступны, попробуйте позже",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         })
 
     } // Функция для запроса погоды за неделю для другого города
+
     private fun getApiDayNowCity(city: String) {
         val apiInterface = ApiWeather.create().getWeatherDayNowCity(city, Const.APIKEY)
         apiInterface.enqueue(object : Callback<WeatherDayNow> {
@@ -338,13 +364,17 @@ class MainActivity : AppCompatActivity() { // Заканчивает MainActivit
                     Toast.LENGTH_SHORT
                 ).show()
             }
+
             override fun onFailure(call: Call<WeatherDayNow>, t: Throwable) {
-                Toast.makeText(this@MainActivity, "Данные недоступны, попробуйте позже", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this@MainActivity,
+                    "Данные недоступны, попробуйте позже",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         })
 
     } // Функция для запроса данных о текущей погоде другого города
-
 
 
 }

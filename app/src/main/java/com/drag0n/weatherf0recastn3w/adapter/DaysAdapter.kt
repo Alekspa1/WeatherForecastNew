@@ -34,16 +34,15 @@ class DaysAdapter(private val weather: WeatherWeek) : RecyclerView.Adapter<DaysA
         private lateinit var inAnimationRotate: Animation
 
 
-
         @SuppressLint("SimpleDateFormat", "SetTextI18n")
         @RequiresApi(Build.VERSION_CODES.O)
         fun bind(day: Spisok, weather: WeatherWeek, pos: Int) = with(binding) {
             inAnimation = AnimationUtils.loadAnimation(context, R.anim.scale_in)
-           outAnimation = AnimationUtils.loadAnimation(context, R.anim.scale_out)
-           inAnimationRotate = AnimationUtils.loadAnimation(context, R.anim.rotate_in)
+            outAnimation = AnimationUtils.loadAnimation(context, R.anim.scale_out)
+            inAnimationRotate = AnimationUtils.loadAnimation(context, R.anim.rotate_in)
             outAnimation.setAnimationListener(this@Holder)
             val url = day.weather[0].icon
-            val temp = "${(day.main.temp* 10.0).roundToInt() / 10.0}°C"
+            val temp = "${(day.main.temp * 10.0).roundToInt() / 10.0}°C"
             tvCond.text = day.weather[0].description
 
             val dateTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(day.dt_txt)
@@ -65,27 +64,29 @@ class DaysAdapter(private val weather: WeatherWeek) : RecyclerView.Adapter<DaysA
                 .load("https://openweathermap.org/img/wn/$url@2x.png")
                 .into(imDec)
 
-            tvMinTemp.text = "Мин. прогнозируемая температура: ${(weather.list[pos].main.temp_min* 10.0).roundToInt() / 10.0}°C"
-            tvMaxTemp.text = "Макс. прогнозируемая температура: ${(weather.list[pos].main.temp_max* 10.0).roundToInt() / 10.0}°C"
+            tvMinTemp.text =
+                "Мин. прогнозируемая температура: ${(weather.list[pos].main.temp_min * 10.0).roundToInt() / 10.0}°C"
+            tvMaxTemp.text =
+                "Макс. прогнозируемая температура: ${(weather.list[pos].main.temp_max * 10.0).roundToInt() / 10.0}°C"
             tvPressure.text = "Давление: ${weather.list[pos].main.pressure} гПа"
             tvHumidity.text = "Влажность: ${weather.list[pos].main.humidity} %"
             tvSpeedWind.text = "Скорость ветра: ${weather.list[pos].wind.speed} метр/сек"
-            val timeSunrise = SimpleDateFormat(" HH : mm ").format(weather.city.sunrise*1000L)
-            val timeSunset = SimpleDateFormat(" HH : mm ").format(weather.city.sunset*1000L)
+            val timeSunrise = SimpleDateFormat(" HH : mm ").format(weather.city.sunrise * 1000L)
+            val timeSunset = SimpleDateFormat(" HH : mm ").format(weather.city.sunset * 1000L)
 
             tvSunrise.text = "Время восхода солнца: $timeSunrise"
             tvSunset.text = "Время захода солнца: $timeSunset"
             tvPopulation.text = "Население: ${weather.city.population} чел."
 
             root.setOnClickListener {
-
+                cardView3.startAnimation(inAnimationRotate)
                 when {
                     !flag -> {
-                        root.startAnimation(inAnimationRotate)
                         card.visibility = View.VISIBLE
                         card.startAnimation(inAnimation)
                         flag = true
                     }
+
                     flag -> {
                         card.startAnimation(outAnimation)
                         flag = false
@@ -100,11 +101,6 @@ class DaysAdapter(private val weather: WeatherWeek) : RecyclerView.Adapter<DaysA
 
         override fun onAnimationEnd(p0: Animation?) {
             binding.card.visibility = View.GONE
-            Log.d("MyLog", p0.toString())
-            if (p0 != null) {
-                Log.d("MyLog", p0.duration.toString())
-            }
-
         }
 
         override fun onAnimationRepeat(p0: Animation?) {
@@ -120,7 +116,7 @@ class DaysAdapter(private val weather: WeatherWeek) : RecyclerView.Adapter<DaysA
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        holder.bind(weather.list[position],weather, position)
+        holder.bind(weather.list[position], weather, position)
 
     }
 
