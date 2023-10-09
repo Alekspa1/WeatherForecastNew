@@ -168,9 +168,10 @@ class MainActivity : AppCompatActivity() { // Заканчивает MainActivit
 
     } // OnCreate
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onResume() {
         super.onResume()
-        getLocation()
+        chekPermissionLocation()
     }
 
     private fun loadInterstitialAd() {
