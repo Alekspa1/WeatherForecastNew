@@ -1,3 +1,4 @@
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -11,8 +12,8 @@ android {
         applicationId = "com.drag0n.weatherf0recastn3w"
         minSdk = 26
         targetSdk = 33
-        versionCode = 2
-        versionName = "1.0"
+        versionCode = 3
+        versionName = "3.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -39,8 +40,7 @@ android {
 }
 
 dependencies {
-
-
+    implementation ("com.huawei.agconnect:agconnect-core:1.9.1.301")
     implementation("com.github.bumptech.glide:glide:4.12.0")
     implementation("com.yandex.android:mobileads:6.0.1")
     implementation("com.airbnb.android:lottie:6.1.0")

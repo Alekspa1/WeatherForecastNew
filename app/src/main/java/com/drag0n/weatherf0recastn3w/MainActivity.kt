@@ -1,14 +1,11 @@
 package com.drag0n.weatherf0recastn3w
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.LocationManager
-
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
@@ -20,11 +17,11 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.drag0n.weatherf0recastn3w.Data.WeatherDayNow.WeatherDayNow
-
 import com.drag0n.weatherf0recastn3w.Data.WeatherWeek.WeatherWeek
 import com.drag0n.weatherf0recastn3w.adapter.DaysAdapter
 import com.drag0n.weatherf0recastn3w.databinding.ActivityMainBinding
@@ -32,9 +29,6 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
-import com.yandex.mobile.ads.appopenad.AppOpenAd
-import com.yandex.mobile.ads.appopenad.AppOpenAdLoadListener
-import com.yandex.mobile.ads.appopenad.AppOpenAdLoader
 import com.yandex.mobile.ads.banner.BannerAdSize
 import com.yandex.mobile.ads.common.AdError
 import com.yandex.mobile.ads.common.AdRequest
@@ -171,7 +165,7 @@ class MainActivity : AppCompatActivity() { // Заканчивает MainActivit
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onResume() {
         super.onResume()
-        chekPermissionLocation()
+        chekLocation()
     }
 
     private fun loadInterstitialAd() {
