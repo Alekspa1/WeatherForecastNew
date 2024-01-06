@@ -25,7 +25,6 @@ class WeatherWidget : AppWidgetProvider() {
 
     override fun onEnabled(context: Context) {
         // Enter relevant functionality for when the first widget is created
-        val tv = RemoteViews(context.packageName, R.layout.weather_widget )
     }
 
     override fun onDisabled(context: Context) {
@@ -39,7 +38,6 @@ internal fun updateAppWidget(
     appWidgetId: Int
 ) {
 
-    var widgetText = context.getString(R.string.appwidget_text)
     // Construct the RemoteViews object
     val views = RemoteViews(context.packageName, R.layout.weather_widget)
 

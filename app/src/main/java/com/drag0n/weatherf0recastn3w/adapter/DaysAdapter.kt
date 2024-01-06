@@ -26,7 +26,7 @@ import kotlin.math.roundToInt
 class DaysAdapter(private val weather: WeatherWeek) : RecyclerView.Adapter<DaysAdapter.Holder>() {
 
     class Holder(item: View) : RecyclerView.ViewHolder(item), AnimationListener {
-        val binding = ItemDaysAdapterBinding.bind(item)
+        private val binding = ItemDaysAdapterBinding.bind(item)
         val context = item.context
         private var flag: Boolean = false
         private lateinit var inAnimation: Animation
@@ -35,7 +35,6 @@ class DaysAdapter(private val weather: WeatherWeek) : RecyclerView.Adapter<DaysA
 
 
         @SuppressLint("SimpleDateFormat", "SetTextI18n")
-        @RequiresApi(Build.VERSION_CODES.O)
         fun bind(day: Spisok, weather: WeatherWeek, pos: Int) = with(binding) {
             inAnimation = AnimationUtils.loadAnimation(context, R.anim.scale_in)
             outAnimation = AnimationUtils.loadAnimation(context, R.anim.scale_out)
@@ -114,7 +113,6 @@ class DaysAdapter(private val weather: WeatherWeek) : RecyclerView.Adapter<DaysA
         return Holder(view)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: Holder, position: Int) {
         holder.bind(weather.list[position], weather, position)
 
