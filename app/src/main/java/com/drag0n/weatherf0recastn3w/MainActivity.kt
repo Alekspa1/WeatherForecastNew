@@ -42,8 +42,6 @@ class MainActivity : AppCompatActivity() { // Заканчивает MainActivit
 
     private var interstitialAd: InterstitialAd? = null
     private var interstitialAdLoader: InterstitialAdLoader? = null
-
-
     private lateinit var binding: ActivityMainBinding
     private lateinit var adapter: DaysAdapter
     private lateinit var inAnimation: Animation
@@ -95,11 +93,14 @@ class MainActivity : AppCompatActivity() { // Заканчивает MainActivit
         outAnimation = AnimationUtils.loadAnimation(this, R.anim.alpha_out)
         val rc = binding.rcDay
         rc.layoutManager = LinearLayoutManager(this)
+
         model.liveDataWeek.observe(this) {
 
-            adapter = DaysAdapter(it)
+            adapter = DaysAdapter()
             rc.adapter = adapter
+            adapter.submitList(it.list)
         } // Заполнение погоды на неделю
+
         model.liveDataDayNow.observe(this) {
 
 
@@ -118,7 +119,6 @@ class MainActivity : AppCompatActivity() { // Заканчивает MainActivit
                 else -> binding.root.setBackgroundResource(R.drawable.img)
             } // Меняет фон
 
-            //binding.root.visibility = View.VISIBLE
             visible()
             val tempMinMax = "Ощущается как: ${(it.main.feels_like * 10.0).roundToInt() / 10.0}°C"
             val tempCurent = "${(it.main.temp * 10.0).roundToInt() / 10.0}°C"
@@ -134,13 +134,14 @@ class MainActivity : AppCompatActivity() { // Заканчивает MainActivit
                 .load("https://openweathermap.org/img/wn/$url@2x.png")
                 .into(binding.imWeather)
         } // Заполнение погоды на сегодняшний день
+
         binding.ibSync.setOnClickListener {
             binding.ibSync.playAnimation()
             binding.root.startAnimation(outAnimation)
             showAd()
-            getLocation()
 
         }
+
         binding.ibSearch.setOnClickListener {
             DialogManager.nameSitySearchDialog(this, object : DialogManager.Listener {
                 override fun onClick(city: String?) {
@@ -270,7 +271,7 @@ class MainActivity : AppCompatActivity() { // Заканчивает MainActivit
     } // Функция для показа элеменов и скрытия иконки обновления
     fun startAnim(){
         binding.Sync.playAnimation()
-        Toast.makeText(this, "Ждем ответ с сервера, пожалуйста подождите", Toast.LENGTH_LONG).show()
+        Toast.makeText(this, "Ждем ответ с сервера, пожалуйста подождите", Toast.LENGTH_SHORT).show()
     } // Функция для запуска анимации обновления данных с сервера
 
 

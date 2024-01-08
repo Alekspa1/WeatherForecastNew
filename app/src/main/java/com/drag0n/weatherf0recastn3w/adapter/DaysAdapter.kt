@@ -1,29 +1,24 @@
 package com.drag0n.weatherf0recastn3w.adapter
 
 import android.annotation.SuppressLint
-import android.os.Build
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.Animation.AnimationListener
 import android.view.animation.AnimationUtils
-import androidx.annotation.RequiresApi
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.drag0n.weatherf0recastn3w.Data.WeatherWeek.Spisok
-import com.drag0n.weatherf0recastn3w.Data.WeatherWeek.WeatherWeek
-import com.drag0n.weatherf0recastn3w.DialogManager
 import com.drag0n.weatherf0recastn3w.R
 import com.drag0n.weatherf0recastn3w.databinding.ItemDaysAdapterBinding
 import java.text.SimpleDateFormat
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
 
-class DaysAdapter(private val weather: WeatherWeek) : RecyclerView.Adapter<DaysAdapter.Holder>() {
+class DaysAdapter() : ListAdapter<Spisok, DaysAdapter.Holder>(DiffCallback()) {
 
     class Holder(item: View) : RecyclerView.ViewHolder(item), AnimationListener {
         private val binding = ItemDaysAdapterBinding.bind(item)
@@ -35,7 +30,7 @@ class DaysAdapter(private val weather: WeatherWeek) : RecyclerView.Adapter<DaysA
 
 
         @SuppressLint("SimpleDateFormat", "SetTextI18n")
-        fun bind(day: Spisok, weather: WeatherWeek, pos: Int) = with(binding) {
+        fun bind(day: Spisok) = with(binding) {
             inAnimation = AnimationUtils.loadAnimation(context, R.anim.scale_in)
             outAnimation = AnimationUtils.loadAnimation(context, R.anim.scale_out)
             inAnimationRotate = AnimationUtils.loadAnimation(context, R.anim.rotate_in)
@@ -64,19 +59,13 @@ class DaysAdapter(private val weather: WeatherWeek) : RecyclerView.Adapter<DaysA
                 .into(imDec)
 
             tvMinTemp.text =
-                "Мин. прогнозируемая температура: ${(weather.list[pos].main.temp_min * 10.0).roundToInt() / 10.0}°C"
+                "Мин. прогнозируемая температура: ${(day.main.temp_min * 10.0).roundToInt() / 10.0}°C"
             tvMaxTemp.text =
-                "Макс. прогнозируемая температура: ${(weather.list[pos].main.temp_max * 10.0).roundToInt() / 10.0}°C"
-            tvPressure.text = "Давление: ${weather.list[pos].main.pressure} гПа"
-            tvHumidity.text = "Влажность: ${weather.list[pos].main.humidity} %"
-            tvSpeedWind.text = "Скорость ветра: ${weather.list[pos].wind.speed} метр/сек"
-            val timeSunrise = SimpleDateFormat(" HH : mm ").format(weather.city.sunrise * 1000L)
-            val timeSunset = SimpleDateFormat(" HH : mm ").format(weather.city.sunset * 1000L)
-
-            tvSunrise.text = "Время восхода солнца: $timeSunrise"
-            tvSunset.text = "Время захода солнца: $timeSunset"
-            tvPopulation.text = "Население: ${weather.city.population} чел."
-
+                "Макс. прогнозируемая температура: ${(day.main.temp_max * 10.0).roundToInt() / 10.0}°C"
+            tvPressure.text = "Давление: ${day.main.pressure} гПа"
+            tvHumidity.text = "Влажность: ${day.main.humidity} %"
+            tvSpeedWind.text = "Скорость ветра: ${day.wind.speed} метр/сек"
+            tvSunset.text = "Вероятность осадков: ${(day.pop * 1000.0).roundToInt() / 10.0}%"
             root.setOnClickListener {
                 cardView3.startAnimation(inAnimationRotate)
                 when {
@@ -114,12 +103,9 @@ class DaysAdapter(private val weather: WeatherWeek) : RecyclerView.Adapter<DaysA
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        holder.bind(weather.list[position], weather, position)
+        holder.bind(getItem(position))
 
     }
 
-    override fun getItemCount(): Int {
-        return weather.list.size
-    }
 
 }
