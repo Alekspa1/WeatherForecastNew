@@ -135,10 +135,10 @@ class MainActivity : AppCompatActivity() { // Заканчивает MainActivit
                     R.drawable.img_3
                 ) // дождь
                 600, 601, 602, 611, 612, 613, 615, 616, 620, 621, 622 -> binding.root.setBackgroundResource(
-                    R.drawable.img_3
+                    R.drawable.img_4
                 ) // снег
                 800 -> binding.root.setBackgroundResource(R.drawable.img_5) // Чистое небо
-                else -> binding.root.setBackgroundResource(R.drawable.img)
+                else -> binding.root.setBackgroundResource(R.drawable.img_6)
             } // Меняет фон
 
             val tempMinMax = "Ощущается как: ${(it.main.feels_like * 10.0).roundToInt() / 10.0}°C"
@@ -146,7 +146,7 @@ class MainActivity : AppCompatActivity() { // Заканчивает MainActivit
 
             val url = it.weather[0].icon
             binding.tvCity.text = it.name
-            binding.tvData.text = date.toString()
+            binding.tvData.text = date
             binding.TvMinMax.text = tempMinMax
             binding.tvCurrentTemp.text = tempCurent
             binding.tvCondition.text = it.weather[0].description
