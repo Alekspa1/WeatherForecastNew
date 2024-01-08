@@ -7,13 +7,16 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
+import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
 import com.bumptech.glide.Glide
@@ -51,7 +54,6 @@ class MainActivity : AppCompatActivity() { // Заканчивает MainActivit
     private lateinit var fLocotionClient: FusedLocationProviderClient
     private lateinit var weatherDB: WeatherDayNowDB
     val model: MainViewModel by viewModels()
-    private lateinit var date: String
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,14 +63,21 @@ class MainActivity : AppCompatActivity() { // Заканчивает MainActivit
         pLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {}
         fLocotionClient = LocationServices.getFusedLocationProviderClient(this)
         super.onCreate(savedInstanceState)
-        date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd MMM"))
         setContentView(binding.root)
+        startAnim()
+
         weatherDB = Room.databaseBuilder(this,
             WeatherDayNowDB::class.java,
-            "Текущая погода на день").build()
-        insert()
+            "Текущая погода").build()
 
 
+
+
+
+        binding.Sync.setOnClickListener {
+            startAnim()
+            getLocation()
+        }
 
 
 // яндекс реклама
@@ -108,23 +117,13 @@ class MainActivity : AppCompatActivity() { // Заканчивает MainActivit
 
         model.liveDataDayNow.observe(this) {
             Thread{
-                if(weatherDB.CourseDao().getAll() == null){
-                    weatherDB.CourseDao()
-                        .insertAll(WeatherDayNowDbImp(1,
-                            date,
-                            it.weather[0].icon,
-                            it.name,it.main.temp.toString(),
-                            it.main.feels_like.toString(),
-                            it.weather[0].description))
-                } else weatherDB.CourseDao().
-                update(WeatherDayNowDbImp(1,
-                    date,
-                    it.weather[0].icon,
-                    it.name,it.main.temp.toString(),
-                    it.main.feels_like.toString(),
-                    it.weather[0].description))
+                val date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd MMM"))
+                val name = model.liveDataDayNow.value?.name
+                val temp = model.liveDataDayNow.value?.main?.temp
+                weatherDB.CourseDao().update(WeatherDayNowDbImp(1, date, "name", temp.toString()))
 
             }.start()
+
 
             when (it.weather[0].id) {
                 200, 201, 202, 210, 211, 212, 221, 230, 231, 232 -> binding.root.setBackgroundResource(
@@ -141,9 +140,10 @@ class MainActivity : AppCompatActivity() { // Заканчивает MainActivit
                 else -> binding.root.setBackgroundResource(R.drawable.img)
             } // Меняет фон
 
+            visible()
             val tempMinMax = "Ощущается как: ${(it.main.feels_like * 10.0).roundToInt() / 10.0}°C"
             val tempCurent = "${(it.main.temp * 10.0).roundToInt() / 10.0}°C"
-
+            val date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd MMM"))
             val url = it.weather[0].icon
             binding.tvCity.text = it.name
             binding.tvData.text = date.toString()
@@ -283,29 +283,16 @@ class MainActivity : AppCompatActivity() { // Заканчивает MainActivit
             }
     } // Функция для получения геолокации
 
-
-    fun insert(){
-        var url = ""
-        Thread{
-            val insert = weatherDB.CourseDao().getAll()
-            if (insert != null){
-                val tempMinMax = "Ощущается как: ${insert.curent}°C"
-                val tempCurent = "${insert.temp}°C"
-                url = insert.url
-                binding.tvCity.text = insert.name
-                binding.tvData.text = date
-                binding.TvMinMax.text = tempMinMax
-                binding.tvCurrentTemp.text = tempCurent
-                binding.tvCondition.text = insert.description
-            }
-
-        }.start()
-        Glide
-                .with(this)
-                .load("https://openweathermap.org/img/wn/$url@2x.png")
-                .into(binding.imWeather)
-
-    }
+    fun visible(){
+        binding.cardView.visibility = View.VISIBLE
+        binding.cardView2.visibility = View.VISIBLE
+        binding.yaMob.visibility = View.VISIBLE
+        binding.Sync.visibility = View.GONE
+    } // Функция для показа элеменов и скрытия иконки обновления
+    fun startAnim(){
+        binding.Sync.playAnimation()
+        Toast.makeText(this, "Ждем ответ с сервера, пожалуйста подождите", Toast.LENGTH_SHORT).show()
+    } // Функция для запуска анимации обновления данных с сервера
 
 
 
