@@ -31,6 +31,7 @@ class DaysAdapter() : ListAdapter<Spisok, DaysAdapter.Holder>(DiffCallback()) {
 
         @SuppressLint("SimpleDateFormat", "SetTextI18n")
         fun bind(day: Spisok) = with(binding) {
+
             inAnimation = AnimationUtils.loadAnimation(context, R.anim.scale_in)
             outAnimation = AnimationUtils.loadAnimation(context, R.anim.scale_out)
             inAnimationRotate = AnimationUtils.loadAnimation(context, R.anim.rotate_in)
@@ -48,10 +49,9 @@ class DaysAdapter() : ListAdapter<Spisok, DaysAdapter.Holder>(DiffCallback()) {
             val writingFormatter = DateTimeFormatter.ofPattern("dd MMM")
             val formattedDate = date.format(writingFormatter)
 
-            tvDate.text = formattedDate
+           // tvDate.text = formattedDate
+            tvDateDay.text = formattedDate
             tvTime.text = time
-
-
             tvMinMax.text = temp
             Glide
                 .with(context)
@@ -66,7 +66,8 @@ class DaysAdapter() : ListAdapter<Spisok, DaysAdapter.Holder>(DiffCallback()) {
             tvHumidity.text = "Влажность: ${day.main.humidity} %"
             tvSpeedWind.text = "Скорость ветра: ${day.wind.speed} метр/сек"
             tvSunset.text = "Вероятность осадков: ${(day.pop * 1000.0).roundToInt() / 10.0}%"
-            root.setOnClickListener {
+            cardView3.setOnClickListener {
+
                 cardView3.startAnimation(inAnimationRotate)
                 when {
                     !flag -> {
@@ -81,6 +82,10 @@ class DaysAdapter() : ListAdapter<Spisok, DaysAdapter.Holder>(DiffCallback()) {
                     }
                 }
             }
+            if(tvTime.text.toString() == " 00:00")  cardDay.visibility = View.VISIBLE
+            else cardDay.visibility = View.GONE
+
+
         }
 
         override fun onAnimationStart(p0: Animation?) {
