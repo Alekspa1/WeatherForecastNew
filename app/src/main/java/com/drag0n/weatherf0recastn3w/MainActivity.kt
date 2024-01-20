@@ -1,12 +1,14 @@
 package com.drag0n.weatherf0recastn3w
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.activity.result.ActivityResultLauncher
@@ -21,10 +23,13 @@ import com.drag0n.weatherf0recastn3w.Data.RoomWeather.WeatherDayNowDB
 import com.drag0n.weatherf0recastn3w.Data.RoomWeather.WeatherDayNowDbImp
 import com.drag0n.weatherf0recastn3w.adapter.DaysAdapter
 import com.drag0n.weatherf0recastn3w.databinding.ActivityMainBinding
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
+import com.huawei.hms.api.HuaweiApiAvailability
 import com.yandex.mobile.ads.banner.BannerAdSize
 import com.yandex.mobile.ads.common.AdError
 import com.yandex.mobile.ads.common.AdRequest
@@ -49,17 +54,19 @@ class MainActivity : AppCompatActivity() { // Заканчивает MainActivit
     private lateinit var outAnimation: Animation
     private lateinit var pLauncher: ActivityResultLauncher<String>
     private lateinit var fLocotionClient: FusedLocationProviderClient
+    private lateinit var fLocotionClientHMS: com.huawei.hms.location.FusedLocationProviderClient
     private lateinit var weatherDB: WeatherDayNowDB
     val model: MainViewModel by viewModels()
     private lateinit var date: String
 
-
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
 
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         pLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {}
         fLocotionClient = LocationServices.getFusedLocationProviderClient(this)
+        fLocotionClientHMS = com.huawei.hms.location.LocationServices.getFusedLocationProviderClient(this)
         super.onCreate(savedInstanceState)
         date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd MMM"))
         setContentView(binding.root)
@@ -72,10 +79,8 @@ class MainActivity : AppCompatActivity() { // Заканчивает MainActivit
 
 
 // яндекс реклама
-        binding.yaMob.setAdUnitId(Const.baner)
-        binding.yaMob.setAdSize(BannerAdSize.stickySize(this, 350))
-        val adRequest = AdRequest.Builder().build()
-        binding.yaMob.loadAd(adRequest)
+       yaBaner()
+
 
         interstitialAdLoader = InterstitialAdLoader(this).apply {
             setAdLoadListener(object : InterstitialAdLoadListener {
@@ -154,6 +159,7 @@ class MainActivity : AppCompatActivity() { // Заканчивает MainActivit
                 .with(this)
                 .load("https://openweathermap.org/img/wn/$url@2x.png")
                 .into(binding.imWeather)
+            binding.tvWind.text = "Скорость ветра: ${it.wind.speed} метр/сек"
         } // Заполнение погоды на сегодняшний день
 
         binding.ibSync.setOnClickListener {
@@ -183,6 +189,7 @@ class MainActivity : AppCompatActivity() { // Заканчивает MainActivit
     override fun onResume() {
         super.onResume()
         chekPermissionLocation()
+
     }
 
     private fun loadInterstitialAd() {
@@ -239,7 +246,14 @@ class MainActivity : AppCompatActivity() { // Заканчивает MainActivit
 
     private fun chekLocation() {
         if (isLocationEnabled()) {
-            getLocation()
+            if(isHuaweiMobileServicesAvailable(this)) getLocationHuawey()
+            else getLocationGoogle()
+
+
+
+
+
+
         } else {
             DialogManager.locationSettingsDialog(this, object : DialogManager.Listener {
                 override fun onClick(city: String?) {
@@ -262,7 +276,7 @@ class MainActivity : AppCompatActivity() { // Заканчивает MainActivit
         }
     } // проверяет есть ли разрешение геолокации
 
-    private fun getLocation() {
+    private fun getLocationGoogle() {
         val ct = CancellationTokenSource()
         if (ActivityCompat.checkSelfPermission(
                 this,
@@ -278,10 +292,24 @@ class MainActivity : AppCompatActivity() { // Заканчивает MainActivit
             .addOnCompleteListener {
                 Const.lat = it.result.latitude.toString()
                 Const.lon = it.result.longitude.toString()
-                model.getApiWeekLocation(Const.lat,Const.lon, this)
-                model.getApiDayNowLocation(Const.lat,Const.lon, this)
+                model.getApiWeekLocation(Const.lat, Const.lon, this)
+                model.getApiDayNowLocation(Const.lat, Const.lon, this)
             }
-    } // Функция для получения геолокации
+
+
+
+
+    } // Функция для получения геолокации Гугла
+    private fun getLocationHuawey(){
+        fLocotionClientHMS.lastLocation.addOnSuccessListener {
+            Const.lat = it.latitude.toString()
+            Const.lon = it.longitude.toString()
+            model.getApiWeekLocation(it.latitude.toString(), it.longitude.toString(), this)
+            model.getApiDayNowLocation(it.latitude.toString(), it.longitude.toString(), this)
+
+        }
+
+    } // Функция для получения геолокации Хуавея
 
 
     fun insert(){
@@ -306,6 +334,20 @@ class MainActivity : AppCompatActivity() { // Заканчивает MainActivit
                 .into(binding.imWeather)
 
     }
+    private fun yaBaner(){
+        binding.yaMob.setAdUnitId(Const.baner)
+        binding.yaMob.setAdSize(BannerAdSize.stickySize(this, 350))
+        val adRequest = AdRequest.Builder().build()
+        binding.yaMob.loadAd(adRequest)
+    } // яндекс банер
+    fun isHuaweiMobileServicesAvailable(context: Context): Boolean {
+        val huaweiApiAvailability = HuaweiApiAvailability.getInstance()
+        val resultCode = huaweiApiAvailability.isHuaweiMobileServicesAvailable(context)
+        return resultCode == com.huawei.hms.api.ConnectionResult.SUCCESS
+    }
+
+
+
 
 
 

@@ -3,6 +3,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id ("kotlin-kapt")
+    id ("com.huawei.agconnect")
 
 
 }
@@ -15,8 +16,8 @@ android {
         applicationId = "com.drag0n.weatherf0recastn3w"
         minSdk = 26
         targetSdk = 33
-        versionCode = 7
-        versionName = "5.2"
+        versionCode = 8
+        versionName = "5.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -46,6 +47,11 @@ android {
 }
 
 dependencies {
+    implementation ("com.huawei.hms:location:5.0.0.301")
+    implementation ("com.huawei.agconnect:agconnect-core:1.9.1.301")
+
+
+
     implementation ("androidx.room:room-runtime:2.6.1")
     kapt ("androidx.room:room-compiler:2.6.1")
     implementation ("androidx.room:room-ktx:2.6.1")
