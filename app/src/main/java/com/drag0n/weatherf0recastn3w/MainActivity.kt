@@ -8,9 +8,9 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -23,8 +23,6 @@ import com.drag0n.weatherf0recastn3w.Data.RoomWeather.WeatherDayNowDB
 import com.drag0n.weatherf0recastn3w.Data.RoomWeather.WeatherDayNowDbImp
 import com.drag0n.weatherf0recastn3w.adapter.DaysAdapter
 import com.drag0n.weatherf0recastn3w.databinding.ActivityMainBinding
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
@@ -250,10 +248,6 @@ class MainActivity : AppCompatActivity() { // Заканчивает MainActivit
             else getLocationGoogle()
 
 
-
-
-
-
         } else {
             DialogManager.locationSettingsDialog(this, object : DialogManager.Listener {
                 override fun onClick(city: String?) {
@@ -301,13 +295,24 @@ class MainActivity : AppCompatActivity() { // Заканчивает MainActivit
 
     } // Функция для получения геолокации Гугла
     private fun getLocationHuawey(){
-        fLocotionClientHMS.lastLocation.addOnSuccessListener {
-            Const.lat = it.latitude.toString()
-            Const.lon = it.longitude.toString()
-            model.getApiWeekLocation(it.latitude.toString(), it.longitude.toString(), this)
-            model.getApiDayNowLocation(it.latitude.toString(), it.longitude.toString(), this)
-
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
         }
+            fLocotionClientHMS.lastLocation.addOnSuccessListener {
+                Const.lat = it.latitude.toString()
+                Const.lon = it.longitude.toString()
+                model.getApiWeekLocation(Const.lat, Const.lon, this)
+                model.getApiDayNowLocation(Const.lat, Const.lon, this)
+        }
+
+
 
     } // Функция для получения геолокации Хуавея
 
