@@ -1,4 +1,4 @@
-package com.drag0n.weatherf0recastn3w.domane.Presentation
+package com.drag0n.weatherf0recastn3w.Presentation
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -55,7 +55,6 @@ class FragmentDay : Fragment() {
         weatherDB = Room.databaseBuilder(view.context,
             WeatherDayNowDB::class.java,
             "Текущая погода на день").build()
-
         model = MainViewModel()
         date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd MMM"))
         inAnimation = AnimationUtils.loadAnimation(view.context, R.anim.alpha_in)
@@ -74,8 +73,9 @@ class FragmentDay : Fragment() {
             })
         }
         loadInterstitialAd()
-
         insert()
+
+
         model.liveDataDayNow.observe(viewLifecycleOwner) {
             Thread{
                 if(weatherDB.CourseDao().getAll() == null){
@@ -144,6 +144,7 @@ class FragmentDay : Fragment() {
         @JvmStatic
         fun newInstance() = FragmentDay()
     }
+    @SuppressLint("SetTextI18n")
     fun insert(){
         var url = ""
         Thread{
@@ -156,7 +157,7 @@ class FragmentDay : Fragment() {
                 binding.tvData.text = date
                 binding.TvMinMax.text = tempMinMax
                 binding.tvCurrentTemp.text = tempCurent
-                binding.tvCondition.text = insert.description
+                binding.tvCondition.text = "За окном: ${insert.description}."
             }
 
         }.start()

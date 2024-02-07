@@ -1,4 +1,4 @@
-package com.drag0n.weatherf0recastn3w.domane.Presentation
+package com.drag0n.weatherf0recastn3w.Presentation
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

@@ -1,4 +1,4 @@
-package com.drag0n.weatherf0recastn3w
+package com.drag0n.weatherf0recastn3w.Presentation
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -13,11 +13,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import com.drag0n.weatherf0recastn3w.Const
+import com.drag0n.weatherf0recastn3w.DialogManager
+import com.drag0n.weatherf0recastn3w.MainViewModel
 import com.drag0n.weatherf0recastn3w.adapter.VpAdapter
 import com.drag0n.weatherf0recastn3w.databinding.ActivityMainBinding
-import com.drag0n.weatherf0recastn3w.domane.Presentation.FragmentDay
-import com.drag0n.weatherf0recastn3w.domane.Presentation.FragmentMap
-import com.drag0n.weatherf0recastn3w.domane.Presentation.FragmentWeek
+import com.drag0n.weatherf0recastn3w.R
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority

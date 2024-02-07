@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:visibility="visible"
-    tools:context=".MainActivity">
+    tools:context=".Presentation.MainActivity">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -129,6 +129,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="8dp"
+                        android:text="За окном:"
                         android:textColor="@color/white"
                         android:textSize="22sp"
                         app:layout_constraintStart_toStartOf="parent"
@@ -139,6 +140,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
+                        android:text="Скорость ветра:"
                         android:textColor="@color/white"
                         android:textSize="22sp"
                         app:layout_constraintStart_toStartOf="@+id/tvCondition"
@@ -149,6 +151,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
+                        android:text="Ощущается как:"
                         android:textColor="@color/white"
                         android:textSize="22sp"
                         app:layout_constraintStart_toStartOf="@+id/tvWind"
@@ -185,6 +188,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="8dp"
+                        android:text="Влажность:"
                         android:textColor="@color/white"
                         android:textSize="22sp"
                         app:layout_constraintStart_toStartOf="parent"
@@ -195,6 +199,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
+                        android:text="Давление:"
                         android:textColor="@color/white"
                         android:textSize="22sp"
                         app:layout_constraintStart_toStartOf="@+id/tvVlaz"
