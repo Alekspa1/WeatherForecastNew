@@ -3,17 +3,12 @@ package com.drag0n.weatherf0recastn3w
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
-import android.view.ViewGroup
 import android.widget.RemoteViews
-import androidx.lifecycle.findViewTreeViewModelStoreOwner
-import androidx.room.Room
-import com.drag0n.weatherf0recastn3w.Data.RoomWeather.WeatherDayNowDB
 
 /**
  * Implementation of App Widget functionality.
  */
 class WeatherWidget : AppWidgetProvider() {
-    private lateinit var weatherDB: WeatherDayNowDB
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
@@ -25,15 +20,7 @@ class WeatherWidget : AppWidgetProvider() {
             updateAppWidget(context, appWidgetManager, appWidgetId)
 
         }
-        weatherDB = Room.databaseBuilder(context,
-            WeatherDayNowDB::class.java,
-            "Текущая погода на день").build()
-        val insert = weatherDB.CourseDao().getAll()
-        val view = RemoteViews(context.packageName,R.layout.weather_widget)
-        Thread{
-            view.setTextViewText(R.id.appwidget_text, insert.name)
 
-        }
     }
 
     override fun onEnabled(context: Context) {

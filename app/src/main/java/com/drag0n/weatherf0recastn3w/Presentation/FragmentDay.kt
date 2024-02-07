@@ -2,22 +2,18 @@ package com.drag0n.weatherf0recastn3w.Presentation
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
+
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import androidx.room.Room
 import com.bumptech.glide.Glide
 import com.drag0n.weatherf0recastn3w.Const
-import com.drag0n.weatherf0recastn3w.Data.RoomWeather.WeatherDayNowDB
-import com.drag0n.weatherf0recastn3w.Data.RoomWeather.WeatherDayNowDbImp
 import com.drag0n.weatherf0recastn3w.DialogManager
 import com.drag0n.weatherf0recastn3w.MainViewModel
 import com.drag0n.weatherf0recastn3w.R
-
 import com.drag0n.weatherf0recastn3w.databinding.FragmentDayBinding
 import com.yandex.mobile.ads.common.AdError
 import com.yandex.mobile.ads.common.AdRequestConfiguration
@@ -35,7 +31,6 @@ import kotlin.math.roundToInt
 class FragmentDay : Fragment() {
     private lateinit var binding: FragmentDayBinding
     private lateinit var model: MainViewModel
-    private lateinit var weatherDB: WeatherDayNowDB
     private lateinit var date: String
     private lateinit var inAnimation: Animation
     private lateinit var outAnimation: Animation
@@ -53,9 +48,6 @@ class FragmentDay : Fragment() {
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        weatherDB = Room.databaseBuilder(view.context,
-            WeatherDayNowDB::class.java,
-            "Текущая погода на день").build()
         model = MainViewModel()
         date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd MMM"))
         inAnimation = AnimationUtils.loadAnimation(view.context, R.anim.alpha_in)
@@ -75,28 +67,6 @@ class FragmentDay : Fragment() {
         }
         loadInterstitialAd()
         model.liveDataDayNow.observe(viewLifecycleOwner) {
-            Thread{
-                if(weatherDB.CourseDao().getAll() == null){
-                    weatherDB.CourseDao()
-                        .insertAll(
-                            WeatherDayNowDbImp(1,
-                            date,
-                            it.weather[0].icon,
-                            it.name,it.main.temp.toString(),
-                            it.main.feels_like.toString(),
-                            it.weather[0].description)
-                        )
-                } else weatherDB.CourseDao().
-                update(
-                    WeatherDayNowDbImp(1,
-                    date,
-                    it.weather[0].icon,
-                    it.name,it.main.temp.toString(),
-                    it.main.feels_like.toString(),
-                    it.weather[0].description)
-                )
-
-            }.start()
 
             val tempMinMax = "Ощущается как: ${(it.main.feels_like * 10.0).roundToInt() / 10.0}°C."
             val tempCurent = "${(it.main.temp * 10.0).roundToInt() / 10.0}°C"
@@ -115,7 +85,7 @@ class FragmentDay : Fragment() {
                 .into(binding.imWeather)
             binding.tvWind.text = "Скорость ветра: ${it.wind.speed} метр/сек."
         } // Заполнение погоды на сегодняшний день
-        insert()
+
 
         binding.ibSync.setOnClickListener {
             binding.ibSync.playAnimation()
@@ -142,31 +112,6 @@ class FragmentDay : Fragment() {
 
         @JvmStatic
         fun newInstance() = FragmentDay()
-    }
-    @SuppressLint("SetTextI18n")
-    fun insert(){
-        var url = ""
-            Thread{
-                val insert = weatherDB.CourseDao().getAll()
-                if (insert != null){
-                    val tempMinMax = "Ощущается как: ${insert.curent}°C"
-                    val tempCurent = "${insert.temp}°C"
-                    url = insert.url
-                    binding.tvCity.text = insert.name
-                    binding.tvData.text = date
-                    binding.TvMinMax.text = tempMinMax
-                    binding.tvCurrentTemp.text = tempCurent
-                    binding.tvCondition.text = "За окном: ${insert.description}."
-                }
-
-            }.start()
-            Glide
-                .with(this)
-                .load("https://openweathermap.org/img/wn/$url@2x.png")
-                .into(binding.imWeather)
-
-
-
     }
 
     private fun loadInterstitialAd() {
