@@ -49,7 +49,6 @@ class DaysAdapter() : ListAdapter<Spisok, DaysAdapter.Holder>(DiffCallback()) {
             val writingFormatter = DateTimeFormatter.ofPattern("dd MMM")
             val formattedDate = date.format(writingFormatter)
 
-           // tvDate.text = formattedDate
             tvDateDay.text = formattedDate
             tvTime.text = time
             tvMinMax.text = temp
