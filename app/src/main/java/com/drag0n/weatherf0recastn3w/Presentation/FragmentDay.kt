@@ -2,6 +2,7 @@ package com.drag0n.weatherf0recastn3w.Presentation
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -73,9 +74,6 @@ class FragmentDay : Fragment() {
             })
         }
         loadInterstitialAd()
-        insert()
-
-
         model.liveDataDayNow.observe(viewLifecycleOwner) {
             Thread{
                 if(weatherDB.CourseDao().getAll() == null){
@@ -117,6 +115,7 @@ class FragmentDay : Fragment() {
                 .into(binding.imWeather)
             binding.tvWind.text = "Скорость ветра: ${it.wind.speed} метр/сек."
         } // Заполнение погоды на сегодняшний день
+        insert()
 
         binding.ibSync.setOnClickListener {
             binding.ibSync.playAnimation()
@@ -147,24 +146,26 @@ class FragmentDay : Fragment() {
     @SuppressLint("SetTextI18n")
     fun insert(){
         var url = ""
-        Thread{
-            val insert = weatherDB.CourseDao().getAll()
-            if (insert != null){
-                val tempMinMax = "Ощущается как: ${insert.curent}°C"
-                val tempCurent = "${insert.temp}°C"
-                url = insert.url
-                binding.tvCity.text = insert.name
-                binding.tvData.text = date
-                binding.TvMinMax.text = tempMinMax
-                binding.tvCurrentTemp.text = tempCurent
-                binding.tvCondition.text = "За окном: ${insert.description}."
-            }
+            Thread{
+                val insert = weatherDB.CourseDao().getAll()
+                if (insert != null){
+                    val tempMinMax = "Ощущается как: ${insert.curent}°C"
+                    val tempCurent = "${insert.temp}°C"
+                    url = insert.url
+                    binding.tvCity.text = insert.name
+                    binding.tvData.text = date
+                    binding.TvMinMax.text = tempMinMax
+                    binding.tvCurrentTemp.text = tempCurent
+                    binding.tvCondition.text = "За окном: ${insert.description}."
+                }
 
-        }.start()
-        Glide
-            .with(this)
-            .load("https://openweathermap.org/img/wn/$url@2x.png")
-            .into(binding.imWeather)
+            }.start()
+            Glide
+                .with(this)
+                .load("https://openweathermap.org/img/wn/$url@2x.png")
+                .into(binding.imWeather)
+
+
 
     }
 
