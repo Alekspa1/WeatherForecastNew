@@ -66,6 +66,7 @@ class FragmentDay : Fragment() {
             })
         }
         loadInterstitialAd()
+
         model.liveDataDayNow.observe(viewLifecycleOwner) {
 
             val tempMinMax = "Ощущается как: ${(it.main.feels_like * 10.0).roundToInt() / 10.0}°C."
@@ -85,15 +86,12 @@ class FragmentDay : Fragment() {
                 .into(binding.imWeather)
             binding.tvWind.text = "Скорость ветра: ${it.wind.speed} метр/сек."
         } // Заполнение погоды на сегодняшний день
-
-
         binding.ibSync.setOnClickListener {
             binding.ibSync.playAnimation()
             binding.root.startAnimation(outAnimation)
             showAd()
 
         }
-
         binding.ibSearch.setOnClickListener {
             DialogManager.nameSitySearchDialog(view.context, object : DialogManager.Listener {
                 override fun onClick(city: String?) {

@@ -59,7 +59,8 @@ dependencies {
 
 
     implementation("com.github.bumptech.glide:glide:4.12.0")
-    implementation("com.yandex.android:mobileads:6.3.0")
+    implementation("com.yandex.android:mobileads:6.4.0")
+    implementation("com.yandex.ads.mediation:mobileads-mytarget:5.20.0.0")
     implementation("com.airbnb.android:lottie:6.1.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
