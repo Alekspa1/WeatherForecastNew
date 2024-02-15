@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.Animation.AnimationListener
 import android.view.animation.AnimationUtils
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.drag0n.weatherf0recastn3w.Data.WeatherWeek.Spisok
@@ -18,7 +17,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
 
-class DaysAdapter() : ListAdapter<Spisok, DaysAdapter.Holder>(DiffCallback()) {
+class DaysAdapter(private val weatherWeek: List<Spisok>) : RecyclerView.Adapter<DaysAdapter.Holder>() {
 
     class Holder(item: View) : RecyclerView.ViewHolder(item), AnimationListener {
         private val binding = ItemDaysAdapterBinding.bind(item)
@@ -41,7 +40,7 @@ class DaysAdapter() : ListAdapter<Spisok, DaysAdapter.Holder>(DiffCallback()) {
             tvCond.text = day.weather[0].description
 
             val dateTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(day.dt_txt)
-            val time = SimpleDateFormat(" HH:mm").format(dateTime)
+            val time = SimpleDateFormat("HH:mm").format(dateTime!!)
 
             val dateString = day.dt_txt
             val readingFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
@@ -61,7 +60,7 @@ class DaysAdapter() : ListAdapter<Spisok, DaysAdapter.Holder>(DiffCallback()) {
                 "Мин. прогнозируемая температура: ${(day.main.temp_min * 10.0).roundToInt() / 10.0}°C"
             tvMaxTemp.text =
                 "Макс. прогнозируемая температура: ${(day.main.temp_max * 10.0).roundToInt() / 10.0}°C"
-            tvPressure.text = "Давление: ${day.main.pressure} гПа"
+            tvPressure.text = "Давление: ${(day.main.pressure/1.33).roundToInt()} мм рт.ст."
             tvHumidity.text = "Влажность: ${day.main.humidity} %"
             tvSpeedWind.text = "Скорость ветра: ${day.wind.speed} метр/сек"
             tvSunset.text = "Вероятность осадков: ${(day.pop * 1000.0).roundToInt() / 10.0}%"
@@ -81,7 +80,7 @@ class DaysAdapter() : ListAdapter<Spisok, DaysAdapter.Holder>(DiffCallback()) {
                     }
                 }
             }
-            if(tvTime.text.toString() == " 00:00")  cardDay.visibility = View.VISIBLE
+            if(tvTime.text.toString() == "00:00")  cardDay.visibility = View.VISIBLE
             else cardDay.visibility = View.GONE
 
 
@@ -106,8 +105,13 @@ class DaysAdapter() : ListAdapter<Spisok, DaysAdapter.Holder>(DiffCallback()) {
         return Holder(view)
     }
 
+    override fun getItemCount(): Int {
+        return weatherWeek.size
+    }
+
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        holder.bind(getItem(position))
+
+        holder.bind(weatherWeek[position])
 
     }
 

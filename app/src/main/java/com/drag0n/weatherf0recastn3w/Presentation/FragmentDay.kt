@@ -70,27 +70,28 @@ class FragmentDay : Fragment() {
 
             val tempMinMax = "Ощущается как: ${(it.main.feels_like * 10.0).roundToInt() / 10.0}°C."
             val tempCurent = "${(it.main.temp * 10.0).roundToInt() / 10.0}°C"
-
             val url = it.weather[0].icon
             binding.tvCity.text = it.name
             binding.tvData.text = date
             binding.TvMinMax.text = tempMinMax
             binding.tvCurrentTemp.text = tempCurent
             binding.tvCondition.text = "За окном: ${it.weather[0].description}."
-            binding.tvPasc.text = "Давление: ${(it.main.pressure * 10.0).roundToInt() / 10} гПа."
+            binding.tvPasc.text = "Давление: ${(it.main.pressure.toInt()/1.33).roundToInt()} мм рт.ст."
             binding.tvVlaz.text = "Влажность: ${(it.main.humidity * 10.0).roundToInt() / 10} %."
             Glide
                 .with(this)
                 .load("https://openweathermap.org/img/wn/$url@2x.png")
                 .into(binding.imWeather)
-            binding.tvWind.text = "Скорость ветра: ${it.wind.speed} метр/сек."
+            binding.tvWind.text = "Скорость ветра: ${it.wind.speed.roundToInt()} метр/сек."
         } // Заполнение погоды на сегодняшний день
 
 
         binding.ibSync.setOnClickListener {
             binding.ibSync.playAnimation()
             binding.root.startAnimation(outAnimation)
-            showAd()
+           if (binding.tvCity.text == "Загрузка данных") (activity as MainActivity).chekLocation()
+           else if (interstitialAd == null) (activity as MainActivity).chekLocation()
+           else showAd()
 
         }
 

@@ -30,9 +30,8 @@ class FragmentWeek : Fragment() {
         val rc = binding.rcDay
         rc.layoutManager = LinearLayoutManager(view.context)
         model.liveDataWeek.observe(viewLifecycleOwner) {
-            adapter = DaysAdapter()
+            adapter = DaysAdapter(it.list)
             rc.adapter = adapter
-            adapter.submitList(it.list)
         } // Заполнение погоды на неделю
     }
 

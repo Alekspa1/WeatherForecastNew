@@ -7,5 +7,6 @@ interface Repository {
     fun getApiNameCity(city: String, con: Context)
     fun getApiDayNowLocation(lat: String, lon: String, con: Context)
     fun getApiWeekLocation(lat: String, lon: String, con: Context)
+    fun getGeoNew(lat: String, lon: String, con: Context)
 
 }
