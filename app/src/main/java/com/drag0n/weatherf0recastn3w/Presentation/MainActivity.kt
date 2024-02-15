@@ -15,6 +15,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.view.GravityCompat
 import com.drag0n.weatherf0recastn3w.Const
 import com.drag0n.weatherf0recastn3w.DialogManager
 import com.drag0n.weatherf0recastn3w.MainViewModel
@@ -78,6 +79,16 @@ class MainActivity : AppCompatActivity() { // Заканчивает MainActivit
                 800 -> binding.root.setBackgroundResource(R.drawable.img_5) // Чистое небо
                 else -> binding.root.setBackgroundResource(R.drawable.img_6)
             } // Меняет фон
+        }
+
+        binding.bLoc.setOnClickListener {
+            chekLocation()
+            binding.drawerL.closeDrawer(GravityCompat.START)
+        }
+        binding.button2.setOnClickListener {
+            model.getApiNameCitiNow("Москва", this)
+            model.getApiNameCitiWeek("Москва", this)
+            binding.drawerL.closeDrawer(GravityCompat.START)
         }
 
     } // OnCreate
