@@ -135,10 +135,8 @@ class MainActivity : AppCompatActivity() { // Заканчивает MainActivit
 
         fLocotionClientHMS.lastLocation.addOnSuccessListener {
             try {
-                Log.d("MyLog", "Успешно")
                 model.getGeoNew(it.latitude.toString(), it.longitude.toString(), this)
             } catch (_: Exception) {
-                Log.d("MyLog", "Не успешно")
                 Toast.makeText(
                     this,
                     "Ошибка при получении данных по геолокации, пожалуйста нажмите кнопку обновить или введите город вручную",

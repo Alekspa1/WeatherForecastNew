@@ -5,8 +5,6 @@ import android.content.Context
 interface Repository {
     fun getApiNameCityWeek(city: String, con: Context)
     fun getApiNameCity(city: String, con: Context)
-    fun getApiDayNowLocation(lat: String, lon: String, con: Context)
-    fun getApiWeekLocation(lat: String, lon: String, con: Context)
     fun getGeoNew(lat: String, lon: String, con: Context)
 
 }
