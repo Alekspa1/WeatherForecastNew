@@ -7,6 +7,7 @@ import com.drag0n.weatherf0recastn3w.ApiWeather
 import com.drag0n.weatherf0recastn3w.Const
 
 import com.drag0n.weatherf0recastn3w.Data.WeatherDayNow.WeatherDayNow
+import com.drag0n.weatherf0recastn3w.Data.WeatherGetGeo.GetGeoNew
 import com.drag0n.weatherf0recastn3w.Data.WeatherWeek.WeatherWeek
 import retrofit2.Call
 import retrofit2.Callback
@@ -112,6 +113,30 @@ object RepositoryImp: Repository {
                     "Данные недоступны, попробуйте позже",
                     Toast.LENGTH_SHORT
                 ).show()
+            }
+        })
+    }
+
+    override fun getGeoNew(lat: String, lon: String, con: Context) {
+        val apiInterface = ApiWeather.newGeo().getGeoNowNew(lat, lon, Const.APIKEY)
+        apiInterface.enqueue(object : Callback<GetGeoNew> {
+
+            override fun onResponse(call: Call<GetGeoNew>, response: Response<GetGeoNew>) {
+                val data = response.body()
+                if (data != null) {
+                    getApiDayNowLocation(data[0].lat.toString(), data[0].lon.toString(), con)
+                    getApiWeekLocation(data[0].lat.toString(), data[0].lon.toString(), con)
+                } else Toast.makeText(
+                    con,
+                    "Ошибка получения данных",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+
+            }
+
+            override fun onFailure(call: Call<GetGeoNew>, t: Throwable) {
+
             }
         })
     }

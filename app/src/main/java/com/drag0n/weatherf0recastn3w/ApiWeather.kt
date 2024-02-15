@@ -1,6 +1,7 @@
 package com.drag0n.weatherf0recastn3w
 
 import com.drag0n.weatherf0recastn3w.Data.WeatherDayNow.WeatherDayNow
+import com.drag0n.weatherf0recastn3w.Data.WeatherGetGeo.GetGeoNew
 import com.drag0n.weatherf0recastn3w.Data.WeatherWeek.WeatherWeek
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -32,9 +33,17 @@ interface ApiWeather {
 
     @GET("forecast?&units=metric&lang=ru")
     fun getWeatherWeekCity(
-        @Query("q") lat: String,
+        @Query("q") city: String,
         @Query("appid") api: String
     ): Call<WeatherWeek>
+
+
+    @GET("reverse?&&limit=1&")
+    fun getGeoNowNew(
+        @Query("lat") lat: String,
+        @Query("lon") lon: String,
+        @Query("appid") api: String
+    ): Call<GetGeoNew>
 
 
 
@@ -42,8 +51,9 @@ interface ApiWeather {
 
     companion object {
 
-        var BASE_URL = "https://api.openweathermap.org/data/2.5/"
-        val interceptor = HttpLoggingInterceptor()
+        private var BASE_URL = "https://api.openweathermap.org/data/2.5/"
+        private var BASE_URL_NEW = "http://api.openweathermap.org/geo/1.0/"
+        private val interceptor = HttpLoggingInterceptor()
 
         fun create() : ApiWeather {
             interceptor.level = HttpLoggingInterceptor.Level.BODY
@@ -52,6 +62,17 @@ interface ApiWeather {
             val retrofit = Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
                 .baseUrl(BASE_URL).client(client)
+                .build()
+            return retrofit.create(ApiWeather::class.java)
+
+        }
+        fun newGeo(): ApiWeather{
+            interceptor.level = HttpLoggingInterceptor.Level.BODY
+            val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
+
+            val retrofit = Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl(BASE_URL_NEW).client(client)
                 .build()
             return retrofit.create(ApiWeather::class.java)
 

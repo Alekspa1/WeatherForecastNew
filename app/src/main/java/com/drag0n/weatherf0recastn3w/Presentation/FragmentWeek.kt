@@ -26,22 +26,16 @@ class FragmentWeek : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         model = MainViewModel()
-        initRcView()
 
-
+        val rc = binding.rcDay
+        rc.layoutManager = LinearLayoutManager(view.context)
         model.liveDataWeek.observe(viewLifecycleOwner) {
-            adapter.submitList(it.list)
+            adapter = DaysAdapter(it.list)
+            rc.adapter = adapter
         } // Заполнение погоды на неделю
     }
 
     companion object {
         fun newInstance() = FragmentWeek()
     }
-    private fun initRcView(){
-        val rc = binding.rcDay
-        rc.layoutManager = LinearLayoutManager(view?.context)
-        adapter = DaysAdapter()
-        rc.adapter = adapter
-    }
-
 }

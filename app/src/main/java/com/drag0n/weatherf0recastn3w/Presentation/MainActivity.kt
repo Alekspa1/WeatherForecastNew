@@ -8,6 +8,8 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -55,13 +57,13 @@ class MainActivity : AppCompatActivity() { // Заканчивает MainActivit
         binding = ActivityMainBinding.inflate(layoutInflater)
         pLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {}
         fLocotionClient = LocationServices.getFusedLocationProviderClient(this)
-        fLocotionClientHMS = com.huawei.hms.location.LocationServices.getFusedLocationProviderClient(this)
+        fLocotionClientHMS =
+            com.huawei.hms.location.LocationServices.getFusedLocationProviderClient(this)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         initVp()
 // яндекс реклама
-       yaBaner()
-        model.liveDataDayNow.observe(this){
+        model.liveDataDayNow.observe(this) {
             when (it.weather[0].id) {
                 200, 201, 202, 210, 211, 212, 221, 230, 231, 232 -> binding.root.setBackgroundResource(
                     R.drawable.img_1
@@ -79,32 +81,35 @@ class MainActivity : AppCompatActivity() { // Заканчивает MainActivit
         }
 
     } // OnCreate
+
     override fun onResume() {
         super.onResume()
+
         chekPermissionLocation()
+        yaBaner()
 
     }
-    private fun initVp(){
+
+    private fun initVp() {
         vpAdapter = VpAdapter(this, listFrag)
         binding.placeHolder.adapter = vpAdapter
-        TabLayoutMediator(binding.tabLayout, binding.placeHolder){
-                tab, pos ->
+        TabLayoutMediator(binding.tabLayout, binding.placeHolder) { tab, pos ->
             tab.text = listName[pos]
         }.attach()
     } // инициализирую ViewPager
-    private fun chekPermissionLocation() {
+
+     fun chekPermissionLocation() {
         if (Const.isPermissionGranted(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
             chekLocation()
         } else {
             pLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
     } // проверяет есть ли разрешение геолокации
-    private fun chekLocation() {
+
+     fun chekLocation() {
         if (isLocationEnabled()) {
-            if(isHuaweiMobileServicesAvailable(this)) getLocationHuawey()
+            if (isHuaweiMobileServicesAvailable(this)) getLocationHuawey()
             else getLocationGoogle()
-
-
         } else {
             DialogManager.locationSettingsDialog(this, object : DialogManager.Listener {
                 override fun onClick(city: String?) {
@@ -114,29 +119,36 @@ class MainActivity : AppCompatActivity() { // Заканчивает MainActivit
             })
         }
     } // Функция проверяет включено ли GPS
+
     private fun isLocationEnabled(): Boolean {
         val lm = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return lm.isProviderEnabled(LocationManager.GPS_PROVIDER)
     } // Функция узнает включено ли GPS
+
     fun isHuaweiMobileServicesAvailable(context: Context): Boolean {
         val huaweiApiAvailability = HuaweiApiAvailability.getInstance()
         val resultCode = huaweiApiAvailability.isHuaweiMobileServicesAvailable(context)
         return resultCode == com.huawei.hms.api.ConnectionResult.SUCCESS
     }
-    private fun getLocationHuawey(){
+
+    private fun getLocationHuawey() {
 
         fLocotionClientHMS.lastLocation.addOnSuccessListener {
-                try{
-                    Const.lat = it.latitude.toString()
-                    Const.lon = it.longitude.toString()
-                    model.getApiWeekLocation(Const.lat, Const.lon, this)
-                    model.getApiDayNowLocation(Const.lat, Const.lon, this)
-                }
-                catch (_: Exception){
-                }
+            try {
+                Log.d("MyLog", "Успешно")
+                model.getGeoNew(it.latitude.toString(), it.longitude.toString(), this)
+            } catch (_: Exception) {
+                Log.d("MyLog", "Не успешно")
+                Toast.makeText(
+                    this,
+                    "Ошибка при получении данных по геолокации, пожалуйста нажмите кнопку обновить или введите город вручную",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
         }
 
     } // Функция для получения геолокации Хуавея
+
     private fun getLocationGoogle() {
         val ct = CancellationTokenSource()
         if (ActivityCompat.checkSelfPermission(
@@ -151,31 +163,18 @@ class MainActivity : AppCompatActivity() { // Заканчивает MainActivit
         }
         fLocotionClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, ct.token)
             .addOnCompleteListener {
-                Const.lat = it.result.latitude.toString()
-                Const.lon = it.result.longitude.toString()
-                model.getApiWeekLocation(Const.lat, Const.lon, this)
-                model.getApiDayNowLocation(Const.lat, Const.lon, this)
+                model.getGeoNew(it.result.latitude.toString(), it.result.longitude.toString(), this)
             }
 
 
-
-
     } // Функция для получения геолокации Гугла
-    private fun yaBaner(){
+
+    private fun yaBaner() {
         binding.yaMob.setAdUnitId(Const.baner)
         binding.yaMob.setAdSize(BannerAdSize.stickySize(this, 350))
         val adRequest = AdRequest.Builder().build()
         binding.yaMob.loadAd(adRequest)
     } // яндекс банер
-
-
-
-
-
-
-
-
-
 
 
 }
