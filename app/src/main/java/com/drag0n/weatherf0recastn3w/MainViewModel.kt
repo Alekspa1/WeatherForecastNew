@@ -27,7 +27,6 @@ class MainViewModel: ViewModel() {
     fun getApiNameCitiWeek(city: String, con: Context){
         getApiNameCityWeek.getApiNameCityWeek(city, con)
     }
-
     fun getGeoNew(lat: String, lon: String, con: Context){
         getGeoNew.getGeoNew(lat, lon, con)
     }
