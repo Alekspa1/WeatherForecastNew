@@ -243,6 +243,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
         when(action){
             Const.SEARCH_CITY-> {
                 model.getApiNameCitiNow(itemCity.name, this)
+                model.getApiNameCitiWeek(itemCity.name, this)
                 binding.drawer.closeDrawer(GravityCompat.START)
             }
             Const.DELETE_CITY->{
