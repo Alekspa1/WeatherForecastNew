@@ -2,27 +2,38 @@
 <androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawerL"
+    android:id="@+id/drawer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="start"
     android:background="@drawable/img_6"
     android:visibility="visible"
     tools:context=".Presentation.MainActivity"
-    tools:openDrawer="start">
+    tools:openDrawer="start"
+    >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/imMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:background="@color/light_blue_900"
+            android:paddingStart="8dp"
+            android:src="@drawable/ic_menu"
+            app:layout_constraintBottom_toBottomOf="@+id/tabLayout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tabLayout" />
 
         <com.google.android.material.tabs.TabLayout
 
             android:id="@+id/tabLayout"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@color/light_blue_900"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imMenu"
             app:layout_constraintTop_toTopOf="parent"
             app:tabIndicatorColor="@color/black"
             app:tabSelectedTextColor="@color/white"
@@ -67,28 +78,104 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.navigation.NavigationView
-        android:id="@+id/drawer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="start">
+        android:layout_gravity="start"
+        android:background="@drawable/background">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/imLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/ic_location"
+                app:layout_constraintBottom_toBottomOf="@+id/bMyCity"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/bMyCity" />
 
             <Button
-                android:id="@+id/bLoc"
-                android:layout_width="match_parent"
+                android:id="@+id/bMyCity"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Текущее место" />
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="Мой город"
+                app:layout_constraintEnd_toStartOf="@+id/imLocation"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <Button
-                android:id="@+id/button2"
+            <ImageButton
+                android:id="@+id/imBAddMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="-24dp"
+                android:layout_marginBottom="8dp"
+                android:background="@null"
+                android:src="@android:drawable/btn_plus"
+                app:layout_constraintBottom_toTopOf="@+id/drawerL"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rcView"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginBottom="3dp"
+                app:layout_constraintBottom_toTopOf="@+id/imBAddMenu"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/bMyCity" />
+
+            <LinearLayout
+                android:id="@+id/drawerL"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Москва" />
-        </LinearLayout>
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    app:cardBackgroundColor="@color/black">
+
+                </androidx.cardview.widget.CardView>
+
+                <Button
+                    android:id="@+id/bSettings"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Настройки" />
+
+                <Button
+                    android:id="@+id/bBuyPremium"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Купить Premium версию" />
+
+                <Button
+                    android:id="@+id/bCallback"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Обратная связь" />
+
+                <Button
+                    android:id="@+id/bUpdate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Проверить обновления" />
+
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.navigation.NavigationView>
 
