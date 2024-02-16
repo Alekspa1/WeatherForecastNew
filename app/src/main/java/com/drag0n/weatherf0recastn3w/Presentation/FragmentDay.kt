@@ -69,7 +69,8 @@ class FragmentDay : Fragment() {
         loadInterstitialAd()
 
         model.liveDataDayNow.observe(viewLifecycleOwner) {
-
+            val timeSunrise = SimpleDateFormat(" HH : mm ").format(it.sys.sunrise * 1000L)
+            val timeSunset = SimpleDateFormat(" HH : mm ").format(it.sys.sunset * 1000L)
             val tempMinMax = "Ощущается как: ${(it.main.feels_like * 10.0).roundToInt() / 10.0}°C."
             val tempCurent = "${(it.main.temp * 10.0).roundToInt() / 10.0}°C"
             val url = it.weather[0].icon
@@ -80,6 +81,9 @@ class FragmentDay : Fragment() {
             binding.tvCondition.text = "За окном: ${it.weather[0].description}."
             binding.tvPasc.text = "Давление: ${(it.main.pressure.toInt()/1.33).roundToInt()} мм рт.ст."
             binding.tvVlaz.text = "Влажность: ${(it.main.humidity * 10.0).roundToInt() / 10} %."
+            binding.tvSunset.text = "Время восхода: $timeSunrise"
+            binding.tvSunrise.text = "Время заката: $timeSunset"
+
             Glide
                 .with(this)
                 .load("https://openweathermap.org/img/wn/$url@2x.png")
