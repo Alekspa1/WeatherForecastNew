@@ -5,5 +5,6 @@ data class WeatherDayNow(
    val name: String,
    val weather: List<Weather>,
    val wind: Wind,
-   val sys: Sys
+   val sys: Sys,
+   val timezone: Int
 )

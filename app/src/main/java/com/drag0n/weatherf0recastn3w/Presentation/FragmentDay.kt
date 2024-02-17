@@ -69,7 +69,7 @@ class FragmentDay : Fragment() {
         loadInterstitialAd()
 
         model.liveDataDayNow.observe(viewLifecycleOwner) {
-            val timeSunrise = SimpleDateFormat(" HH : mm ").format(it.sys.sunrise * 1000L)
+            val timeSunrise = SimpleDateFormat(" HH : mm ").format(it.sys.sunrise * 1000L )
             val timeSunset = SimpleDateFormat(" HH : mm ").format(it.sys.sunset * 1000L)
             val tempMinMax = "Ощущается как: ${(it.main.feels_like * 10.0).roundToInt() / 10.0}°C."
             val tempCurent = "${(it.main.temp * 10.0).roundToInt() / 10.0}°C"
@@ -83,6 +83,7 @@ class FragmentDay : Fragment() {
             binding.tvVlaz.text = "Влажность: ${(it.main.humidity * 10.0).roundToInt() / 10} %."
             binding.tvSunset.text = "Время восхода: $timeSunrise"
             binding.tvSunrise.text = "Время заката: $timeSunset"
+
 
             Glide
                 .with(this)
