@@ -67,7 +67,6 @@ class FragmentDay : Fragment() {
             })
         }
         loadInterstitialAd()
-
         model.liveDataDayNow.observe(viewLifecycleOwner) {
             val timeSunrise = SimpleDateFormat(" HH : mm ").format(it.sys.sunrise * 1000L )
             val timeSunset = SimpleDateFormat(" HH : mm ").format(it.sys.sunset * 1000L)
@@ -114,7 +113,6 @@ class FragmentDay : Fragment() {
     }
 
     companion object {
-
         @JvmStatic
         fun newInstance() = FragmentDay()
     }
