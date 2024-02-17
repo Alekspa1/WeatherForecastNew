@@ -114,9 +114,11 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
             imBAddMenu.setOnClickListener {
                 DialogManager.nameSitySearchDialog(this@MainActivity, object : DialogManager.Listener {
                     override fun onClick(city: String?) {
-                        Thread {
+                        if(city != ""){Thread {
                             db.CourseDao().insertAll(ItemCity(null, city!!))
-                        }.start()
+                        }.start()}
+                        else Toast.makeText(this@MainActivity, "Вы ничего не ввели", Toast.LENGTH_SHORT).show()
+
                     }
 
                 })
