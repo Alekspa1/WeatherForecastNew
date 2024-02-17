@@ -10,19 +10,11 @@ import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import com.bumptech.glide.Glide
-import com.drag0n.weatherf0recastn3w.Const
+
 import com.drag0n.weatherf0recastn3w.DialogManager
 import com.drag0n.weatherf0recastn3w.MainViewModel
 import com.drag0n.weatherf0recastn3w.R
 import com.drag0n.weatherf0recastn3w.databinding.FragmentDayBinding
-import com.yandex.mobile.ads.common.AdError
-import com.yandex.mobile.ads.common.AdRequestConfiguration
-import com.yandex.mobile.ads.common.AdRequestError
-import com.yandex.mobile.ads.common.ImpressionData
-import com.yandex.mobile.ads.interstitial.InterstitialAd
-import com.yandex.mobile.ads.interstitial.InterstitialAdEventListener
-import com.yandex.mobile.ads.interstitial.InterstitialAdLoadListener
-import com.yandex.mobile.ads.interstitial.InterstitialAdLoader
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter

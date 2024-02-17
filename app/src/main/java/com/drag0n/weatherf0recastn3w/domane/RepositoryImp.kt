@@ -1,14 +1,18 @@
 package com.drag0n.weatherf0recastn3w.domane
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
+import androidx.room.Room
 import com.drag0n.weatherf0recastn3w.ApiWeather
 import com.drag0n.weatherf0recastn3w.Const
 
 import com.drag0n.weatherf0recastn3w.Data.WeatherDayNow.WeatherDayNow
 import com.drag0n.weatherf0recastn3w.Data.WeatherGetGeo.GetGeoNew
 import com.drag0n.weatherf0recastn3w.Data.WeatherWeek.WeatherWeek
+import com.drag0n.weatherf0recastn3w.Room.CityListDataBase
+import com.drag0n.weatherf0recastn3w.Room.ItemCity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -50,7 +54,9 @@ object RepositoryImp: Repository {
 
             override fun onResponse(call: Call<WeatherDayNow>, response: Response<WeatherDayNow>) {
                 val data = response.body()
-                if (data != null) liveDataCurrent.value = data!!
+                if (data != null) {
+                    liveDataCurrent.value = data!!
+                }
 
                 else Toast.makeText(
                     con,

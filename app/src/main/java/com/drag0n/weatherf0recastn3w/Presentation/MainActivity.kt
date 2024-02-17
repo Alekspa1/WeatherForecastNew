@@ -1,6 +1,7 @@
 package com.drag0n.weatherf0recastn3w.Presentation
 
 import android.Manifest
+import android.app.AlarmManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -8,6 +9,7 @@ import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -43,6 +45,7 @@ import com.yandex.mobile.ads.interstitial.InterstitialAd
 import com.yandex.mobile.ads.interstitial.InterstitialAdEventListener
 import com.yandex.mobile.ads.interstitial.InterstitialAdLoadListener
 import com.yandex.mobile.ads.interstitial.InterstitialAdLoader
+import java.util.Calendar
 import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Заканчивает MainActivity
@@ -98,9 +101,12 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
             })
         }
         loadInterstitialAd()
+        val calendar = Calendar.getInstance()
 // яндекс реклама
         model.liveDataDayNow.observe(this) {
-            when (it.weather[0].id) {
+
+            if (calendar.timeInMillis > it.sys.sunset* 1000L && calendar.timeInMillis < it.sys.sunrise* 1000L+ AlarmManager.INTERVAL_DAY) insertBackground(R.drawable.img_8)
+           else{ when (it.weather[0].id) {
                 200, 201, 202, 210, 211, 212, 221, 230, 231, 232 -> insertBackground(R.drawable.img_1)
                  // гроза
                 300, 301, 302, 310, 311, 312, 313, 314, 321 -> insertBackground(R.drawable.img_2) // морось
@@ -111,7 +117,8 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
                 701,711,721,741 -> insertBackground(R.drawable.img_7) // туман
                 800 -> insertBackground(R.drawable.img_5) // Чистое небо
                 else -> insertBackground(R.drawable.img_6)
-            } // Меняет фон
+            }
+           } // Меняет фон
         }
         db.CourseDao().getAll().asLiveData().observe(this){
             adapter.submitList(it)
@@ -139,7 +146,8 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
             imBAddMenu.setOnClickListener {
                 DialogManager.nameSitySearchDialog(this@MainActivity, object : DialogManager.Listener {
                     override fun onClick(city: String?) {
-                        if(city != ""){Thread {
+                        if(city != ""){
+                            Thread {
                             db.CourseDao().insertAll(ItemCity(null, city!!))
                         }.start()
                             showAd()
@@ -293,7 +301,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
         val adRequestConfiguration = AdRequestConfiguration.Builder(Const.mezstr).build()
         interstitialAdLoader?.loadAd(adRequestConfiguration)
     }
-     fun showAd() {
+    fun showAd() {
         interstitialAd?.apply {
             setAdEventListener(object : InterstitialAdEventListener {
                 override fun onAdShown() {
