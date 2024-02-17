@@ -34,7 +34,15 @@ import com.google.android.gms.tasks.CancellationTokenSource
 import com.google.android.material.tabs.TabLayoutMediator
 import com.huawei.hms.api.HuaweiApiAvailability
 import com.yandex.mobile.ads.banner.BannerAdSize
+import com.yandex.mobile.ads.common.AdError
 import com.yandex.mobile.ads.common.AdRequest
+import com.yandex.mobile.ads.common.AdRequestConfiguration
+import com.yandex.mobile.ads.common.AdRequestError
+import com.yandex.mobile.ads.common.ImpressionData
+import com.yandex.mobile.ads.interstitial.InterstitialAd
+import com.yandex.mobile.ads.interstitial.InterstitialAdEventListener
+import com.yandex.mobile.ads.interstitial.InterstitialAdLoadListener
+import com.yandex.mobile.ads.interstitial.InterstitialAdLoader
 import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Заканчивает MainActivity
@@ -48,6 +56,9 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
     private lateinit var adapter: ItemCityAdapter
     private lateinit var db: CityListDataBase
     private val model: MainViewModel by viewModels()
+    var interstitialAd: InterstitialAd? = null
+    private var interstitialAdLoader: InterstitialAdLoader? = null
+
 
     private val listFrag = listOf(
         FragmentDay.newInstance(),
@@ -73,6 +84,20 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
         initDb()
         initVp()
         initRcView()
+        interstitialAdLoader = InterstitialAdLoader(this).apply {
+            setAdLoadListener(object : InterstitialAdLoadListener {
+                override fun onAdLoaded(ad: InterstitialAd) {
+                    interstitialAd = ad
+                    // The ad was loaded successfully. Now you can show loaded ad.
+                }
+
+                override fun onAdFailedToLoad(adRequestError: AdRequestError) {
+                    // Ad failed to load with AdRequestError.
+                    // Attempting to load a new ad from the onAdFailedToLoad() method is strongly discouraged.
+                }
+            })
+        }
+        loadInterstitialAd()
 // яндекс реклама
         model.liveDataDayNow.observe(this) {
             when (it.weather[0].id) {
@@ -116,7 +141,9 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
                     override fun onClick(city: String?) {
                         if(city != ""){Thread {
                             db.CourseDao().insertAll(ItemCity(null, city!!))
-                        }.start()}
+                        }.start()
+                            showAd()
+                        }
                         else Toast.makeText(this@MainActivity, "Вы ничего не ввели", Toast.LENGTH_SHORT).show()
 
                     }
@@ -130,7 +157,6 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
 
     override fun onResume() {
         super.onResume()
-
         chekPermissionLocation()
         yaBaner()
 
@@ -207,7 +233,17 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
         }
         fLocotionClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, ct.token)
             .addOnCompleteListener {
-                model.getGeoNew(it.result.latitude.toString(), it.result.longitude.toString(), this)
+                try {
+                    model.getGeoNew(it.result.latitude.toString(), it.result.longitude.toString(), this)
+                }
+                catch (e: Exception){
+                    Toast.makeText(
+                        this,
+                        "Ошибка при получении данных по геолокации, пожалуйста нажмите кнопку обновить или введите город вручную",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+
             }
 
 
@@ -252,6 +288,52 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
                 Thread{db.CourseDao().delete(itemCity)}.start()
             }
         }
+    }
+    private fun loadInterstitialAd() {
+        val adRequestConfiguration = AdRequestConfiguration.Builder(Const.mezstr).build()
+        interstitialAdLoader?.loadAd(adRequestConfiguration)
+    }
+     fun showAd() {
+        interstitialAd?.apply {
+            setAdEventListener(object : InterstitialAdEventListener {
+                override fun onAdShown() {
+                    // Called when ad is shown.
+                }
+
+                override fun onAdFailedToShow(adError: AdError) {
+                    // Called when an InterstitialAd failed to show.
+                }
+
+                override fun onAdDismissed() {
+                    // Called when ad is dismissed.
+                    // Clean resources after Ad dismissed
+                    interstitialAd?.setAdEventListener(null)
+                    interstitialAd = null
+
+                    // Now you can preload the next interstitial ad.
+                    loadInterstitialAd()
+                }
+
+                override fun onAdClicked() {
+                    // Called when a click is recorded for an ad.
+                }
+
+                override fun onAdImpression(impressionData: ImpressionData?) {
+                    // Called when an impression is recorded for an ad.
+                }
+            })
+            show(this@MainActivity)
+        }
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        interstitialAdLoader?.setAdLoadListener(null)
+        interstitialAdLoader = null
+        destroyInterstitialAd()
+    }
+    private fun destroyInterstitialAd() {
+        interstitialAd?.setAdEventListener(null)
+        interstitialAd = null
     }
 
 

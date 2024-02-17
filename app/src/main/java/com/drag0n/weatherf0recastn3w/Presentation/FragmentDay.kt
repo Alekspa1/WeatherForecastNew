@@ -35,8 +35,6 @@ class FragmentDay : Fragment() {
     private lateinit var date: String
     private lateinit var inAnimation: Animation
     private lateinit var outAnimation: Animation
-    private var interstitialAd: InterstitialAd? = null
-    private var interstitialAdLoader: InterstitialAdLoader? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,22 +51,9 @@ class FragmentDay : Fragment() {
         date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd MMM"))
         inAnimation = AnimationUtils.loadAnimation(view.context, R.anim.alpha_in)
         outAnimation = AnimationUtils.loadAnimation(view.context, R.anim.alpha_out)
-        interstitialAdLoader = InterstitialAdLoader(view.context).apply {
-            setAdLoadListener(object : InterstitialAdLoadListener {
-                override fun onAdLoaded(ad: InterstitialAd) {
-                    interstitialAd = ad
-                    // The ad was loaded successfully. Now you can show loaded ad.
-                }
 
-                override fun onAdFailedToLoad(adRequestError: AdRequestError) {
-                    // Ad failed to load with AdRequestError.
-                    // Attempting to load a new ad from the onAdFailedToLoad() method is strongly discouraged.
-                }
-            })
-        }
-        loadInterstitialAd()
         model.liveDataDayNow.observe(viewLifecycleOwner) {
-            val timeSunrise = SimpleDateFormat(" HH : mm ").format(it.sys.sunrise * 1000L )
+            val timeSunrise = SimpleDateFormat(" HH : mm ").format(it.sys.sunrise * 1000L)
             val timeSunset = SimpleDateFormat(" HH : mm ").format(it.sys.sunset * 1000L)
             val tempMinMax = "Ощущается как: ${(it.main.feels_like * 10.0).roundToInt() / 10.0}°C."
             val tempCurent = "${(it.main.temp * 10.0).roundToInt() / 10.0}°C"
@@ -78,7 +63,8 @@ class FragmentDay : Fragment() {
             binding.TvMinMax.text = tempMinMax
             binding.tvCurrentTemp.text = tempCurent
             binding.tvCondition.text = "За окном: ${it.weather[0].description}."
-            binding.tvPasc.text = "Давление: ${(it.main.pressure.toInt()/1.33).roundToInt()} мм рт.ст."
+            binding.tvPasc.text =
+                "Давление: ${(it.main.pressure.toInt() / 1.33).roundToInt()} мм рт.ст."
             binding.tvVlaz.text = "Влажность: ${(it.main.humidity * 10.0).roundToInt() / 10} %."
             binding.tvSunset.text = "Время восхода: $timeSunrise"
             binding.tvSunrise.text = "Время заката: $timeSunset"
@@ -93,9 +79,9 @@ class FragmentDay : Fragment() {
         binding.ibSync.setOnClickListener {
             binding.ibSync.playAnimation()
             binding.root.startAnimation(outAnimation)
-           if (binding.tvCity.text == "Загрузка данных") (activity as MainActivity).chekLocation()
-           else if (interstitialAd == null) (activity as MainActivity).chekLocation()
-           else showAd()
+            if (binding.tvCity.text == "Загрузка данных") (activity as MainActivity).chekLocation()
+            else if ((activity as MainActivity).interstitialAd == null) (activity as MainActivity).chekLocation()
+            else (activity as MainActivity).showAd()
 
         }
         binding.ibSearch.setOnClickListener {
@@ -117,50 +103,5 @@ class FragmentDay : Fragment() {
         fun newInstance() = FragmentDay()
     }
 
-    private fun loadInterstitialAd() {
-        val adRequestConfiguration = AdRequestConfiguration.Builder(Const.mezstr).build()
-        interstitialAdLoader?.loadAd(adRequestConfiguration)
-    }
-    private fun showAd() {
-        interstitialAd?.apply {
-            setAdEventListener(object : InterstitialAdEventListener {
-                override fun onAdShown() {
-                    // Called when ad is shown.
-                }
 
-                override fun onAdFailedToShow(adError: AdError) {
-                    // Called when an InterstitialAd failed to show.
-                }
-
-                override fun onAdDismissed() {
-                    // Called when ad is dismissed.
-                    // Clean resources after Ad dismissed
-                    interstitialAd?.setAdEventListener(null)
-                    interstitialAd = null
-
-                    // Now you can preload the next interstitial ad.
-                    loadInterstitialAd()
-                }
-
-                override fun onAdClicked() {
-                    // Called when a click is recorded for an ad.
-                }
-
-                override fun onAdImpression(impressionData: ImpressionData?) {
-                    // Called when an impression is recorded for an ad.
-                }
-            })
-            activity?.let { show(it) }
-        }
-    }
-    override fun onDestroy() {
-        super.onDestroy()
-        interstitialAdLoader?.setAdLoadListener(null)
-        interstitialAdLoader = null
-        destroyInterstitialAd()
-    }
-    private fun destroyInterstitialAd() {
-        interstitialAd?.setAdEventListener(null)
-        interstitialAd = null
-    }
 }
