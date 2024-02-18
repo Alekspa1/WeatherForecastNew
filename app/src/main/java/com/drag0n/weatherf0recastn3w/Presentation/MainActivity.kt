@@ -123,15 +123,12 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
         with(binding) {
             imMenu.setOnClickListener{
                 binding.drawer.openDrawer(GravityCompat.START)
-                model.turnVibro(this@MainActivity, 100)
             }
             bMyCity.setOnClickListener {
                 chekLocation()
                 binding.drawer.closeDrawer(GravityCompat.START)
-                model.turnVibro(this@MainActivity, 100)
             }
             bCallback.setOnClickListener {
-                model.turnVibro(this@MainActivity, 100)
                 try {
                 binding.drawer.closeDrawer(GravityCompat.START)
                 startActivity(Intent(Intent.ACTION_VIEW, Uri.parse( "mailto:apereverzev47@gmail.com" )))
@@ -139,7 +136,6 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
                 Toast.makeText(this@MainActivity, "Ошибка", Toast.LENGTH_SHORT).show()
             } }
             bUpdate.setOnClickListener {
-                model.turnVibro(this@MainActivity, 100)
                 try {
                     binding.drawer.closeDrawer(GravityCompat.START)
                     startActivity(Intent(Intent.ACTION_VIEW, Uri.parse( "https://apps.rustore.ru/app/com.drag0n.weatherf0recastn3w" )))
@@ -148,7 +144,6 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
                 }
             }
             imBAddMenu.setOnClickListener {
-                model.turnVibro(this@MainActivity, 100)
                 DialogManager.nameSitySearchDialog(this@MainActivity, object : DialogManager.Listener {
                     override fun onClick(city: String?) {
                         if(city != ""){
@@ -291,7 +286,6 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
 
 
     override fun onClick(itemCity: ItemCity, action: String) {
-        model.turnVibro(this@MainActivity, 100)
         when(action){
             Const.SEARCH_CITY-> {
                 model.getApiNameCitiNow(itemCity.name, this)

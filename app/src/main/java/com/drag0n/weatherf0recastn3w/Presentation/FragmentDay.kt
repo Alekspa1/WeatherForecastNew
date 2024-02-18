@@ -69,7 +69,6 @@ class FragmentDay : Fragment() {
             binding.tvWind.text = "Скорость ветра: ${it.wind.speed.roundToInt()} метр/сек."
         } // Заполнение погоды на сегодняшний день
         binding.ibSync.setOnClickListener {
-            model.turnVibro(view.context, 100)
             binding.ibSync.playAnimation()
             binding.root.startAnimation(outAnimation)
             if (binding.tvCity.text == "Загрузка данных") (activity as MainActivity).chekLocation()
@@ -78,7 +77,6 @@ class FragmentDay : Fragment() {
 
         }
         binding.ibSearch.setOnClickListener {
-            model.turnVibro(view.context, 100)
             DialogManager.nameSitySearchDialog(view.context, object : DialogManager.Listener {
                 override fun onClick(city: String?) {
                     if (city != null) {
