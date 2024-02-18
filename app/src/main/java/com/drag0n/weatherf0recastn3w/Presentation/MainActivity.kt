@@ -8,6 +8,7 @@ import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -33,9 +34,11 @@ import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
 import com.google.android.material.tabs.TabLayoutMediator
 import com.huawei.hms.api.HuaweiApiAvailability
+import com.huawei.hms.location.LocationCallback
+import com.huawei.hms.location.LocationRequest
+import com.huawei.hms.location.LocationResult
 import com.yandex.mobile.ads.banner.BannerAdSize
 import com.yandex.mobile.ads.common.AdRequest
-import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Заканчивает MainActivity
 
@@ -176,18 +179,49 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
     }
 
     private fun getLocationHuawey() {
+        val locationRequest = LocationRequest.create()
+            .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+            .setInterval(5000)
+            .setSmallestDisplacement(5.5F)
+            .setNumUpdates(1)
 
-        fLocotionClientHMS.lastLocation.addOnSuccessListener {
-            try {
-                model.getGeoNew(it.latitude.toString(), it.longitude.toString(), this)
-            } catch (_: Exception) {
-                Toast.makeText(
-                    this,
-                    "Ошибка при получении данных по геолокации, пожалуйста нажмите кнопку обновить или введите город вручную",
-                    Toast.LENGTH_LONG
-                ).show()
+        val callback = object : LocationCallback() {
+            override fun onLocationResult(it: LocationResult) {
+                try {
+                    it.locations.forEach{location ->
+                        model.getGeoNew(location.latitude.toString(), location.longitude.toString(), this@MainActivity)
+                    }
+
+                } catch (e: Exception) {
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Ошибка при получении данных по геолокации, пожалуйста нажмите кнопку обновить или введите город вручную",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+
             }
         }
+
+        fLocotionClientHMS.requestLocationUpdates(locationRequest, callback, null)
+
+
+
+
+
+//        fLocotionClientHMS.lastLocation.addOnSuccessListener {
+//            try {
+//                //model.getGeoNew(it.latitude.toString(), it.longitude.toString(), this)
+//            } catch (e: Exception) {
+//                Log.d("MyLog", e.toString())
+//                Log.d("MyLog", "авиабле.результ ${fLocotionClientHMS.locationAvailability.result.toString()}")
+//                Toast.makeText(
+//                    this,
+//                    "Ошибка при получении данных по геолокации, пожалуйста нажмите кнопку обновить или введите город вручную",
+//                    Toast.LENGTH_LONG
+//                ).show()
+//            }
+//        }
 
     } // Функция для получения геолокации Хуавея
 
@@ -203,9 +237,20 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
         ) {
             return
         }
+
         fLocotionClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, ct.token)
             .addOnCompleteListener {
-                model.getGeoNew(it.result.latitude.toString(), it.result.longitude.toString(), this)
+                try {
+                    model.getGeoNew(it.result.latitude.toString(), it.result.longitude.toString(), this)
+                }
+                catch (_: Exception) {
+                    Toast.makeText(
+                        this,
+                        "Ошибка при получении данных по геолокации, пожалуйста нажмите кнопку обновить или введите город вручную",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+
             }
 
 
@@ -254,4 +299,6 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
 
 
 }
+
+
 
