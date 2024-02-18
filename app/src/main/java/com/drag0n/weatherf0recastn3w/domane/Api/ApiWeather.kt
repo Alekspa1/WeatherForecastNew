@@ -1,4 +1,4 @@
-package com.drag0n.weatherf0recastn3w
+package com.drag0n.weatherf0recastn3w.domane.Api
 
 import com.drag0n.weatherf0recastn3w.Data.WeatherDayNow.WeatherDayNow
 import com.drag0n.weatherf0recastn3w.Data.WeatherGetGeo.GetGeoNew
@@ -65,7 +65,7 @@ interface ApiWeather {
             return retrofit.create(ApiWeather::class.java)
 
         }
-        fun newGeo(): ApiWeather{
+        fun newGeo(): ApiWeather {
             interceptor.level = HttpLoggingInterceptor.Level.BODY
             val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
             val retrofit = Retrofit.Builder()

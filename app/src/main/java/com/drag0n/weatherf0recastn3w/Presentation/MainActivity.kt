@@ -21,13 +21,13 @@ import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
 import com.drag0n.weatherf0recastn3w.Const
-import com.drag0n.weatherf0recastn3w.Room.ItemCity
+import com.drag0n.weatherf0recastn3w.domane.Room.ItemCity
 import com.drag0n.weatherf0recastn3w.DialogManager
 import com.drag0n.weatherf0recastn3w.MainViewModel
 import com.drag0n.weatherf0recastn3w.adapter.VpAdapter
 import com.drag0n.weatherf0recastn3w.databinding.ActivityMainBinding
 import com.drag0n.weatherf0recastn3w.R
-import com.drag0n.weatherf0recastn3w.Room.CityListDataBase
+import com.drag0n.weatherf0recastn3w.domane.Room.CityListDataBase
 import com.drag0n.weatherf0recastn3w.adapter.ItemCityAdapter
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -101,12 +101,9 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
             })
         }
         loadInterstitialAd()
-        val calendar = Calendar.getInstance()
 // яндекс реклама
         model.liveDataDayNow.observe(this) {
-
-            if (calendar.timeInMillis > it.sys.sunset* 1000L && calendar.timeInMillis < it.sys.sunrise* 1000L+ AlarmManager.INTERVAL_DAY) insertBackground(R.drawable.img_8)
-           else{ when (it.weather[0].id) {
+            when (it.weather[0].id) {
                 200, 201, 202, 210, 211, 212, 221, 230, 231, 232 -> insertBackground(R.drawable.img_1)
                  // гроза
                 300, 301, 302, 310, 311, 312, 313, 314, 321 -> insertBackground(R.drawable.img_2) // морось
@@ -117,7 +114,6 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
                 701,711,721,741 -> insertBackground(R.drawable.img_7) // туман
                 800 -> insertBackground(R.drawable.img_5) // Чистое небо
                 else -> insertBackground(R.drawable.img_6)
-            }
            } // Меняет фон
         }
         db.CourseDao().getAll().asLiveData().observe(this){
@@ -125,17 +121,25 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
         }
 
         with(binding) {
-            imMenu.setOnClickListener{binding.drawer.openDrawer(GravityCompat.START)}
+            imMenu.setOnClickListener{
+                binding.drawer.openDrawer(GravityCompat.START)
+                model.turnVibro(this@MainActivity, 100)
+            }
             bMyCity.setOnClickListener {
                 chekLocation()
-                binding.drawer.closeDrawer(GravityCompat.START)}
-            bCallback.setOnClickListener {  try {
+                binding.drawer.closeDrawer(GravityCompat.START)
+                model.turnVibro(this@MainActivity, 100)
+            }
+            bCallback.setOnClickListener {
+                model.turnVibro(this@MainActivity, 100)
+                try {
                 binding.drawer.closeDrawer(GravityCompat.START)
                 startActivity(Intent(Intent.ACTION_VIEW, Uri.parse( "mailto:apereverzev47@gmail.com" )))
             }  catch (e: Exception) {
                 Toast.makeText(this@MainActivity, "Ошибка", Toast.LENGTH_SHORT).show()
             } }
             bUpdate.setOnClickListener {
+                model.turnVibro(this@MainActivity, 100)
                 try {
                     binding.drawer.closeDrawer(GravityCompat.START)
                     startActivity(Intent(Intent.ACTION_VIEW, Uri.parse( "https://apps.rustore.ru/app/com.drag0n.weatherf0recastn3w" )))
@@ -144,6 +148,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
                 }
             }
             imBAddMenu.setOnClickListener {
+                model.turnVibro(this@MainActivity, 100)
                 DialogManager.nameSitySearchDialog(this@MainActivity, object : DialogManager.Listener {
                     override fun onClick(city: String?) {
                         if(city != ""){
@@ -286,6 +291,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
 
 
     override fun onClick(itemCity: ItemCity, action: String) {
+        model.turnVibro(this@MainActivity, 100)
         when(action){
             Const.SEARCH_CITY-> {
                 model.getApiNameCitiNow(itemCity.name, this)
