@@ -1,4 +1,4 @@
-package com.drag0n.weatherf0recastn3w.domane
+package com.drag0n.weatherf0recastn3w.domane.Api
 
 import android.content.Context
 
