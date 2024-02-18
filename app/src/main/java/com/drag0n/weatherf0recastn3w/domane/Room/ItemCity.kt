@@ -1,4 +1,4 @@
-package com.drag0n.weatherf0recastn3w.Room
+package com.drag0n.weatherf0recastn3w.domane.Room
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

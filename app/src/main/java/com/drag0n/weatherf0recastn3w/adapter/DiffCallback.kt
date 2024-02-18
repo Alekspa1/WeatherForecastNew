@@ -1,7 +1,7 @@
 package com.drag0n.weatherf0recastn3w.adapter
 
 import androidx.recyclerview.widget.DiffUtil
-import com.drag0n.weatherf0recastn3w.Room.ItemCity
+import com.drag0n.weatherf0recastn3w.domane.Room.ItemCity
 
 class DiffCallback: DiffUtil.ItemCallback<ItemCity>() {
     override fun areItemsTheSame(oldItem: ItemCity, newItem: ItemCity): Boolean {

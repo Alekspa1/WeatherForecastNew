@@ -19,13 +19,13 @@ import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
 import com.drag0n.weatherf0recastn3w.Const
-import com.drag0n.weatherf0recastn3w.Room.ItemCity
+import com.drag0n.weatherf0recastn3w.domane.Room.ItemCity
 import com.drag0n.weatherf0recastn3w.DialogManager
 import com.drag0n.weatherf0recastn3w.MainViewModel
 import com.drag0n.weatherf0recastn3w.adapter.VpAdapter
 import com.drag0n.weatherf0recastn3w.databinding.ActivityMainBinding
 import com.drag0n.weatherf0recastn3w.R
-import com.drag0n.weatherf0recastn3w.Room.CityListDataBase
+import com.drag0n.weatherf0recastn3w.domane.Room.CityListDataBase
 import com.drag0n.weatherf0recastn3w.adapter.ItemCityAdapter
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices

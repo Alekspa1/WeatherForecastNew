@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.drag0n.weatherf0recastn3w.Const
-import com.drag0n.weatherf0recastn3w.Room.ItemCity
+import com.drag0n.weatherf0recastn3w.domane.Room.ItemCity
 import com.drag0n.weatherf0recastn3w.R
 import com.drag0n.weatherf0recastn3w.databinding.ItemCityBinding
 

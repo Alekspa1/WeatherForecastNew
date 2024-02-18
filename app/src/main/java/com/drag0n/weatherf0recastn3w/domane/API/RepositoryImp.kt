@@ -1,9 +1,8 @@
-package com.drag0n.weatherf0recastn3w.domane
+package com.drag0n.weatherf0recastn3w.domane.API
 
 import android.content.Context
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
-import com.drag0n.weatherf0recastn3w.ApiWeather
 import com.drag0n.weatherf0recastn3w.Const
 
 import com.drag0n.weatherf0recastn3w.Data.WeatherDayNow.WeatherDayNow
