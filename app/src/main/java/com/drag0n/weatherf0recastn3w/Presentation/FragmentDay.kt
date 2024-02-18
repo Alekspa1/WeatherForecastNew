@@ -94,9 +94,11 @@ class FragmentDay : Fragment() {
         binding.ibSync.setOnClickListener {
             binding.ibSync.playAnimation()
             binding.root.startAnimation(outAnimation)
+
            if (binding.tvCity.text == "Загрузка данных") (activity as MainActivity).chekLocation()
            else if (interstitialAd == null) (activity as MainActivity).chekLocation()
            else showAd()
+
 
         }
         binding.ibSearch.setOnClickListener {

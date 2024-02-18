@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.Looper
 import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
@@ -34,9 +35,12 @@ import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
 import com.google.android.material.tabs.TabLayoutMediator
 import com.huawei.hms.api.HuaweiApiAvailability
+import com.huawei.hms.location.HWLocation
+import com.huawei.hms.location.LocationAvailability
 import com.huawei.hms.location.LocationCallback
 import com.huawei.hms.location.LocationRequest
 import com.huawei.hms.location.LocationResult
+import com.huawei.hms.stats.v
 import com.yandex.mobile.ads.banner.BannerAdSize
 import com.yandex.mobile.ads.common.AdRequest
 
@@ -172,26 +176,51 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
         return lm.isProviderEnabled(LocationManager.GPS_PROVIDER)
     } // Функция узнает включено ли GPS
 
-    fun isHuaweiMobileServicesAvailable(context: Context): Boolean {
+    private fun isHuaweiMobileServicesAvailable(context: Context): Boolean {
         val huaweiApiAvailability = HuaweiApiAvailability.getInstance()
         val resultCode = huaweiApiAvailability.isHuaweiMobileServicesAvailable(context)
         return resultCode == com.huawei.hms.api.ConnectionResult.SUCCESS
     }
 
-    private fun getLocationHuawey() {
-        val locationRequest = LocationRequest.create()
-            .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-            .setInterval(5000)
-            .setSmallestDisplacement(5.5F)
+     private fun getLocationHuawey() {
+        fLocotionClientHMS.lastLocation.addOnSuccessListener {
+            try {
+                Log.d("MyLog", "getLocationHuawey()")
+                model.getGeoNew(it.latitude.toString(), it.longitude.toString(), this)
+            } catch (e: Exception){
+                newMetod()
+            }
+            catch (e: Exception) {
+                Log.d("MyLog", e.toString())
+                Toast.makeText(
+                    this,
+                    "Ошибка при получении данных по геолокации, пожалуйста нажмите кнопку обновить или введите город вручную",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+
+    } // Функция для получения геолокации Хуавея
+    fun newMetod(){
+       val locationRequest = LocationRequest.create()
+            .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY)
             .setNumUpdates(1)
 
-        val callback = object : LocationCallback() {
+       val callback = object : LocationCallback() {
+            override fun onLocationAvailability(p0: LocationAvailability?) {
+                super.onLocationAvailability(p0)
+                Log.d("MyLog", "onLocationAvailability $p0")
+            }
+
             override fun onLocationResult(it: LocationResult) {
+                Log.d("MyLog", "onLocationResult")
                 try {
+                    Log.d("MyLog", "onLocationResult:last location: ${it.lastLocation.longitude}")
+                    Log.d("MyLog", "onLocationResult:lastHWlocation: ${it.lastHWLocation.longitude}")
                     it.locations.forEach{location ->
+                        Log.d("MyLog", "location: ${location.longitude}")
                         model.getGeoNew(location.latitude.toString(), location.longitude.toString(), this@MainActivity)
                     }
-
                 } catch (e: Exception) {
                     Toast.makeText(
                         this@MainActivity,
@@ -204,26 +233,11 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
         }
 
         fLocotionClientHMS.requestLocationUpdates(locationRequest, callback, null)
+    }
 
 
 
 
-
-//        fLocotionClientHMS.lastLocation.addOnSuccessListener {
-//            try {
-//                //model.getGeoNew(it.latitude.toString(), it.longitude.toString(), this)
-//            } catch (e: Exception) {
-//                Log.d("MyLog", e.toString())
-//                Log.d("MyLog", "авиабле.результ ${fLocotionClientHMS.locationAvailability.result.toString()}")
-//                Toast.makeText(
-//                    this,
-//                    "Ошибка при получении данных по геолокации, пожалуйста нажмите кнопку обновить или введите город вручную",
-//                    Toast.LENGTH_LONG
-//                ).show()
-//            }
-//        }
-
-    } // Функция для получения геолокации Хуавея
 
     private fun getLocationGoogle() {
         val ct = CancellationTokenSource()
