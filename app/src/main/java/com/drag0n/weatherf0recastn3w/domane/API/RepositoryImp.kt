@@ -4,7 +4,6 @@ import android.content.Context
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import com.drag0n.weatherf0recastn3w.Const
-
 import com.drag0n.weatherf0recastn3w.Data.WeatherDayNow.WeatherDayNow
 import com.drag0n.weatherf0recastn3w.Data.WeatherGetGeo.GetGeoNew
 import com.drag0n.weatherf0recastn3w.Data.WeatherWeek.WeatherWeek
@@ -75,8 +74,8 @@ object RepositoryImp: Repository {
             override fun onResponse(call: Call<GetGeoNew>, response: Response<GetGeoNew>) {
                 val data = response.body()
                 if (data != null) {
-                    getApiNameCity(data[0].name, con)
-                    getApiNameCityWeek(data[0].name, con)
+                    getApiDayNowLocation(data[0].lat.toString(), data[0].lon.toString(), con)
+                    getApiWeekLocation(data[0].lat.toString(), data[0].lon.toString(), con)
                 } else Toast.makeText(
                     con,
                     "Ошибка получения данных",
@@ -88,6 +87,53 @@ object RepositoryImp: Repository {
 
             override fun onFailure(call: Call<GetGeoNew>, t: Throwable) {
 
+            }
+        })
+    }
+     fun getApiDayNowLocation(lat: String, lon: String, con: Context) {
+        val apiInterface = ApiWeather.create().getWeatherDayNowLocation(lat, lon, Const.APIKEY)
+        apiInterface.enqueue(object : Callback<WeatherDayNow> {
+
+            override fun onResponse(call: Call<WeatherDayNow>, response: Response<WeatherDayNow>) {
+                val data = response.body()
+                if (data != null) {
+                    liveDataCurrent.value = data!!
+                } else Toast.makeText(
+                    con,
+                    "Ошибка получения данных",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+
+            }
+
+            override fun onFailure(call: Call<WeatherDayNow>, t: Throwable) {
+
+            }
+        })
+    }
+
+     fun getApiWeekLocation(lat: String, lon: String, con: Context) {
+        val apiInterface = ApiWeather.create().getWeatherWeekLocation(lat, lon, Const.APIKEY)
+        apiInterface.enqueue(object : Callback<WeatherWeek> {
+
+            override fun onResponse(call: Call<WeatherWeek>, response: Response<WeatherWeek>) {
+                val data = response.body()
+                if (data != null) liveDataCurrentWeek.value = data!!
+                else Toast.makeText(
+                    con,
+                    "Ошибка получения данных",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+            }
+
+            override fun onFailure(call: Call<WeatherWeek>, t: Throwable) {
+                Toast.makeText(
+                    con,
+                    "Данные недоступны, попробуйте позже",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         })
     }
