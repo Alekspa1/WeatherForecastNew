@@ -64,8 +64,6 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         pLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {}
         fLocotionClient = LocationServices.getFusedLocationProviderClient(this)
