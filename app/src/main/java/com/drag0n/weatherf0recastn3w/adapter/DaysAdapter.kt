@@ -36,7 +36,7 @@ class DaysAdapter(private val weatherWeek: List<Spisok>) : RecyclerView.Adapter<
             inAnimationRotate = AnimationUtils.loadAnimation(context, R.anim.rotate_in)
             outAnimation.setAnimationListener(this@Holder)
             val url = day.weather[0].icon
-            val temp = "${(day.main.temp * 10.0).roundToInt() / 10.0}°C"
+            val temp = "${day.main.temp.roundToInt()}°C"
             tvCond.text = day.weather[0].description
 
             val dateTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(day.dt_txt)
@@ -57,13 +57,13 @@ class DaysAdapter(private val weatherWeek: List<Spisok>) : RecyclerView.Adapter<
                 .into(imDec)
 
             tvMinTemp.text =
-                "Мин. прогнозируемая температура: ${(day.main.temp_min * 10.0).roundToInt() / 10.0}°C"
+                "Мин. прогнозируемая температура: ${day.main.temp_min.roundToInt()}°C"
             tvMaxTemp.text =
-                "Макс. прогнозируемая температура: ${(day.main.temp_max * 10.0).roundToInt() / 10.0}°C"
+                "Макс. прогнозируемая температура: ${day.main.temp_max.roundToInt()}°C"
             tvPressure.text = "Давление: ${(day.main.pressure/1.33).roundToInt()} мм рт.ст."
             tvHumidity.text = "Влажность: ${day.main.humidity} %"
-            tvSpeedWind.text = "Скорость ветра: ${day.wind.speed} метр/сек"
-            tvSunset.text = "Вероятность осадков: ${(day.pop * 1000.0).roundToInt() / 10.0}%"
+            tvSpeedWind.text = "Скорость ветра: ${day.wind.speed.roundToInt()} метр/сек"
+            tvSunset.text = "Вероятность осадков: ${(day.pop * 100).roundToInt()}%"
             cardView3.setOnClickListener {
 
                 cardView3.startAnimation(inAnimationRotate)
