@@ -26,6 +26,7 @@ import com.yandex.mobile.ads.interstitial.InterstitialAdLoader
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 import kotlin.math.roundToInt
 
 
@@ -46,7 +47,7 @@ class FragmentDay : Fragment() {
         return binding.root
     }
 
-    @SuppressLint("SetTextI18n", "SimpleDateFormat")
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         model = MainViewModel()
@@ -69,27 +70,35 @@ class FragmentDay : Fragment() {
         loadInterstitialAd()
 
         model.liveDataDayNow.observe(viewLifecycleOwner) {
-            val timeSunrise = SimpleDateFormat(" HH : mm ").format(it.sys.sunrise * 1000L )
-            val timeSunset = SimpleDateFormat(" HH : mm ").format(it.sys.sunset * 1000L)
+            val timeSunrise = SimpleDateFormat(" HH : mm ", Locale.US).format(it.sys.sunrise * 1000L )
+            val timeSunset = SimpleDateFormat(" HH : mm ", Locale.US).format(it.sys.sunset * 1000L)
             val tempMinMax = "Ощущается как: ${it.main.feels_like.roundToInt()}°C."
             val tempCurent = "${it.main.temp.roundToInt()}°C"
             val url = it.weather[0].icon
+            val condition = "За окном: ${it.weather[0].description}."
+            val pasc = "Давление: ${(it.main.pressure.toInt()/1.33).roundToInt()} мм рт.ст."
+            val vlaz = "Влажность: ${it.main.humidity.roundToInt()} %."
+            val sunset = "Время восхода: $timeSunrise"
+            val sunrise = "Время заката: $timeSunset"
+            val windSpeed = "Скорость ветра: ${it.wind.speed.roundToInt()} метр/сек."
+
             binding.tvCity.text = it.name
             binding.tvData.text = date
             binding.TvMinMax.text = tempMinMax
             binding.tvCurrentTemp.text = tempCurent
-            binding.tvCondition.text = "За окном: ${it.weather[0].description}."
-            binding.tvPasc.text = "Давление: ${(it.main.pressure.toInt()/1.33).roundToInt()} мм рт.ст."
-            binding.tvVlaz.text = "Влажность: ${it.main.humidity.roundToInt()} %."
-            binding.tvSunset.text = "Время восхода: $timeSunrise"
-            binding.tvSunrise.text = "Время заката: $timeSunset"
+            binding.tvCondition.text = condition
+            binding.tvPasc.text = pasc
+            binding.tvVlaz.text = vlaz
+            binding.tvSunset.text = sunset
+            binding.tvSunrise.text = sunrise
+            binding.tvWind.text = windSpeed
 
 
             Glide
                 .with(this)
                 .load("https://openweathermap.org/img/wn/$url@2x.png")
                 .into(binding.imWeather)
-            binding.tvWind.text = "Скорость ветра: ${it.wind.speed.roundToInt()} метр/сек."
+
         } // Заполнение погоды на сегодняшний день
         binding.ibSync.setOnClickListener {
             binding.ibSync.playAnimation()

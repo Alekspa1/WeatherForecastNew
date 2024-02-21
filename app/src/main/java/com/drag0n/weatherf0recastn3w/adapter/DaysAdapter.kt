@@ -15,6 +15,7 @@ import com.drag0n.weatherf0recastn3w.databinding.ItemDaysAdapterBinding
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 import kotlin.math.roundToInt
 
 class DaysAdapter(private val weatherWeek: List<Spisok>) : RecyclerView.Adapter<DaysAdapter.Holder>() {
@@ -28,26 +29,29 @@ class DaysAdapter(private val weatherWeek: List<Spisok>) : RecyclerView.Adapter<
         private lateinit var inAnimationRotate: Animation
 
 
-        @SuppressLint("SimpleDateFormat", "SetTextI18n")
         fun bind(day: Spisok) = with(binding) {
-
             inAnimation = AnimationUtils.loadAnimation(context, R.anim.scale_in)
             outAnimation = AnimationUtils.loadAnimation(context, R.anim.scale_out)
             inAnimationRotate = AnimationUtils.loadAnimation(context, R.anim.rotate_in)
             outAnimation.setAnimationListener(this@Holder)
+
             val url = day.weather[0].icon
             val temp = "${day.main.temp.roundToInt()}°C"
-            tvCond.text = day.weather[0].description
-
-            val dateTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(day.dt_txt)
-            val time = SimpleDateFormat("HH:mm").format(dateTime!!)
-
+            val minTemp = "Мин. прогнозируемая температура: ${day.main.temp_min.roundToInt()}°C"
+            val maxTemp = "Макс. прогнозируемая температура: ${day.main.temp_max.roundToInt()}°C"
+            val pressure = "Давление: ${(day.main.pressure/1.33).roundToInt()} мм рт.ст."
+            val vlaz = "Влажность: ${day.main.humidity} %"
+            val precipitation = "Вероятность осадков: ${(day.pop * 100).roundToInt()}%"
+            val windSpeed = "Скорость ветра: ${day.wind.speed.roundToInt()} метр/сек"
+            val dateTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US).parse(day.dt_txt)
+            val time = SimpleDateFormat("HH:mm", Locale.US).format(dateTime!!)
             val dateString = day.dt_txt
             val readingFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
             val date = LocalDate.parse(dateString, readingFormatter)
             val writingFormatter = DateTimeFormatter.ofPattern("dd MMM")
             val formattedDate = date.format(writingFormatter)
 
+            tvCond.text = day.weather[0].description
             tvDateDay.text = formattedDate
             tvTime.text = time
             tvMinMax.text = temp
@@ -56,14 +60,12 @@ class DaysAdapter(private val weatherWeek: List<Spisok>) : RecyclerView.Adapter<
                 .load("https://openweathermap.org/img/wn/$url@2x.png")
                 .into(imDec)
 
-            tvMinTemp.text =
-                "Мин. прогнозируемая температура: ${day.main.temp_min.roundToInt()}°C"
-            tvMaxTemp.text =
-                "Макс. прогнозируемая температура: ${day.main.temp_max.roundToInt()}°C"
-            tvPressure.text = "Давление: ${(day.main.pressure/1.33).roundToInt()} мм рт.ст."
-            tvHumidity.text = "Влажность: ${day.main.humidity} %"
-            tvSpeedWind.text = "Скорость ветра: ${day.wind.speed.roundToInt()} метр/сек"
-            tvSunset.text = "Вероятность осадков: ${(day.pop * 100).roundToInt()}%"
+            tvMinTemp.text = minTemp
+            tvMaxTemp.text = maxTemp
+            tvPressure.text = pressure
+            tvHumidity.text = vlaz
+            tvSpeedWind.text = windSpeed
+            tvSunset.text = precipitation
             cardView3.setOnClickListener {
 
                 cardView3.startAnimation(inAnimationRotate)
