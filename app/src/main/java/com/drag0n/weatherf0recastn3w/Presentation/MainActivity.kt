@@ -1,13 +1,16 @@
 package com.drag0n.weatherf0recastn3w.Presentation
 
 import android.Manifest
+import android.app.AlarmManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.icu.util.Calendar
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -74,20 +77,30 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
         initDb()
         initVp()
         initRcView()
+        val calendar = Calendar.getInstance().timeInMillis
+
 // яндекс реклама
         model.liveDataDayNow.observe(this) {
-            when (it.weather[0].id) {
-                200, 201, 202, 210, 211, 212, 221, 230, 231, 232 -> insertBackground(R.drawable.img_1)
-                 // гроза
-                300, 301, 302, 310, 311, 312, 313, 314, 321 -> insertBackground(R.drawable.img_2) // морось
-                500, 501, 502, 503, 504, 511, 520, 521, 522, 531 -> insertBackground(R.drawable.img_3)
-                 // дождь
-                600, 601, 602, 611, 612, 613, 615, 616, 620, 621, 622 -> insertBackground(R.drawable.img_4)
-                 // снег
-                701,711,721,741 -> insertBackground(R.drawable.img_7) // туман
-                800 -> insertBackground(R.drawable.img_5) // Чистое небо
-                else -> insertBackground(R.drawable.img_6)
-            } // Меняет фон
+            val rassvet = (it.sys.sunrise*1000L) + AlarmManager.INTERVAL_DAY
+            val zakat = (it.sys.sunset*1000L) + AlarmManager.INTERVAL_HOUR
+            Log.d("MyLog", "Закат: $zakat")
+            Log.d("MyLog", "Сейчас: $calendar")
+            Log.d("MyLog", "Рассвет: $rassvet")
+            if(calendar in (zakat + 1) until rassvet) insertBackground(R.drawable.img_8)
+            else {
+                when (it.weather[0].id) {
+                    200, 201, 202, 210, 211, 212, 221, 230, 231, 232 -> insertBackground(R.drawable.img_1)
+                    // гроза
+                    300, 301, 302, 310, 311, 312, 313, 314, 321 -> insertBackground(R.drawable.img_2) // морось
+                    500, 501, 502, 503, 504, 511, 520, 521, 522, 531 -> insertBackground(R.drawable.img_3)
+                    // дождь
+                    600, 601, 602, 611, 612, 613, 615, 616, 620, 621, 622 -> insertBackground(R.drawable.img_4)
+                    // снег
+                    701, 711, 721, 741 -> insertBackground(R.drawable.img_7) // туман
+                    800 -> insertBackground(R.drawable.img_5) // Чистое небо
+                    else -> insertBackground(R.drawable.img_6)
+                } // Меняет фон
+            }
         }
         db.CourseDao().getAll().asLiveData().observe(this){
             adapter.submitList(it)
