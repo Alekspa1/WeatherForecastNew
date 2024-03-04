@@ -100,9 +100,6 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
                 } // Меняет фон
             }
         }
-        db.CourseDao().getAll().asLiveData().observe(this){
-            adapter.submitList(it)
-        }
 
         with(binding) {
             imMenu.setOnClickListener{binding.drawer.openDrawer(GravityCompat.START)}
@@ -156,7 +153,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
         }.attach()
     } // инициализирую ViewPager
 
-     fun chekPermissionLocation() {
+     private fun chekPermissionLocation() {
         if (Const.isPermissionGranted(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
             chekLocation()
         } else {
@@ -199,7 +196,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
         }
 
     } // Функция для получения последней геолокации Хуавея
-    fun getLocationHuawey(){
+    private fun getLocationHuawey(){
        val locationRequest = LocationRequest.create()
             .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY)
             .setNumUpdates(1)
@@ -273,6 +270,10 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
         adapter = ItemCityAdapter(this)
         rcView.layoutManager = LinearLayoutManager(this)
         rcView.adapter = adapter
+        db.CourseDao().getAll().asLiveData().observe(this){
+            adapter.submitList(it)
+        }
+
 
     } // инициализировал ресайклер
     private fun initDb(){
