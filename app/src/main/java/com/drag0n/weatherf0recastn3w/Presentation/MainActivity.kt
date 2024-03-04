@@ -81,12 +81,10 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
 
 // яндекс реклама
         model.liveDataDayNow.observe(this) {
-            val rassvet = (it.sys.sunrise*1000L) + AlarmManager.INTERVAL_DAY
-            val zakat = (it.sys.sunset*1000L) + AlarmManager.INTERVAL_HOUR
-            Log.d("MyLog", "Закат: $zakat")
-            Log.d("MyLog", "Сейчас: $calendar")
-            Log.d("MyLog", "Рассвет: $rassvet")
-            if(calendar in (zakat + 1) until rassvet) insertBackground(R.drawable.img_8)
+            val rassvet = it.sys.sunrise*1000L
+            val zakat = (it.sys.sunset*1000L) + AlarmManager.INTERVAL_HALF_HOUR
+
+            if(calendar > zakat || calendar < rassvet) insertBackground(R.drawable.img_8)
             else {
                 when (it.weather[0].id) {
                     200, 201, 202, 210, 211, 212, 221, 230, 231, 232 -> insertBackground(R.drawable.img_1)
@@ -128,9 +126,12 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
             imBAddMenu.setOnClickListener {
                 DialogManager.nameSitySearchDialog(this@MainActivity, object : DialogManager.Listener {
                     override fun onClick(city: String?) {
-                        Thread {
-                            db.CourseDao().insertAll(ItemCity(null, city!!))
-                        }.start()
+                        if(city!!.isNotEmpty()){
+                            Thread {
+                                db.CourseDao().insertAll(ItemCity(null, city))
+                            }.start()
+                        } else  Toast.makeText(this@MainActivity, "Поле не должно быть пустым", Toast.LENGTH_SHORT).show()
+
                     }
 
                 })
