@@ -9,6 +9,7 @@ class VpAdapter(fragment: FragmentActivity, private val list: List<Fragment>) : 
         return list.size
     }
     override fun createFragment(position: Int): Fragment {
+
         return list[position]
     }
 }

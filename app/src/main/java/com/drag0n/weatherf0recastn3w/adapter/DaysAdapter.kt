@@ -1,6 +1,6 @@
 package com.drag0n.weatherf0recastn3w.adapter
 
-import android.annotation.SuppressLint
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,7 +22,7 @@ class DaysAdapter(private val weatherWeek: List<Spisok>) : RecyclerView.Adapter<
 
     class Holder(item: View) : RecyclerView.ViewHolder(item), AnimationListener {
         private val binding = ItemDaysAdapterBinding.bind(item)
-        val context = item.context
+        val context = item.context!!
         private var flag: Boolean = false
         private lateinit var inAnimation: Animation
         private lateinit var outAnimation: Animation

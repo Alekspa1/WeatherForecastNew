@@ -11,6 +11,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import android.widget.TableLayout
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -34,6 +35,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
+import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.huawei.hms.api.HuaweiApiAvailability
 import com.huawei.hms.location.LocationAvailability
@@ -42,6 +44,9 @@ import com.huawei.hms.location.LocationRequest
 import com.huawei.hms.location.LocationResult
 import com.yandex.mobile.ads.banner.BannerAdSize
 import com.yandex.mobile.ads.common.AdRequest
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Заканчивает MainActivity
 
@@ -79,12 +84,13 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
         initRcView()
         val calendar = Calendar.getInstance().timeInMillis
 
+
 // яндекс реклама
         model.liveDataDayNow.observe(this) {
-            val rassvet = it.sys.sunrise*1000L
-            val zakat = (it.sys.sunset*1000L) + AlarmManager.INTERVAL_HALF_HOUR
+            val rassvet = it.sys.sunrise * 1000L
+            val zakat = (it.sys.sunset * 1000L) + AlarmManager.INTERVAL_HALF_HOUR
 
-            if(calendar > zakat || calendar < rassvet) insertBackground(R.drawable.img_8)
+            if (calendar > zakat || calendar < rassvet) insertBackground(R.drawable.img_8)
             else {
                 when (it.weather[0].id) {
                     200, 201, 202, 210, 211, 212, 221, 230, 231, 232 -> insertBackground(R.drawable.img_1)
@@ -102,36 +108,55 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
         }
 
         with(binding) {
-            imMenu.setOnClickListener{binding.drawer.openDrawer(GravityCompat.START)}
+            imMenu.setOnClickListener { binding.drawer.openDrawer(GravityCompat.START) }
             bMyCity.setOnClickListener {
                 chekLocation()
-                binding.drawer.closeDrawer(GravityCompat.START)}
-            bCallback.setOnClickListener {  try {
                 binding.drawer.closeDrawer(GravityCompat.START)
-                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse( "mailto:apereverzev47@gmail.com" )))
-            }  catch (e: Exception) {
-                Toast.makeText(this@MainActivity, "Ошибка", Toast.LENGTH_SHORT).show()
-            } }
+            }
+            bCallback.setOnClickListener {
+                try {
+                    binding.drawer.closeDrawer(GravityCompat.START)
+                    startActivity(
+                        Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse("mailto:apereverzev47@gmail.com")
+                        )
+                    )
+                } catch (e: Exception) {
+                    Toast.makeText(this@MainActivity, "Ошибка", Toast.LENGTH_SHORT).show()
+                }
+            }
             bUpdate.setOnClickListener {
                 try {
                     binding.drawer.closeDrawer(GravityCompat.START)
-                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse( "https://apps.rustore.ru/app/com.drag0n.weatherf0recastn3w" )))
-                }  catch (e: Exception) {
+                    startActivity(
+                        Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse("https://apps.rustore.ru/app/com.drag0n.weatherf0recastn3w")
+                        )
+                    )
+                } catch (e: Exception) {
                     Toast.makeText(this@MainActivity, "Ошибка", Toast.LENGTH_SHORT).show()
                 }
             }
             imBAddMenu.setOnClickListener {
-                DialogManager.nameSitySearchDialog(this@MainActivity, object : DialogManager.Listener {
-                    override fun onClick(city: String?) {
-                        if(city!!.isNotEmpty()){
-                            Thread {
-                                db.CourseDao().insertAll(ItemCity(null, city))
-                            }.start()
-                        } else  Toast.makeText(this@MainActivity, "Поле не должно быть пустым", Toast.LENGTH_SHORT).show()
+                DialogManager.nameSitySearchDialog(
+                    this@MainActivity,
+                    object : DialogManager.Listener {
+                        override fun onClick(city: String?) {
+                            if (city!!.isNotEmpty()) {
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    db.CourseDao().insertAll(ItemCity(null, city))
+                                }
+                            } else Toast.makeText(
+                                this@MainActivity,
+                                "Поле не должно быть пустым",
+                                Toast.LENGTH_SHORT
+                            ).show()
 
-                    }
+                        }
 
-                })
+                    })
             }
         }
 
@@ -151,9 +176,22 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
         TabLayoutMediator(binding.tabLayout, binding.placeHolder) { tab, pos ->
             tab.text = listName[pos]
         }.attach()
+        binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                binding.placeHolder.isUserInputEnabled = tab.position != 2
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+            }
+        })
+
+
     } // инициализирую ViewPager
 
-     private fun chekPermissionLocation() {
+    private fun chekPermissionLocation() {
         if (Const.isPermissionGranted(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
             chekLocation()
         } else {
@@ -161,7 +199,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
         }
     } // проверяет есть ли разрешение геолокации
 
-     fun chekLocation() {
+    fun chekLocation() {
         if (isLocationEnabled()) {
             if (isHuaweiMobileServicesAvailable(this)) getLastLocationHuawey()
             else getLocationGoogle()
@@ -186,22 +224,23 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
         return resultCode == com.huawei.hms.api.ConnectionResult.SUCCESS
     }
 
-     private fun getLastLocationHuawey() {
+    private fun getLastLocationHuawey() {
         fLocotionClientHMS.lastLocation.addOnSuccessListener {
             try {
                 model.getGeoNew(it.latitude.toString(), it.longitude.toString(), this)
-            } catch (e: NullPointerException){
+            } catch (e: NullPointerException) {
                 getLocationHuawey()
             }
         }
 
     } // Функция для получения последней геолокации Хуавея
-    private fun getLocationHuawey(){
-       val locationRequest = LocationRequest.create()
+
+    private fun getLocationHuawey() {
+        val locationRequest = LocationRequest.create()
             .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY)
             .setNumUpdates(1)
 
-       val callback = object : LocationCallback() {
+        val callback = object : LocationCallback() {
             override fun onLocationAvailability(p0: LocationAvailability?) {
                 super.onLocationAvailability(p0)
                 Toast.makeText(
@@ -210,15 +249,17 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
                     Toast.LENGTH_LONG
                 ).show()
             }
+
             override fun onLocationResult(it: LocationResult) {
-                model.getGeoNew(it.lastLocation.latitude.toString(), it.lastLocation.longitude.toString(), this@MainActivity)
+                model.getGeoNew(
+                    it.lastLocation.latitude.toString(),
+                    it.lastLocation.longitude.toString(),
+                    this@MainActivity
+                )
             }
         }
         fLocotionClientHMS.requestLocationUpdates(locationRequest, callback, null)
     } // Функция для получения геолокации Хуавея
-
-
-
 
 
     private fun getLocationGoogle() {
@@ -237,9 +278,12 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
         fLocotionClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, ct.token)
             .addOnCompleteListener {
                 try {
-                    model.getGeoNew(it.result.latitude.toString(), it.result.longitude.toString(), this)
-                }
-                catch (_: Exception) {
+                    model.getGeoNew(
+                        it.result.latitude.toString(),
+                        it.result.longitude.toString(),
+                        this
+                    )
+                } catch (_: Exception) {
                     Toast.makeText(
                         this,
                         "Ошибка при получении данных по геолокации, пожалуйста нажмите кнопку обновить или введите город вручную",
@@ -258,25 +302,28 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
         val adRequest = AdRequest.Builder().build()
         binding.yaMob.loadAd(adRequest)
     } // яндекс банер
-    private fun insertBackground(backgroud: Int){
+
+    private fun insertBackground(backgroud: Int) {
         with(binding) {
             root.setBackgroundResource(backgroud)
         }
 
 
     }
+
     private fun initRcView() {
         val rcView = binding.rcView
         adapter = ItemCityAdapter(this)
         rcView.layoutManager = LinearLayoutManager(this)
         rcView.adapter = adapter
-        db.CourseDao().getAll().asLiveData().observe(this){
+        db.CourseDao().getAll().asLiveData().observe(this) {
             adapter.submitList(it)
         }
 
 
     } // инициализировал ресайклер
-    private fun initDb(){
+
+    private fun initDb() {
         db = Room.databaseBuilder(
             this,
             CityListDataBase::class.java, "CityList"
@@ -285,19 +332,19 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
 
 
     override fun onClick(itemCity: ItemCity, action: String) {
-        when(action){
-            Const.SEARCH_CITY-> {
+        when (action) {
+            Const.SEARCH_CITY -> {
                 model.getApiNameCitiNow(itemCity.name, this)
                 model.getApiNameCitiWeek(itemCity.name, this)
                 binding.drawer.closeDrawer(GravityCompat.START)
             }
-            Const.DELETE_CITY->{
-                Thread{db.CourseDao().delete(itemCity)}.start()
+
+            Const.DELETE_CITY -> CoroutineScope(Dispatchers.IO).launch {
+                db.CourseDao().delete(itemCity)
             }
         }
+
     }
-
-
 }
 
 
