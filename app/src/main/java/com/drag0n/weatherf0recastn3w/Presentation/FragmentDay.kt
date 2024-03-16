@@ -53,7 +53,6 @@ class FragmentDay : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         model = MainViewModel()
-       // date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd MMM"))
         date = SimpleDateFormat("dd MMM", Locale.getDefault()).format(Date())
         inAnimation = AnimationUtils.loadAnimation(view.context, R.anim.alpha_in)
         outAnimation = AnimationUtils.loadAnimation(view.context, R.anim.alpha_out)
