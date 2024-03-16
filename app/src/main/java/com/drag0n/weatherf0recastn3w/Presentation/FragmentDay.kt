@@ -26,6 +26,8 @@ import com.yandex.mobile.ads.interstitial.InterstitialAdLoader
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 import kotlin.math.roundToInt
 
@@ -51,7 +53,8 @@ class FragmentDay : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         model = MainViewModel()
-        date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd MMM"))
+       // date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd MMM"))
+        date = SimpleDateFormat("dd MMM", Locale.getDefault()).format(Date())
         inAnimation = AnimationUtils.loadAnimation(view.context, R.anim.alpha_in)
         outAnimation = AnimationUtils.loadAnimation(view.context, R.anim.alpha_out)
         interstitialAdLoader = InterstitialAdLoader(view.context).apply {
