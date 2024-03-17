@@ -11,6 +11,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import android.view.View
 import android.widget.TableLayout
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -179,6 +180,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
         binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
             override fun onTabSelected(tab: TabLayout.Tab) {
                 binding.placeHolder.isUserInputEnabled = tab.position != 2
+                if(tab.position == 2) binding.yaMob.visibility = View.GONE
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {

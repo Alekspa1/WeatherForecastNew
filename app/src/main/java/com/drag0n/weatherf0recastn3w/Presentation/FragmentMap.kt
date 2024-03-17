@@ -25,28 +25,24 @@ class FragmentMap : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         model = MainViewModel()
-
-
-    }
-
-    @SuppressLint("SetJavaScriptEnabled")
-    override fun onResume() {
-        super.onResume()
-        fun mapRadar(): String{
+        model.liveDataDayNow.observe(viewLifecycleOwner){
             val lat = model.liveDataDayNow.value?.coord?.lat
             val lon = model.liveDataDayNow.value?.coord?.lon
-            return "https://goweatherradar.com/ru/radar-map?lat=$lat&lng=$lon&overlay=temp&zoom=5"
+            val URL = "https://www.meteoblue.com/ru/weather/maps/widget/?windAnimation=0&windAnimation=1&gust=0&satellite=0&cloudsAndPrecipitation=0&temperature=0&temperature=1&sunshine=0&extremeForecastIndex=0&geoloc=fixed&tempunit=C&windunit=m%252Fs&lengthunit=metric&zoom=5&autowidth=auto#coords=5/$lat/$lon&map=windAnimation~rainbow~auto~10%20m%20above%20gnd~none"
+            binding.map.apply {
+                loadUrl(URL)
+                settings.javaScriptEnabled = true
+                settings.allowContentAccess = true
+                settings.domStorageEnabled = true
+                settings.useWideViewPort = true
+            }
+
         }
-        binding.map.apply {
-            loadUrl(mapRadar())
-            settings.javaScriptEnabled = true
-            settings.allowContentAccess = true
-            settings.domStorageEnabled = true
-            settings.useWideViewPort = true
-        }
+
 
     }
 
