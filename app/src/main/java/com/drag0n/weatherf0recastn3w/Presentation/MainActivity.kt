@@ -11,6 +11,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.view.View
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -57,6 +58,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
     private lateinit var fLocotionClientHMS: com.huawei.hms.location.FusedLocationProviderClient
     private lateinit var adapter: ItemCityAdapter
     private lateinit var db: CityListDataBase
+    private lateinit var progress: ProgressBar
     private val model: MainViewModel by viewModels()
 
     private val listFrag = listOf(
@@ -82,10 +84,12 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
         initVp()
         initRcView()
         val calendar = Calendar.getInstance().timeInMillis
+        progress = binding.progressBar2
 
 
 // яндекс реклама
         model.liveDataDayNow.observe(this) {
+            progress.visibility = View.GONE
             val rassvet = it.sys.sunrise * 1000L
             val zakat = (it.sys.sunset * 1000L) + AlarmManager.INTERVAL_HALF_HOUR
 
@@ -123,6 +127,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
             bMyCity.setOnClickListener {
                 chekLocation()
                 binding.drawer.closeDrawer(GravityCompat.START)
+                progress.visibility = View.VISIBLE
             }
             bCallback.setOnClickListener {
                 try {
@@ -178,6 +183,8 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
         super.onResume()
         chekPermissionLocation()
         yaBaner()
+        progress.visibility = View.VISIBLE
+
 
     }
 
@@ -349,6 +356,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
                 model.getApiNameCitiNow(itemCity.name, this)
                 model.getApiNameCitiWeek(itemCity.name, this)
                 binding.drawer.closeDrawer(GravityCompat.START)
+                progress.visibility = View.VISIBLE
             }
 
             Const.DELETE_CITY -> CoroutineScope(Dispatchers.IO).launch {
