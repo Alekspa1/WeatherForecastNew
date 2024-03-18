@@ -10,9 +10,7 @@ import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.View
-import android.widget.TableLayout
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -91,20 +89,32 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
             val rassvet = it.sys.sunrise * 1000L
             val zakat = (it.sys.sunset * 1000L) + AlarmManager.INTERVAL_HALF_HOUR
 
-            if (calendar > zakat || calendar < rassvet) insertBackground(R.drawable.img_8)
+            if (calendar > zakat || calendar < rassvet)
+                when (it.weather[0].id) {
+                    200, 201, 202, 210, 211, 212, 221, 230, 231, 232 -> insertBackground(R.drawable.img_1_night)
+                    // гроза
+                    300, 301, 302, 310, 311, 312, 313, 314, 321 -> insertBackground(R.drawable.img_2_night) // морось
+                    500, 501, 502, 503, 504, 511, 520, 521, 522, 531 -> insertBackground(R.drawable.img_3_night)
+                    // дождь
+                    600, 601, 602, 611, 612, 613, 615, 616, 620, 621, 622 -> insertBackground(R.drawable.img_4_night)
+                    // снег
+                    701, 711, 721, 741 -> insertBackground(R.drawable.img_5_night) // туман
+                    800 -> insertBackground(R.drawable.img_night) // Чистое небо
+                    else -> insertBackground(R.drawable.img_8)
+                } // Меняет фон вечером
             else {
                 when (it.weather[0].id) {
-                    200, 201, 202, 210, 211, 212, 221, 230, 231, 232 -> insertBackground(R.drawable.img_1)
+                    200, 201, 202, 210, 211, 212, 221, 230, 231, 232 -> insertBackground(R.drawable.img_1_day)
                     // гроза
-                    300, 301, 302, 310, 311, 312, 313, 314, 321 -> insertBackground(R.drawable.img_2) // морось
-                    500, 501, 502, 503, 504, 511, 520, 521, 522, 531 -> insertBackground(R.drawable.img_3)
+                    300, 301, 302, 310, 311, 312, 313, 314, 321 -> insertBackground(R.drawable.img_2_day) // морось
+                    500, 501, 502, 503, 504, 511, 520, 521, 522, 531 -> insertBackground(R.drawable.img_3_day)
                     // дождь
-                    600, 601, 602, 611, 612, 613, 615, 616, 620, 621, 622 -> insertBackground(R.drawable.img_4)
+                    600, 601, 602, 611, 612, 613, 615, 616, 620, 621, 622 -> insertBackground(R.drawable.img_4_day)
                     // снег
-                    701, 711, 721, 741 -> insertBackground(R.drawable.img_7) // туман
-                    800 -> insertBackground(R.drawable.img_5) // Чистое небо
+                    701, 711, 721, 741 -> insertBackground(R.drawable.img_5_day) // туман
+                    800 -> insertBackground(R.drawable.img) // Чистое небо
                     else -> insertBackground(R.drawable.img_6)
-                } // Меняет фон
+                } // Меняет фон днем
             }
         }
 
