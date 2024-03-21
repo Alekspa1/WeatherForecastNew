@@ -83,11 +83,12 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
         initDb()
         initVp()
         initRcView()
+        yaBaner()
         val calendar = Calendar.getInstance().timeInMillis
         progress = binding.progressBar2
 
 
-// яндекс реклама
+
         model.liveDataDayNow.observe(this) {
             progress.visibility = View.GONE
             val rassvet = it.sys.sunrise * 1000L
@@ -182,10 +183,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
     override fun onResume() {
         super.onResume()
         chekPermissionLocation()
-        yaBaner()
         progress.visibility = View.VISIBLE
-
-
     }
 
     private fun initVp() {

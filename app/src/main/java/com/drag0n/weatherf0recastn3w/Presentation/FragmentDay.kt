@@ -109,8 +109,8 @@ class FragmentDay : Fragment() {
             binding.ibSync.playAnimation()
             binding.root.startAnimation(outAnimation)
 
-            if (binding.tvCity.text == "Загрузка данных") (activity as MainActivity).chekLocation()
-            else if (interstitialAd == null) (activity as MainActivity).chekLocation()
+            if (binding.tvCity.text == "Загрузка данных" || interstitialAd == null) (activity as MainActivity).chekLocation()
+            //else if (interstitialAd == null) (activity as MainActivity).chekLocation()
             else showAd()
 
 

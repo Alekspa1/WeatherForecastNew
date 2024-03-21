@@ -66,7 +66,7 @@ dependencies {
     implementation ("com.squareup.retrofit2:retrofit:2.9.0") // Retrofit
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0") // Json
     implementation("androidx.fragment:fragment-ktx:1.6.2")
-    implementation("com.google.android.gms:play-services-location:21.1.0")
+    implementation("com.google.android.gms:play-services-location:21.2.0")
 
 
 
