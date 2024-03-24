@@ -1,7 +1,7 @@
 package com.drag0n.weatherf0recastn3w
 
 
-import android.annotation.SuppressLint
+
 import android.app.AlertDialog
 import android.content.Context
 import android.widget.EditText
@@ -45,7 +45,7 @@ object DialogManager {
         dialog.show()
 
     }
-    @SuppressLint("SetTextI18n", "SimpleDateFormat")
+
     interface Listener{
         fun onClick(city: String?)
     }

@@ -12,8 +12,8 @@ interface CourseDao {
     @Query("SELECT * FROM ItemCity")
     fun getAll(): Flow<List<ItemCity>>
     @Insert
-    fun insertAll(itemCity: ItemCity)
+    suspend fun insertAll(itemCity: ItemCity)
     @Delete
-    fun delete(itemCity: ItemCity)
+    suspend fun delete(itemCity: ItemCity)
 
 }

@@ -9,6 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.ProgressBar
+import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.drag0n.weatherf0recastn3w.Const
 import com.drag0n.weatherf0recastn3w.DialogManager
@@ -26,6 +28,8 @@ import com.yandex.mobile.ads.interstitial.InterstitialAdLoader
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 import kotlin.math.roundToInt
 
@@ -51,7 +55,7 @@ class FragmentDay : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         model = MainViewModel()
-        date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd MMM"))
+        date = SimpleDateFormat("dd MMM", Locale.getDefault()).format(Date())
         inAnimation = AnimationUtils.loadAnimation(view.context, R.anim.alpha_in)
         outAnimation = AnimationUtils.loadAnimation(view.context, R.anim.alpha_out)
         interstitialAdLoader = InterstitialAdLoader(view.context).apply {
@@ -70,13 +74,14 @@ class FragmentDay : Fragment() {
         loadInterstitialAd()
 
         model.liveDataDayNow.observe(viewLifecycleOwner) {
-            val timeSunrise = SimpleDateFormat(" HH : mm ", Locale.US).format(it.sys.sunrise * 1000L )
+            val timeSunrise =
+                SimpleDateFormat(" HH : mm ", Locale.US).format(it.sys.sunrise * 1000L)
             val timeSunset = SimpleDateFormat(" HH : mm ", Locale.US).format(it.sys.sunset * 1000L)
             val tempMinMax = "Ощущается как: ${it.main.feels_like.roundToInt()}°C."
             val tempCurent = "${it.main.temp.roundToInt()}°C"
             val url = it.weather[0].icon
             val condition = "За окном: ${it.weather[0].description}."
-            val pasc = "Давление: ${(it.main.pressure.toInt()/1.33).roundToInt()} мм рт.ст."
+            val pasc = "Давление: ${(it.main.pressure.toInt() / 1.33).roundToInt()} мм рт.ст."
             val vlaz = "Влажность: ${it.main.humidity.roundToInt()} %."
             val sunset = "Время восхода: $timeSunrise"
             val sunrise = "Время заката: $timeSunset"
@@ -104,19 +109,27 @@ class FragmentDay : Fragment() {
             binding.ibSync.playAnimation()
             binding.root.startAnimation(outAnimation)
 
-           if (binding.tvCity.text == "Загрузка данных") (activity as MainActivity).chekLocation()
-           else if (interstitialAd == null) (activity as MainActivity).chekLocation()
-           else showAd()
+            if (binding.tvCity.text == "Загрузка данных" || interstitialAd == null) (activity as MainActivity).chekLocation()
+            //else if (interstitialAd == null) (activity as MainActivity).chekLocation()
+            else showAd()
 
 
         }
         binding.ibSearch.setOnClickListener {
             DialogManager.nameSitySearchDialog(view.context, object : DialogManager.Listener {
                 override fun onClick(city: String?) {
-                    if (city != null) {
+                    if (!city.isNullOrEmpty()) {
                         model.getApiNameCitiNow(city, view.context)
                         model.getApiNameCitiWeek(city, view.context)
                         binding.root.startAnimation(outAnimation)
+                        (activity as MainActivity).findViewById<ProgressBar>(R.id.progressBar2).visibility =
+                            View.VISIBLE
+                    } else {
+                        Toast.makeText(
+                            view.context,
+                            "Поле не должно быть пустым",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             })
@@ -134,6 +147,7 @@ class FragmentDay : Fragment() {
         val adRequestConfiguration = AdRequestConfiguration.Builder(Const.mezstr).build()
         interstitialAdLoader?.loadAd(adRequestConfiguration)
     }
+
     private fun showAd() {
         interstitialAd?.apply {
             setAdEventListener(object : InterstitialAdEventListener {
@@ -166,12 +180,14 @@ class FragmentDay : Fragment() {
             activity?.let { show(it) }
         }
     }
+
     override fun onDestroy() {
         super.onDestroy()
         interstitialAdLoader?.setAdLoadListener(null)
         interstitialAdLoader = null
         destroyInterstitialAd()
     }
+
     private fun destroyInterstitialAd() {
         interstitialAd?.setAdEventListener(null)
         interstitialAd = null

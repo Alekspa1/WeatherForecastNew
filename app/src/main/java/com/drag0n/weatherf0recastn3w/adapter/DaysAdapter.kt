@@ -1,6 +1,6 @@
 package com.drag0n.weatherf0recastn3w.adapter
 
-import android.annotation.SuppressLint
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,7 +22,7 @@ class DaysAdapter(private val weatherWeek: List<Spisok>) : RecyclerView.Adapter<
 
     class Holder(item: View) : RecyclerView.ViewHolder(item), AnimationListener {
         private val binding = ItemDaysAdapterBinding.bind(item)
-        val context = item.context
+        val context = item.context!!
         private var flag: Boolean = false
         private lateinit var inAnimation: Animation
         private lateinit var outAnimation: Animation
@@ -43,29 +43,32 @@ class DaysAdapter(private val weatherWeek: List<Spisok>) : RecyclerView.Adapter<
             val vlaz = "Влажность: ${day.main.humidity} %"
             val precipitation = "Вероятность осадков: ${(day.pop * 100).roundToInt()}%"
             val windSpeed = "Скорость ветра: ${day.wind.speed.roundToInt()} метр/сек"
-            val dateTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US).parse(day.dt_txt)
-            val time = SimpleDateFormat("HH:mm", Locale.US).format(dateTime!!)
             val dateString = day.dt_txt
+            val dateTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).parse(dateString)
+            val time = SimpleDateFormat("HH:mm", Locale.getDefault()).format(dateTime!!)
             val readingFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
             val date = LocalDate.parse(dateString, readingFormatter)
-            val writingFormatter = DateTimeFormatter.ofPattern("dd MMM")
+            val writingFormatter = DateTimeFormatter.ofPattern("EEEE dd MMM")
             val formattedDate = date.format(writingFormatter)
 
             tvCond.text = day.weather[0].description
-            tvDateDay.text = formattedDate
+            tvDateDay.text = formattedDate.replaceFirstChar {
+                if (it.isLowerCase()) it.titlecase(
+                    Locale.getDefault()
+                ) else it.toString()
+            }
             tvTime.text = time
             tvMinMax.text = temp
-            Glide
-                .with(context)
-                .load("https://openweathermap.org/img/wn/$url@2x.png")
-                .into(imDec)
-
             tvMinTemp.text = minTemp
             tvMaxTemp.text = maxTemp
             tvPressure.text = pressure
             tvHumidity.text = vlaz
             tvSpeedWind.text = windSpeed
             tvSunset.text = precipitation
+            Glide
+                .with(context)
+                .load("https://openweathermap.org/img/wn/$url@2x.png")
+                .into(imDec)
             cardView3.setOnClickListener {
 
                 cardView3.startAnimation(inAnimationRotate)
