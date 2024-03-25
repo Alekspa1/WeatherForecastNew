@@ -1,7 +1,7 @@
 package com.drag0n.weatherf0recastn3w.Presentation
 
-import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -26,9 +26,6 @@ import com.yandex.mobile.ads.interstitial.InterstitialAdEventListener
 import com.yandex.mobile.ads.interstitial.InterstitialAdLoadListener
 import com.yandex.mobile.ads.interstitial.InterstitialAdLoader
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import kotlin.math.roundToInt
@@ -75,21 +72,33 @@ class FragmentDay : Fragment() {
 
         model.liveDataDayNow.observe(viewLifecycleOwner) {
             val timeSunrise =
-                SimpleDateFormat(" HH : mm ", Locale.US).format(it.sys.sunrise * 1000L)
-            val timeSunset = SimpleDateFormat(" HH : mm ", Locale.US).format(it.sys.sunset * 1000L)
-            val tempMinMax = "Ощущается как: ${it.main.feels_like.roundToInt()}°C."
+                SimpleDateFormat(" HH : mm ",
+                    Locale.getDefault()).format(it.sys.sunrise * 1000L)
+            val timeSunset
+            = SimpleDateFormat(" HH : mm ",
+                Locale.getDefault()).format(it.sys.sunset * 1000L)
+
+            val feltTemp = getText(R.string.dayFragment_felt).toString() +
+                    " ${it.main.feels_like.roundToInt()}°C."
             val tempCurent = "${it.main.temp.roundToInt()}°C"
             val url = it.weather[0].icon
-            val condition = "За окном: ${it.weather[0].description}."
-            val pasc = "Давление: ${(it.main.pressure.toInt() / 1.33).roundToInt()} мм рт.ст."
-            val vlaz = "Влажность: ${it.main.humidity.roundToInt()} %."
-            val sunset = "Время восхода: $timeSunrise"
-            val sunrise = "Время заката: $timeSunset"
-            val windSpeed = "Скорость ветра: ${it.wind.speed.roundToInt()} метр/сек."
+            val condition = getText(R.string.dayFragment_condition).toString() +
+                    " ${it.weather[0].description}."
+            val pasc = getText(R.string.dayFragment_pressure).toString()+
+                    " ${(it.main.pressure.toInt() / 1.33).roundToInt()} мм рт.ст."
+            val vlaz = getText(R.string.dayFragment_humidity).toString()+
+                    " ${it.main.humidity.roundToInt()} %."
+            val sunset = getText(R.string.dayFragment_sunrise).toString()+
+                    " $timeSunrise"
+            val sunrise = getText(R.string.dayFragment_sunset).toString()+
+                    " $timeSunset"
+            val windSpeed = getText(R.string.dayFragment_windSpeed).toString() +
+                    " ${it.wind.speed.roundToInt()} " +
+                    getText(R.string.dayFragment_windSpeed_ms).toString()
 
             binding.tvCity.text = it.name
             binding.tvData.text = date
-            binding.TvMinMax.text = tempMinMax
+            binding.TvMinMax.text = feltTemp
             binding.tvCurrentTemp.text = tempCurent
             binding.tvCondition.text = condition
             binding.tvPasc.text = pasc
@@ -109,8 +118,8 @@ class FragmentDay : Fragment() {
             binding.ibSync.playAnimation()
             binding.root.startAnimation(outAnimation)
 
-            if (binding.tvCity.text == "Загрузка данных" || interstitialAd == null) (activity as MainActivity).chekLocation()
-            //else if (interstitialAd == null) (activity as MainActivity).chekLocation()
+            if (binding.tvCity.text == getText(R.string.dayFragment_loading).toString()
+                || interstitialAd == null) (activity as MainActivity).chekLocation()
             else showAd()
 
 

@@ -1,5 +1,29 @@
 <resources>
     <string name="app_name">Прогноз погоды</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="menu_myCity">Мой город</string>
+    <string name="menu_callBack">Обратная связь</string>
+    <string name="menu_upgrate">Проверить обновления</string>
+
+    <string name="dialog_search_city_title">Введите название города</string>
+    <string name="dialog_search_city_button_search">Поиск</string>
+    <string name="dialog_search_city_button_back">Назад</string>
+
+
+    <string name="vp_weather_day">Погода на день</string>
+    <string name="vp_weather_week">Погода на 5 дней</string>
+    <string name="vp_weather_map">Карта погоды</string>
+
+    <string name="dayFragment_loading">Загрузка данных</string>
+
+    <string name="dayFragment_condition">За окном:</string>
+    <string name="dayFragment_windSpeed">Скорость ветра:</string>
+    <string name="dayFragment_windSpeed_ms">метр/сек.</string>
+    <string name="dayFragment_felt">Ощущается как:</string>
+
+    <string name="dayFragment_humidity">Влажность:</string>
+    <string name="dayFragment_pressure">Давление:</string>
+
+    <string name="dayFragment_sunrise">Время восхода: </string>
+    <string name="dayFragment_sunset">Время заката:</string>
 </resources>

@@ -10,6 +10,7 @@ import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.Toast
@@ -66,11 +67,6 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
         FragmentWeek.newInstance(),
         FragmentMap.newInstance()
     )
-    private val listName = listOf(
-        "Погода на день",
-        "Погода на 5 дней",
-        "Карта погоды"
-    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -86,6 +82,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
         yaBaner()
         val calendar = Calendar.getInstance().timeInMillis
         progress = binding.progressBar2
+        Log.d("MyLog", resources.getStringArray(R.array.vp_title_main)[0])
 
 
 
@@ -190,7 +187,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
         vpAdapter = VpAdapter(this, listFrag)
         binding.placeHolder.adapter = vpAdapter
         TabLayoutMediator(binding.tabLayout, binding.placeHolder) { tab, pos ->
-            tab.text = listName[pos]
+            tab.text = resources.getStringArray(R.array.vp_title_main)[pos]
         }.attach()
         binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
             override fun onTabSelected(tab: TabLayout.Tab) {
