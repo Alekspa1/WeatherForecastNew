@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Weather forecast</string>
+    <string name="dialog_location_onn_off">Check location</string>
+    <string name="dialog_location_turn_on">Location is turned off, want to turn it on?</string>
     <string name="menu_myCity">My city</string>
     <string name="menu_callBack">Feedback</string>
     <string name="menu_upgrate">Check for updates</string>
@@ -19,4 +21,7 @@
     <string name="dialog_search_city_title">Enter the name of the city</string>
     <string name="dialog_search_city_button_search">Search</string>
     <string name="dialog_search_city_button_back">Back</string>
+    <string name="dialog_location_toast">" Then you will not be able to receive weather information"</string>
+    <string name="dialog_location_yes">Yes</string>
+    <string name="dialog_location_no">No</string>
 </resources>

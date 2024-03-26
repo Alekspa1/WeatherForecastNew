@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">Прогноз погоды</string>
 
+    <string name="dialog_location_onn_off">Проверка местоположения</string>
+    <string name="dialog_location_turn_on">Местоположение выключено, хотите включить?</string>
+    <string name="dialog_location_yes">Да</string>
+    <string name="dialog_location_no">Нет</string>
+    <string name="dialog_location_toast">Тогда вы не сможете получать информацию о погоде</string>
+
     <string name="menu_myCity">Мой город</string>
     <string name="menu_callBack">Обратная связь</string>
     <string name="menu_upgrate">Проверить обновления</string>

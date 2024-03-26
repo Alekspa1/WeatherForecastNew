@@ -1,6 +1,7 @@
 package com.drag0n.weatherf0recastn3w.domane.API
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import com.drag0n.weatherf0recastn3w.Const
@@ -10,13 +11,16 @@ import com.drag0n.weatherf0recastn3w.Data.WeatherWeek.WeatherWeek
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.Locale
 
 object RepositoryImp: Repository {
 
     val liveDataCurrent = MutableLiveData<WeatherDayNow>()
     val liveDataCurrentWeek = MutableLiveData<WeatherWeek>()
+    private var language = Locale.getDefault().language.toString()
+
     override fun getApiNameCityWeek(city: String, con: Context) {
-        val apiInterface = ApiWeather.create().getWeatherWeekCity(city, Const.APIKEY)
+        val apiInterface = ApiWeather.create().getWeatherWeekCity(city, Const.APIKEY, language)
         apiInterface.enqueue(object : Callback<WeatherWeek> {
 
             override fun onResponse(call: Call<WeatherWeek>, response: Response<WeatherWeek>) {
@@ -43,7 +47,7 @@ object RepositoryImp: Repository {
     }
 
     override fun getApiNameCity(city: String, con: Context) {
-        val apiInterface = ApiWeather.create().getWeatherDayNowCity(city, Const.APIKEY)
+        val apiInterface = ApiWeather.create().getWeatherDayNowCity(city, Const.APIKEY, language)
         apiInterface.enqueue(object : Callback<WeatherDayNow> {
 
             override fun onResponse(call: Call<WeatherDayNow>, response: Response<WeatherDayNow>) {
@@ -91,7 +95,7 @@ object RepositoryImp: Repository {
         })
     }
      fun getApiDayNowLocation(lat: String, lon: String, con: Context) {
-        val apiInterface = ApiWeather.create().getWeatherDayNowLocation(lat, lon, Const.APIKEY)
+        val apiInterface = ApiWeather.create().getWeatherDayNowLocation(lat, lon, Const.APIKEY, language)
         apiInterface.enqueue(object : Callback<WeatherDayNow> {
 
             override fun onResponse(call: Call<WeatherDayNow>, response: Response<WeatherDayNow>) {
@@ -114,7 +118,7 @@ object RepositoryImp: Repository {
     }
 
      fun getApiWeekLocation(lat: String, lon: String, con: Context) {
-        val apiInterface = ApiWeather.create().getWeatherWeekLocation(lat, lon, Const.APIKEY)
+        val apiInterface = ApiWeather.create().getWeatherWeekLocation(lat, lon, Const.APIKEY, language)
         apiInterface.enqueue(object : Callback<WeatherWeek> {
 
             override fun onResponse(call: Call<WeatherWeek>, response: Response<WeatherWeek>) {

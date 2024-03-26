@@ -48,6 +48,7 @@ import com.yandex.mobile.ads.common.AdRequest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Заканчивает MainActivity
 
@@ -61,12 +62,6 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
     private lateinit var db: CityListDataBase
     private lateinit var progress: ProgressBar
     private val model: MainViewModel by viewModels()
-
-    private val listFrag = listOf(
-        FragmentDay.newInstance(),
-        FragmentWeek.newInstance(),
-        FragmentMap.newInstance()
-    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -82,7 +77,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
         yaBaner()
         val calendar = Calendar.getInstance().timeInMillis
         progress = binding.progressBar2
-        Log.d("MyLog", resources.getStringArray(R.array.vp_title_main)[0])
+
 
 
 
@@ -184,7 +179,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
     }
 
     private fun initVp() {
-        vpAdapter = VpAdapter(this, listFrag)
+        vpAdapter = VpAdapter(this)
         binding.placeHolder.adapter = vpAdapter
         TabLayoutMediator(binding.tabLayout, binding.placeHolder) { tab, pos ->
             tab.text = resources.getStringArray(R.array.vp_title_main)[pos]
