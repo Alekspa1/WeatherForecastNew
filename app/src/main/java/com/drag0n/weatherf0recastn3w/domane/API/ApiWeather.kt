@@ -6,6 +6,7 @@ import com.drag0n.weatherf0recastn3w.data.WeatherWeek.WeatherWeek
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
@@ -43,11 +44,11 @@ interface ApiWeather {
 
 
     @GET("geo/1.0/reverse?&&limit=1&")
-    fun getGeoNowNew(
+    suspend fun getGeoNowNew(
         @Query("lat") lat: String,
         @Query("lon") lon: String,
         @Query("appid") api: String
-    ): Call<GetGeoNew>
+    ): Response<GetGeoNew>
 
 
 

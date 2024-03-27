@@ -1,17 +1,18 @@
 package com.drag0n.weatherf0recastn3w.domane.API
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import com.drag0n.weatherf0recastn3w.Const
 import com.drag0n.weatherf0recastn3w.Const.language
 import com.drag0n.weatherf0recastn3w.data.WeatherDayNow.WeatherDayNow
-import com.drag0n.weatherf0recastn3w.data.WeatherGetGeo.GetGeoNew
 import com.drag0n.weatherf0recastn3w.data.WeatherWeek.WeatherWeek
 import com.drag0n.weatherf0recastn3w.R
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.net.UnknownHostException
 
 object RepositoryImp: Repository {
 
@@ -70,28 +71,16 @@ object RepositoryImp: Repository {
         })
     }
 
-    override fun getGeoNew(lat: String, lon: String, con: Context) {
-        val apiInterface = ApiWeather.create().getGeoNowNew(lat, lon, Const.APIKEY)
-        apiInterface.enqueue(object : Callback<GetGeoNew> {
-
-            override fun onResponse(call: Call<GetGeoNew>, response: Response<GetGeoNew>) {
-                val data = response.body()
-                if (data != null) {
-                    getApiDayNowLocation(data[0].lat.toString(), data[0].lon.toString(), con)
-                    getApiWeekLocation(data[0].lat.toString(), data[0].lon.toString(), con)
-                } else Toast.makeText(
-                    con,
-                    con.getString(R.string.repository_error_data_onResponse),
-                    Toast.LENGTH_SHORT
-                ).show()
-
-
-            }
-
-            override fun onFailure(call: Call<GetGeoNew>, t: Throwable) {
-
-            }
-        })
+    override suspend fun getGeoNew(lat: String, lon: String, con: Context) {
+        try {
+        val response = ApiWeather.create().getGeoNowNew(lat, lon, Const.APIKEY)
+            val resuly = response.body()
+                getApiDayNowLocation(resuly?.get(0)?.lat.toString(), resuly?.get(0)?.lon.toString(), con)
+                getApiWeekLocation(resuly?.get(0)?.lat.toString(), resuly?.get(0)?.lon.toString(), con)
+        }
+        catch (e: UnknownHostException){
+            Toast.makeText(con, con.getString(R.string.repository_error_data_onResponse), Toast.LENGTH_SHORT).show()
+        }
     }
      fun getApiDayNowLocation(lat: String, lon: String, con: Context) {
         val apiInterface = ApiWeather.create().getWeatherDayNowLocation(lat, lon, Const.APIKEY, language)

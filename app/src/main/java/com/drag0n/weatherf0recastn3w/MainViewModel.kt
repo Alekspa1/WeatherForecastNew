@@ -2,10 +2,12 @@ package com.drag0n.weatherf0recastn3w
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.drag0n.weatherf0recastn3w.domane.API.GetApiNameCityNow
 import com.drag0n.weatherf0recastn3w.domane.API.GetApiNameCityWeek
 import com.drag0n.weatherf0recastn3w.domane.API.GetGeoNew
 import com.drag0n.weatherf0recastn3w.domane.API.RepositoryImp
+import kotlinx.coroutines.launch
 
 
 class MainViewModel: ViewModel() {
@@ -27,7 +29,9 @@ class MainViewModel: ViewModel() {
     fun getApiNameCitiWeek(city: String, con: Context){
         getApiNameCityWeek.getApiNameCityWeek(city, con)
     }
+
     fun getGeoNew(lat: String, lon: String, con: Context){
-        getGeoNew.getGeoNew(lat, lon, con)
+        viewModelScope.launch {  getGeoNew.getGeoNew(lat, lon, con) }
+
     }
 }
