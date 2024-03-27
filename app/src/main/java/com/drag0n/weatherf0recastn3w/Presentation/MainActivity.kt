@@ -50,7 +50,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.Locale
 
-class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Заканчивает MainActivity
+class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
 
 
     private lateinit var binding: ActivityMainBinding
@@ -132,7 +132,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
                         )
                     )
                 } catch (e: Exception) {
-                    Toast.makeText(this@MainActivity, "Ошибка", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@MainActivity, getString(R.string.main_error), Toast.LENGTH_SHORT).show()
                 }
             }
             bUpdate.setOnClickListener {
@@ -145,7 +145,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
                         )
                     )
                 } catch (e: Exception) {
-                    Toast.makeText(this@MainActivity, "Ошибка", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@MainActivity, getString(R.string.main_error), Toast.LENGTH_SHORT).show()
                 }
             }
             imBAddMenu.setOnClickListener {
@@ -159,7 +159,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
                                 }
                             } else Toast.makeText(
                                 this@MainActivity,
-                                "Поле не должно быть пустым",
+                                getString(R.string.main_isNotEmpty),
                                 Toast.LENGTH_SHORT
                             ).show()
 
@@ -254,7 +254,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
                 super.onLocationAvailability(p0)
                 Toast.makeText(
                     this@MainActivity,
-                    "Ошибка при получении данных по геолокации, пожалуйста введите город вручную или обновите HMS Core",
+                    getString(R.string.main_error_geo),
                     Toast.LENGTH_LONG
                 ).show()
             }
@@ -295,7 +295,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick { // Зака�
                 } catch (_: Exception) {
                     Toast.makeText(
                         this,
-                        "Ошибка при получении данных по геолокации, пожалуйста нажмите кнопку обновить или введите город вручную",
+                        getString(R.string.main_error_geo),
                         Toast.LENGTH_LONG
                     ).show()
                 }

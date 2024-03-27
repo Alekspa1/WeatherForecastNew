@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Прогноз погоды</string>
+
+    <string name="dialog_location_onn_off">Проверка местоположения</string>
+    <string name="dialog_location_turn_on">Местоположение выключено, хотите включить?</string>
+    <string name="dialog_location_yes">Да</string>
+    <string name="dialog_location_no">Нет</string>
+    <string name="dialog_location_toast">Тогда вы не сможете получать информацию о погоде</string>
+
+    <string name="menu_myCity">Мой город</string>
+    <string name="menu_callBack">Обратная связь</string>
+    <string name="menu_upgrate">Проверить обновления</string>
+
+    <string name="dialog_search_city_title">Введите название города</string>
+    <string name="dialog_search_city_button_search">Поиск</string>
+    <string name="dialog_search_city_button_back">Назад</string>
+
+
+    <string name="vp_weather_day">Погода на день</string>
+    <string name="vp_weather_week">Погода на 5 дней</string>
+    <string name="vp_weather_map">Карта погоды</string>
+
+    <string name="main_error">Ошибка</string>
+    <string name="main_isNotEmpty">Поле не должно быть пустым</string>
+    <string name="main_error_geo">Ошибка при получении данных по геолокации, пожалуйста введите город вручную или обновите HMS Core</string>
+
+    <string name="dayFragment_loading">Загрузка данных</string>
+
+    <string name="dayFragment_condition">За окном:</string>
+    <string name="dayFragment_windSpeed">Скорость ветра:</string>
+    <string name="dayFragment_windSpeed_ms">метр/сек.</string>
+    <string name="dayFragment_felt">Ощущается как:</string>
+
+    <string name="dayFragment_humidity">Влажность:</string>
+    <string name="dayFragment_pressure">Давление:</string>
+    <string name="dayFragment_pressure_mm_rt_st">мм рт.ст.</string>
+
+    <string name="dayFragment_sunrise">Время восхода: </string>
+    <string name="dayFragment_sunset">Время заката:</string>
+
+    <string name="WeekFragment_min_current">Мин. прогнозируемая температура:</string>
+    <string name="WeekFragment_max_current">Макс. прогнозируемая температура:</string>
+    <string name="WeekFragment_precipitation">Вероятность осадков:</string>
+
+    <string name="repository_error_data_onResponse">Ошибка получения данных</string>
+    <string name="repository_error_data_onFailure">Данные недоступны, попробуйте позже</string>
+
+</resources>

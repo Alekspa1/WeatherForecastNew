@@ -37,12 +37,19 @@ class DaysAdapter(private val weatherWeek: List<Spisok>) : RecyclerView.Adapter<
 
             val url = day.weather[0].icon
             val temp = "${day.main.temp.roundToInt()}°C"
-            val minTemp = "Мин. прогнозируемая температура: ${day.main.temp_min.roundToInt()}°C"
-            val maxTemp = "Макс. прогнозируемая температура: ${day.main.temp_max.roundToInt()}°C"
-            val pressure = "Давление: ${(day.main.pressure/1.33).roundToInt()} мм рт.ст."
-            val vlaz = "Влажность: ${day.main.humidity} %"
-            val precipitation = "Вероятность осадков: ${(day.pop * 100).roundToInt()}%"
-            val windSpeed = "Скорость ветра: ${day.wind.speed.roundToInt()} метр/сек"
+            val minTemp = "${context.getString(R.string.WeekFragment_min_current)} ${day.main.temp_min.roundToInt()}°C."
+            val maxTemp = "${context.getString(R.string.WeekFragment_max_current)} ${day.main.temp_max.roundToInt()}°C."
+
+            val pressure = context.getString(R.string.dayFragment_pressure) +
+                    " ${(day.main.pressure/1.33).roundToInt()} " +
+                    context.getString(R.string.dayFragment_pressure_mm_rt_st)
+
+            val vlaz = "${context.getString(R.string.dayFragment_humidity)} ${day.main.humidity} %."
+            val precipitation = "${context.getString(R.string.WeekFragment_precipitation)} ${(day.pop * 100).roundToInt()}%."
+            val windSpeed = context.getString(R.string.dayFragment_windSpeed) +
+                    " ${day.wind.speed.roundToInt()}" +
+                    " ${context.getString(R.string.dayFragment_windSpeed_ms)}"
+
             val dateString = day.dt_txt
             val dateTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).parse(dateString)
             val time = SimpleDateFormat("HH:mm", Locale.getDefault()).format(dateTime!!)

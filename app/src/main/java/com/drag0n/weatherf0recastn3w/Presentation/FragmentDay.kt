@@ -78,23 +78,23 @@ class FragmentDay : Fragment() {
             = SimpleDateFormat(" HH : mm ",
                 Locale.getDefault()).format(it.sys.sunset * 1000L)
 
-            val feltTemp = getText(R.string.dayFragment_felt).toString() +
+            val feltTemp = getString(R.string.dayFragment_felt) +
                     " ${it.main.feels_like.roundToInt()}°C."
             val tempCurent = "${it.main.temp.roundToInt()}°C"
             val url = it.weather[0].icon
-            val condition = getText(R.string.dayFragment_condition).toString() +
+            val condition = getString(R.string.dayFragment_condition) +
                     " ${it.weather[0].description}."
-            val pasc = getText(R.string.dayFragment_pressure).toString()+
-                    " ${(it.main.pressure.toInt() / 1.33).roundToInt()} мм рт.ст."
-            val vlaz = getText(R.string.dayFragment_humidity).toString()+
+            val pasc = getString(R.string.dayFragment_pressure) +
+                    " ${(it.main.pressure.toInt() / 1.33).roundToInt()} ${getString(R.string.dayFragment_pressure_mm_rt_st)}"
+            val vlaz = getString(R.string.dayFragment_humidity) +
                     " ${it.main.humidity.roundToInt()} %."
-            val sunset = getText(R.string.dayFragment_sunrise).toString()+
+            val sunset = getString(R.string.dayFragment_sunrise) +
                     " $timeSunrise"
-            val sunrise = getText(R.string.dayFragment_sunset).toString()+
+            val sunrise = getString(R.string.dayFragment_sunset) +
                     " $timeSunset"
-            val windSpeed = getText(R.string.dayFragment_windSpeed).toString() +
+            val windSpeed = getString(R.string.dayFragment_windSpeed) +
                     " ${it.wind.speed.roundToInt()} " +
-                    getText(R.string.dayFragment_windSpeed_ms).toString()
+                    getString(R.string.dayFragment_windSpeed_ms)
 
             binding.tvCity.text = it.name
             binding.tvData.text = date
@@ -136,7 +136,7 @@ class FragmentDay : Fragment() {
                     } else {
                         Toast.makeText(
                             view.context,
-                            "Поле не должно быть пустым",
+                            getString(R.string.main_isNotEmpty),
                             Toast.LENGTH_SHORT
                         ).show()
                     }
