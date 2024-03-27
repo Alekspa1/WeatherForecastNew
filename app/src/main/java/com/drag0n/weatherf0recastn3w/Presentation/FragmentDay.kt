@@ -1,7 +1,6 @@
 package com.drag0n.weatherf0recastn3w.Presentation
 
 import android.os.Bundle
-import android.util.Log
 
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater

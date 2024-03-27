@@ -10,7 +10,7 @@ import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
+
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.Toast
@@ -48,7 +48,6 @@ import com.yandex.mobile.ads.common.AdRequest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.Locale
 
 class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
 

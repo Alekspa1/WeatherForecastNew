@@ -6,9 +6,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebViewClient
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.drag0n.weatherf0recastn3w.Const
 import com.drag0n.weatherf0recastn3w.MainViewModel
 import com.drag0n.weatherf0recastn3w.databinding.FragmentMapBinding
