@@ -1,4 +1,4 @@
-package com.drag0n.weatherf0recastn3w.Data.WeatherGetGeo
+package com.drag0n.weatherf0recastn3w.data.WeatherGetGeo
 
 data class GetGeoNewItem(
     val lat: Double,

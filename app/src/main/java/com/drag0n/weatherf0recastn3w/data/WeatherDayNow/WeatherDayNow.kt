@@ -1,4 +1,4 @@
-package com.drag0n.weatherf0recastn3w.Data.WeatherDayNow
+package com.drag0n.weatherf0recastn3w.data.WeatherDayNow
 
 data class WeatherDayNow(
    val main: Main,

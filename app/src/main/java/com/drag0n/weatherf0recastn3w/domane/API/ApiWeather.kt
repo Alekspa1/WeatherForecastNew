@@ -1,8 +1,8 @@
 package com.drag0n.weatherf0recastn3w.domane.API
 
-import com.drag0n.weatherf0recastn3w.Data.WeatherDayNow.WeatherDayNow
-import com.drag0n.weatherf0recastn3w.Data.WeatherGetGeo.GetGeoNew
-import com.drag0n.weatherf0recastn3w.Data.WeatherWeek.WeatherWeek
+import com.drag0n.weatherf0recastn3w.data.WeatherDayNow.WeatherDayNow
+import com.drag0n.weatherf0recastn3w.data.WeatherGetGeo.GetGeoNew
+import com.drag0n.weatherf0recastn3w.data.WeatherWeek.WeatherWeek
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call

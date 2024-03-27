@@ -1,4 +1,4 @@
-package com.drag0n.weatherf0recastn3w.Data.WeatherWeek
+package com.drag0n.weatherf0recastn3w.data.WeatherWeek
 
 data class Main(
     val humidity: Int,

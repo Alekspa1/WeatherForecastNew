@@ -9,7 +9,7 @@ import android.view.animation.Animation.AnimationListener
 import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.drag0n.weatherf0recastn3w.Data.WeatherWeek.Spisok
+import com.drag0n.weatherf0recastn3w.data.WeatherWeek.Spisok
 import com.drag0n.weatherf0recastn3w.R
 import com.drag0n.weatherf0recastn3w.databinding.ItemDaysAdapterBinding
 import java.text.SimpleDateFormat

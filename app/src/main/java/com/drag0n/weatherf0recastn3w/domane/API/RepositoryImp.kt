@@ -5,9 +5,9 @@ import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import com.drag0n.weatherf0recastn3w.Const
 import com.drag0n.weatherf0recastn3w.Const.language
-import com.drag0n.weatherf0recastn3w.Data.WeatherDayNow.WeatherDayNow
-import com.drag0n.weatherf0recastn3w.Data.WeatherGetGeo.GetGeoNew
-import com.drag0n.weatherf0recastn3w.Data.WeatherWeek.WeatherWeek
+import com.drag0n.weatherf0recastn3w.data.WeatherDayNow.WeatherDayNow
+import com.drag0n.weatherf0recastn3w.data.WeatherGetGeo.GetGeoNew
+import com.drag0n.weatherf0recastn3w.data.WeatherWeek.WeatherWeek
 import com.drag0n.weatherf0recastn3w.R
 import retrofit2.Call
 import retrofit2.Callback

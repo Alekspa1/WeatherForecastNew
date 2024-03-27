@@ -1,4 +1,4 @@
-package com.drag0n.weatherf0recastn3w.Presentation
+package com.drag0n.weatherf0recastn3w.presentation
 
 import android.os.Bundle
 
@@ -117,7 +117,7 @@ class FragmentDay : Fragment() {
             binding.ibSync.playAnimation()
             binding.root.startAnimation(outAnimation)
 
-            if (binding.tvCity.text == getText(R.string.dayFragment_loading).toString()
+            if (binding.tvCity.text == getString(R.string.dayFragment_loading)
                 || interstitialAd == null) (activity as MainActivity).chekLocation()
             else showAd()
 

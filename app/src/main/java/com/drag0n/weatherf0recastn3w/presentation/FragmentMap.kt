@@ -1,4 +1,4 @@
-package com.drag0n.weatherf0recastn3w.Presentation
+package com.drag0n.weatherf0recastn3w.presentation
 
 import android.annotation.SuppressLint
 import android.os.Bundle
