@@ -149,6 +149,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
                 }
             }
             bUpdate.setOnClickListener {
+                TODO("МАГАЗИН")
                 try {
                     binding.drawer.closeDrawer(GravityCompat.START)
                     startActivity(
@@ -346,6 +347,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
                         pokupka()
                     }
                     is FeatureAvailabilityResult.Unavailable -> {
+                        Log.d("MyLog", result.cause.toString())
                         Toast.makeText(context, "Оплата временно недоступна", Toast.LENGTH_SHORT)
                             .show()
                     }
@@ -386,18 +388,16 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
     private fun shopingList() {
         purchasesUseCase.getPurchases()
             .addOnSuccessListener { purchases: List<Purchase> ->
-                if (purchases.isEmpty() && Const.premium) {
+                if (purchases.isEmpty() && (pref.getBoolean(Const.premium_KEY, false))) {
                     edit.putBoolean(Const.premium_KEY, false)
-                    pref.getBoolean(Const.premium_KEY, false)
                     edit.apply()
                 }
                 purchases.forEach {
                     if (it.productId == "premium_version_weather_forecast" &&
                         (it.purchaseState == PurchaseState.PAID ||
-                                it.purchaseState == PurchaseState.CONFIRMED) && !Const.premium
-                    ) {
+                                it.purchaseState == PurchaseState.CONFIRMED) && !(pref.getBoolean(Const.premium_KEY, false)))
+                     {
                         edit.putBoolean(Const.premium_KEY, true)
-                        pref.getBoolean(Const.premium_KEY, false)
                         edit.apply()
                     }
                 }

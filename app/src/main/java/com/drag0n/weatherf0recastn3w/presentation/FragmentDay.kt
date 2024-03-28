@@ -75,6 +75,7 @@ class FragmentDay : Fragment() {
         loadInterstitialAd()
 
         model.liveDataDayNow.observe(viewLifecycleOwner) {
+            binding.root.startAnimation(inAnimation)
             val timeSunrise =
                 SimpleDateFormat(" HH : mm ",
                     Locale.getDefault()).format(it.sys.sunrise * 1000L)
@@ -120,7 +121,7 @@ class FragmentDay : Fragment() {
         } // Заполнение погоды на сегодняшний день
         binding.ibSync.setOnClickListener {
             binding.ibSync.playAnimation()
-            binding.root.startAnimation(outAnimation)
+           // binding.root.startAnimation(outAnimation)
 
             if (binding.tvCity.text == getString(R.string.dayFragment_loading)
                 || interstitialAd == null) {

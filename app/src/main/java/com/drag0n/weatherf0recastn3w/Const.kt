@@ -12,7 +12,6 @@ object Const {
     const val SEARCH_CITY = "SEARCH_CITY"
     const val DELETE_CITY = "DELETE_CITY"
     const val premium_KEY = "premium_KEY"
-    var premium = false
     var language = Locale.getDefault().language.toString()
     fun isPermissionGranted(con: Context,p: String): Boolean {
         return ContextCompat.checkSelfPermission(con, p) == PackageManager.PERMISSION_GRANTED
