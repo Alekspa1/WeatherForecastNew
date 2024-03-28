@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="vp_title_main">
+        <item>@string/vp_weather_day</item>
+        <item>@string/vp_weather_week</item>
+        <item>@string/vp_weather_map</item>
+    </string-array>
+</resources>

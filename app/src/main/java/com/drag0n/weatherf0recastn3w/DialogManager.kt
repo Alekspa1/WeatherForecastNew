@@ -9,18 +9,20 @@ import android.widget.Toast
 
 
 object DialogManager {
+    private val model = MainViewModel()
     fun locationSettingsDialog(context: Context, listener: Listener){
         val builred = AlertDialog.Builder(context)
         val dialog = builred.create()
         dialog.setIcon(R.drawable.ic_location)
-        dialog.setTitle("Проверка местоположения")
-        dialog.setMessage("Местоположение выключено, хотите включить?")
-        dialog.setButton(AlertDialog.BUTTON_POSITIVE, "Да"){_,_->
+        dialog.setTitle(context.getString(R.string.dialog_location_onn_off))
+        dialog.setMessage(context.getString(R.string.dialog_location_turn_on))
+        dialog.setButton(AlertDialog.BUTTON_POSITIVE, context.getString(R.string.dialog_location_yes)){_,_->
             listener.onClick(null)
             dialog.dismiss()
         }
-        dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Нет"){_,_->
-            Toast.makeText(context, "Тогда вы не сможете получать информацию о погоде", Toast.LENGTH_SHORT).show()
+        dialog.setButton(AlertDialog.BUTTON_NEGATIVE, context.getString(R.string.dialog_location_no)){_,_->
+            Toast.makeText(context, context.getString(R.string.dialog_location_toast), Toast.LENGTH_SHORT).show()
+            model.load.value = false
             dialog.dismiss()
         }
 
@@ -33,12 +35,12 @@ object DialogManager {
         builred.setView(edName)
         val dialog = builred.create()
         dialog.setIcon(R.drawable.ic_search)
-        dialog.setTitle("Введите название города")
-        dialog.setButton(AlertDialog.BUTTON_POSITIVE, "Поиск"){_,_->
+        dialog.setTitle(context.getString(R.string.dialog_search_city_title))
+        dialog.setButton(AlertDialog.BUTTON_POSITIVE, context.getString(R.string.dialog_search_city_button_search)){_,_->
             listener.onClick(edName.text.toString().trim())
             dialog.dismiss()
         }
-        dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Назад"){_,_->
+        dialog.setButton(AlertDialog.BUTTON_NEGATIVE, context.getString(R.string.dialog_search_city_button_back)){_,_->
             dialog.dismiss()
         }
 

@@ -14,6 +14,7 @@ class MainViewModel: ViewModel() {
     private val repository = RepositoryImp
     val liveDataDayNow = repository.liveDataCurrent
     val liveDataWeek = repository.liveDataCurrentWeek
+    val load = repository.load
 
 
 

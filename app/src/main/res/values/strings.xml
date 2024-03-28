@@ -1,5 +1,35 @@
 <resources>
-    <string name="app_name">Прогноз погоды</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="app_name">Weather forecast</string>
+    <string name="dialog_location_onn_off">Check location</string>
+    <string name="dialog_location_turn_on">Location is turned off, want to turn it on?</string>
+    <string name="menu_myCity">My city</string>
+    <string name="menu_callBack">Feedback</string>
+    <string name="menu_upgrate">Check for updates</string>
+    <string name="vp_weather_day">Weather for the day</string>
+    <string name="vp_weather_week">Weather for 5 days</string>
+    <string name="vp_weather_map">Weather map</string>
+    <string name="dayFragment_loading">Loading Data</string>
+    <string name="dayFragment_condition">Outside the window:</string>
+    <string name="dayFragment_windSpeed">Wind speed:</string>
+    <string name="dayFragment_windSpeed_ms">m/s.</string>
+    <string name="dayFragment_felt">Feels like:</string>
+    <string name="dayFragment_humidity">Humidity:</string>
+    <string name="dayFragment_pressure">Pressure:</string>
+    <string name="dayFragment_sunrise">Sunrise time:</string>
+    <string name="dayFragment_sunset">Sunset time:</string>
+    <string name="dialog_search_city_title">Enter the name of the city</string>
+    <string name="dialog_search_city_button_search">Search</string>
+    <string name="dialog_search_city_button_back">Back</string>
+    <string name="dialog_location_toast">Then you will not be able to receive weather information</string>
+    <string name="dialog_location_yes">Yes</string>
+    <string name="dialog_location_no">No</string>
+    <string name="main_error">Error</string>
+    <string name="main_error_geo">Error while receiving geolocation data, please enter the city manually or update HMS Core</string>
+    <string name="main_isNotEmpty">The field must not be empty</string>
+    <string name="dayFragment_pressure_mm_rt_st">mmHg.</string>
+    <string name="repository_error_data_onFailure">Data unavailable, try again later</string>
+    <string name="repository_error_data_onResponse">Error receiving data</string>
+    <string name="WeekFragment_min_current">Min. forecast temperature:</string>
+    <string name="WeekFragment_max_current">Max. forecast temperature:</string>
+    <string name="WeekFragment_precipitation">Chance of precipitation:</string>
 </resources>
