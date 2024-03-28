@@ -52,14 +52,13 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
 
 
-    private lateinit var binding: ActivityMainBinding
+    lateinit var binding: ActivityMainBinding
     private lateinit var vpAdapter: VpAdapter
     private lateinit var pLauncher: ActivityResultLauncher<String>
     private lateinit var fLocotionClient: FusedLocationProviderClient
     private lateinit var fLocotionClientHMS: com.huawei.hms.location.FusedLocationProviderClient
     private lateinit var adapter: ItemCityAdapter
     private lateinit var db: CityListDataBase
-    private lateinit var progress: ProgressBar
     private val model: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,13 +74,15 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
         initRcView()
         yaBaner()
         val calendar = Calendar.getInstance().timeInMillis
-        progress = binding.progressBar2
 
 
 
-
+        model.load.observe(this){
+            if (model.load.value == true) binding.progressBar2.visibility = View.VISIBLE
+            else binding.progressBar2.visibility = View.GONE
+        }
         model.liveDataDayNow.observe(this) {
-            progress.visibility = View.GONE
+            model.load.value = false
             val rassvet = it.sys.sunrise * 1000L
             val zakat = (it.sys.sunset * 1000L) + AlarmManager.INTERVAL_HALF_HOUR
 
@@ -117,9 +118,9 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
         with(binding) {
             imMenu.setOnClickListener { binding.drawer.openDrawer(GravityCompat.START) }
             bMyCity.setOnClickListener {
+                model.load.value = true
                 chekLocation()
                 binding.drawer.closeDrawer(GravityCompat.START)
-                progress.visibility = View.VISIBLE
             }
             bCallback.setOnClickListener {
                 try {
@@ -174,7 +175,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
     override fun onResume() {
         super.onResume()
         chekPermissionLocation()
-        progress.visibility = View.VISIBLE
+        model.load.value = true
     }
 
     private fun initVp() {
@@ -235,7 +236,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
     private fun getLastLocationHuawey() {
         fLocotionClientHMS.lastLocation.addOnSuccessListener {
             try {
-                model.getGeoNew(it.latitude.toString(), it.longitude.toString(), this)
+                model.getGeoNew(it.latitude.toString(), it.longitude.toString())
             } catch (e: NullPointerException) {
                 getLocationHuawey()
             }
@@ -261,8 +262,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
             override fun onLocationResult(it: LocationResult) {
                 model.getGeoNew(
                     it.lastLocation.latitude.toString(),
-                    it.lastLocation.longitude.toString(),
-                    this@MainActivity
+                    it.lastLocation.longitude.toString()
                 )
             }
         }
@@ -288,8 +288,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
                 try {
                     model.getGeoNew(
                         it.result.latitude.toString(),
-                        it.result.longitude.toString(),
-                        this
+                        it.result.longitude.toString()
                     )
                 } catch (_: Exception) {
                     Toast.makeText(
@@ -342,10 +341,10 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
     override fun onClick(itemCity: ItemCity, action: String) {
         when (action) {
             Const.SEARCH_CITY -> {
-                model.getApiNameCitiNow(itemCity.name, this)
-                model.getApiNameCitiWeek(itemCity.name, this)
+                model.load.value = true
+                model.getApiNameCitiNow(itemCity.name)
+                model.getApiNameCitiWeek(itemCity.name)
                 binding.drawer.closeDrawer(GravityCompat.START)
-                progress.visibility = View.VISIBLE
             }
 
             Const.DELETE_CITY -> CoroutineScope(Dispatchers.IO).launch {

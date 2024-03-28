@@ -1,5 +1,6 @@
 package com.drag0n.weatherf0recastn3w.presentation
 
+import android.app.Application
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -25,7 +26,7 @@ class FragmentWeek : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        model = MainViewModel()
+        model = MainViewModel(Application())
 
         val rc = binding.rcDay
         rc.layoutManager = LinearLayoutManager(view.context)

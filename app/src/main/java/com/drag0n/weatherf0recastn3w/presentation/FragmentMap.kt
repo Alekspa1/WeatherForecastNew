@@ -1,6 +1,7 @@
 package com.drag0n.weatherf0recastn3w.presentation
 
 import android.annotation.SuppressLint
+import android.app.Application
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -26,7 +27,7 @@ class FragmentMap : Fragment() {
     @SuppressLint("SetJavaScriptEnabled")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        model = MainViewModel()
+        model = MainViewModel(Application())
         model.liveDataDayNow.observe(viewLifecycleOwner){
             val lat = model.liveDataDayNow.value?.coord?.lat
             val lon = model.liveDataDayNow.value?.coord?.lon

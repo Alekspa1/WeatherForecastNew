@@ -1,5 +1,6 @@
 package com.drag0n.weatherf0recastn3w.presentation
 
+import android.app.Application
 import android.os.Bundle
 
 import androidx.fragment.app.Fragment
@@ -50,7 +51,7 @@ class FragmentDay : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        model = MainViewModel()
+        model = MainViewModel(Application())
         date = SimpleDateFormat("dd MMM", Locale.getDefault()).format(Date())
         inAnimation = AnimationUtils.loadAnimation(view.context, R.anim.alpha_in)
         outAnimation = AnimationUtils.loadAnimation(view.context, R.anim.alpha_out)
@@ -118,7 +119,10 @@ class FragmentDay : Fragment() {
             binding.root.startAnimation(outAnimation)
 
             if (binding.tvCity.text == getString(R.string.dayFragment_loading)
-                || interstitialAd == null) (activity as MainActivity).chekLocation()
+                || interstitialAd == null) {
+                (activity as MainActivity).chekLocation()
+                model.load.value = true
+            }
             else showAd()
 
 
@@ -127,11 +131,10 @@ class FragmentDay : Fragment() {
             DialogManager.nameSitySearchDialog(view.context, object : DialogManager.Listener {
                 override fun onClick(city: String?) {
                     if (!city.isNullOrEmpty()) {
-                        model.getApiNameCitiNow(city, view.context)
-                        model.getApiNameCitiWeek(city, view.context)
+                        model.getApiNameCitiNow(city)
+                        model.getApiNameCitiWeek(city)
                         binding.root.startAnimation(outAnimation)
-                        (activity as MainActivity).findViewById<ProgressBar>(R.id.progressBar2).visibility =
-                            View.VISIBLE
+                        model.load.value = true
                     } else {
                         Toast.makeText(
                             view.context,

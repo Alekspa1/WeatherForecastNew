@@ -1,6 +1,9 @@
 package com.drag0n.weatherf0recastn3w
 
+import android.app.Application
 import android.content.Context
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.drag0n.weatherf0recastn3w.domane.API.GetApiNameCityNow
@@ -10,12 +13,13 @@ import com.drag0n.weatherf0recastn3w.domane.API.RepositoryImp
 import kotlinx.coroutines.launch
 
 
-class MainViewModel: ViewModel() {
+class MainViewModel(private val app: Application): AndroidViewModel(app) {
 
 
     private val repository = RepositoryImp
     val liveDataDayNow = repository.liveDataCurrent
     val liveDataWeek = repository.liveDataCurrentWeek
+    val load = repository.load
 
 
 
@@ -23,15 +27,15 @@ class MainViewModel: ViewModel() {
     private val getApiNameCityWeek = GetApiNameCityWeek(repository)
     private val getGeoNew = GetGeoNew(repository)
 
-    fun getApiNameCitiNow(city: String, con: Context){
-        getApiNameCityNow.getApiNameCity(city, con)
+    fun getApiNameCitiNow(city: String){
+        getApiNameCityNow.getApiNameCity(city, app.applicationContext)
     }
-    fun getApiNameCitiWeek(city: String, con: Context){
-        getApiNameCityWeek.getApiNameCityWeek(city, con)
+    fun getApiNameCitiWeek(city: String){
+        getApiNameCityWeek.getApiNameCityWeek(city, app.applicationContext)
     }
 
-    fun getGeoNew(lat: String, lon: String, con: Context){
-        viewModelScope.launch {  getGeoNew.getGeoNew(lat, lon, con) }
+    fun getGeoNew(lat: String, lon: String){
+        viewModelScope.launch {  getGeoNew.getGeoNew(lat, lon, app.applicationContext) }
 
     }
 }
