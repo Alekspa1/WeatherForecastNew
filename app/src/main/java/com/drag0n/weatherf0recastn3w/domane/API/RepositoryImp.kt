@@ -26,25 +26,8 @@ object RepositoryImp: Repository {
             override fun onResponse(call: Call<WeatherWeek>, response: Response<WeatherWeek>) {
                 val data = response.body()
                 if (data != null) liveDataCurrentWeek.value = data!!
-                else {
-                    Toast.makeText(
-                        con,
-                        con.getString(R.string.repository_error_data_onResponse),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    load.value = false
-                }
-
             }
-
             override fun onFailure(call: Call<WeatherWeek>, t: Throwable) {
-                Toast.makeText(
-                    con,
-                    con.getString(R.string.repository_error_data_onFailure),
-                    Toast.LENGTH_SHORT
-                ).show()
-                load.value = false
-
             }
         })
 
@@ -86,7 +69,7 @@ object RepositoryImp: Repository {
                 val data = response.body()
                 if (data != null) {
                     getApiDayNowLocation(data[0].lat.toString(), data[0].lon.toString(), con)
-                    getApiWeekLocation(data[0].lat.toString(), data[0].lon.toString(), con)
+                    getApiWeekLocation(data[0].lat.toString(), data[0].lon.toString())
                 } else {
                     Toast.makeText(
                         con,
@@ -142,31 +125,17 @@ object RepositoryImp: Repository {
         })
     }
 
-     fun getApiWeekLocation(lat: String, lon: String, con: Context) {
+     fun getApiWeekLocation(lat: String, lon: String) {
         val apiInterface = ApiWeather.create().getWeatherWeekLocation(lat, lon, Const.APIKEY, language)
         apiInterface.enqueue(object : Callback<WeatherWeek> {
 
             override fun onResponse(call: Call<WeatherWeek>, response: Response<WeatherWeek>) {
                 val data = response.body()
                 if (data != null) liveDataCurrentWeek.value = data!!
-                else {
-                    Toast.makeText(
-                        con,
-                        con.getString(R.string.repository_error_data_onResponse),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    load.value = false
-                }
-
             }
 
             override fun onFailure(call: Call<WeatherWeek>, t: Throwable) {
-                Toast.makeText(
-                    con,
-                    con.getString(R.string.repository_error_data_onFailure),
-                    Toast.LENGTH_SHORT
-                ).show()
-                load.value = false
+
             }
         })
     }

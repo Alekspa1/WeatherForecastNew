@@ -157,7 +157,7 @@ class FragmentDay : Fragment() {
         interstitialAdLoader?.loadAd(adRequestConfiguration)
     }
 
-    private fun showAd() {
+     fun showAd() {
         interstitialAd?.apply {
             setAdEventListener(object : InterstitialAdEventListener {
                 override fun onAdShown() {

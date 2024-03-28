@@ -22,6 +22,8 @@ import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
 import com.drag0n.weatherf0recastn3w.Const
+import com.drag0n.weatherf0recastn3w.Const.HUAWEY
+import com.drag0n.weatherf0recastn3w.Const.RUSTORE
 import com.drag0n.weatherf0recastn3w.domane.Room.ItemCity
 import com.drag0n.weatherf0recastn3w.DialogManager
 import com.drag0n.weatherf0recastn3w.MainViewModel
@@ -82,7 +84,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
         model.liveDataDayNow.observe(this) {
             model.load.value = false
             val rassvet = it.sys.sunrise * 1000L
-            val zakat = (it.sys.sunset * 1000L) + AlarmManager.INTERVAL_HALF_HOUR
+            val zakat = (it.sys.sunset * 1000L) + AlarmManager.INTERVAL_FIFTEEN_MINUTES
 
             if (calendar > zakat || calendar < rassvet)
                 when (it.weather[0].id) {
@@ -139,7 +141,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
                     startActivity(
                         Intent(
                             Intent.ACTION_VIEW,
-                            Uri.parse("https://apps.rustore.ru/app/com.drag0n.weatherf0recastn3w")
+                            Uri.parse(HUAWEY)
                         )
                     )
                 } catch (e: Exception) {
@@ -249,6 +251,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
 
         val callback = object : LocationCallback() {
             override fun onLocationAvailability(p0: LocationAvailability?) {
+                model.load.value = false
                 super.onLocationAvailability(p0)
                 Toast.makeText(
                     this@MainActivity,
