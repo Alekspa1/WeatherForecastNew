@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.ProgressBar
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.drag0n.weatherf0recastn3w.Const
@@ -118,7 +117,10 @@ class FragmentDay : Fragment() {
             binding.root.startAnimation(outAnimation)
 
             if (binding.tvCity.text == getString(R.string.dayFragment_loading)
-                || interstitialAd == null) (activity as MainActivity).chekLocation()
+                || interstitialAd == null) {
+                (activity as MainActivity).chekLocation()
+                model.load.value = true
+            }
             else showAd()
 
 
@@ -127,11 +129,10 @@ class FragmentDay : Fragment() {
             DialogManager.nameSitySearchDialog(view.context, object : DialogManager.Listener {
                 override fun onClick(city: String?) {
                     if (!city.isNullOrEmpty()) {
+                        model.load.value = true
                         model.getApiNameCitiNow(city, view.context)
                         model.getApiNameCitiWeek(city, view.context)
                         binding.root.startAnimation(outAnimation)
-                        (activity as MainActivity).findViewById<ProgressBar>(R.id.progressBar2).visibility =
-                            View.VISIBLE
                     } else {
                         Toast.makeText(
                             view.context,

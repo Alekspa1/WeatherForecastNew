@@ -10,9 +10,7 @@ import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-
 import android.view.View
-import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -59,7 +57,6 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
     private lateinit var fLocotionClientHMS: com.huawei.hms.location.FusedLocationProviderClient
     private lateinit var adapter: ItemCityAdapter
     private lateinit var db: CityListDataBase
-    private lateinit var progress: ProgressBar
     private val model: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,13 +72,15 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
         initRcView()
         yaBaner()
         val calendar = Calendar.getInstance().timeInMillis
-        progress = binding.progressBar2
 
 
 
-
+        model.load.observe(this){
+            if (model.load.value == true) binding.progressBar2.visibility = View.VISIBLE
+            else binding.progressBar2.visibility = View.GONE
+        }
         model.liveDataDayNow.observe(this) {
-            progress.visibility = View.GONE
+            model.load.value = false
             val rassvet = it.sys.sunrise * 1000L
             val zakat = (it.sys.sunset * 1000L) + AlarmManager.INTERVAL_HALF_HOUR
 
@@ -119,7 +118,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
             bMyCity.setOnClickListener {
                 chekLocation()
                 binding.drawer.closeDrawer(GravityCompat.START)
-                progress.visibility = View.VISIBLE
+               model.load.value = true
             }
             bCallback.setOnClickListener {
                 try {
@@ -174,7 +173,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
     override fun onResume() {
         super.onResume()
         chekPermissionLocation()
-        progress.visibility = View.VISIBLE
+        model.load.value = true
     }
 
     private fun initVp() {
@@ -342,10 +341,10 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
     override fun onClick(itemCity: ItemCity, action: String) {
         when (action) {
             Const.SEARCH_CITY -> {
+                model.load.value = true
                 model.getApiNameCitiNow(itemCity.name, this)
                 model.getApiNameCitiWeek(itemCity.name, this)
                 binding.drawer.closeDrawer(GravityCompat.START)
-                progress.visibility = View.VISIBLE
             }
 
             Const.DELETE_CITY -> CoroutineScope(Dispatchers.IO).launch {

@@ -17,6 +17,7 @@ object RepositoryImp: Repository {
 
     val liveDataCurrent = MutableLiveData<WeatherDayNow>()
     val liveDataCurrentWeek = MutableLiveData<WeatherWeek>()
+    val load = MutableLiveData<Boolean>()
 
     override fun getApiNameCityWeek(city: String, con: Context) {
         val apiInterface = ApiWeather.create().getWeatherWeekCity(city, Const.APIKEY, language)
@@ -25,11 +26,14 @@ object RepositoryImp: Repository {
             override fun onResponse(call: Call<WeatherWeek>, response: Response<WeatherWeek>) {
                 val data = response.body()
                 if (data != null) liveDataCurrentWeek.value = data!!
-                else Toast.makeText(
-                    con,
-                    con.getString(R.string.repository_error_data_onResponse),
-                    Toast.LENGTH_SHORT
-                ).show()
+                else {
+                    Toast.makeText(
+                        con,
+                        con.getString(R.string.repository_error_data_onResponse),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    load.value = false
+                }
 
             }
 
@@ -39,6 +43,7 @@ object RepositoryImp: Repository {
                     con.getString(R.string.repository_error_data_onFailure),
                     Toast.LENGTH_SHORT
                 ).show()
+                load.value = false
 
             }
         })
@@ -52,12 +57,14 @@ object RepositoryImp: Repository {
             override fun onResponse(call: Call<WeatherDayNow>, response: Response<WeatherDayNow>) {
                 val data = response.body()
                 if (data != null) liveDataCurrent.value = data!!
-
-                else Toast.makeText(
-                    con,
-                    con.getString(R.string.repository_error_data_onResponse),
-                    Toast.LENGTH_SHORT
-                ).show()
+                else {
+                    Toast.makeText(
+                        con,
+                        con.getString(R.string.repository_error_data_onResponse),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    load.value = false
+                }
             }
 
             override fun onFailure(call: Call<WeatherDayNow>, t: Throwable) {
@@ -66,6 +73,7 @@ object RepositoryImp: Repository {
                     con.getString(R.string.repository_error_data_onFailure),
                     Toast.LENGTH_SHORT
                 ).show()
+                load.value = false
             }
         })
     }
@@ -79,16 +87,25 @@ object RepositoryImp: Repository {
                 if (data != null) {
                     getApiDayNowLocation(data[0].lat.toString(), data[0].lon.toString(), con)
                     getApiWeekLocation(data[0].lat.toString(), data[0].lon.toString(), con)
-                } else Toast.makeText(
-                    con,
-                    con.getString(R.string.repository_error_data_onResponse),
-                    Toast.LENGTH_SHORT
-                ).show()
+                } else {
+                    Toast.makeText(
+                        con,
+                        con.getString(R.string.repository_error_data_onResponse),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    load.value = false
+                }
 
 
             }
 
             override fun onFailure(call: Call<GetGeoNew>, t: Throwable) {
+                Toast.makeText(
+                    con,
+                    con.getString(R.string.repository_error_data_onFailure),
+                    Toast.LENGTH_SHORT
+                ).show()
+                load.value = false
 
             }
         })
@@ -101,16 +118,25 @@ object RepositoryImp: Repository {
                 val data = response.body()
                 if (data != null) {
                     liveDataCurrent.value = data!!
-                } else Toast.makeText(
-                    con,
-                    con.getString(R.string.repository_error_data_onResponse),
-                    Toast.LENGTH_SHORT
-                ).show()
+                } else {
+                    Toast.makeText(
+                        con,
+                        con.getString(R.string.repository_error_data_onResponse),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    load.value = false
+                }
 
 
             }
 
             override fun onFailure(call: Call<WeatherDayNow>, t: Throwable) {
+                Toast.makeText(
+                    con,
+                    con.getString(R.string.repository_error_data_onFailure),
+                    Toast.LENGTH_SHORT
+                ).show()
+                load.value = false
 
             }
         })
@@ -123,11 +149,14 @@ object RepositoryImp: Repository {
             override fun onResponse(call: Call<WeatherWeek>, response: Response<WeatherWeek>) {
                 val data = response.body()
                 if (data != null) liveDataCurrentWeek.value = data!!
-                else Toast.makeText(
-                    con,
-                    con.getString(R.string.repository_error_data_onResponse),
-                    Toast.LENGTH_SHORT
-                ).show()
+                else {
+                    Toast.makeText(
+                        con,
+                        con.getString(R.string.repository_error_data_onResponse),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    load.value = false
+                }
 
             }
 
@@ -137,6 +166,7 @@ object RepositoryImp: Repository {
                     con.getString(R.string.repository_error_data_onFailure),
                     Toast.LENGTH_SHORT
                 ).show()
+                load.value = false
             }
         })
     }
