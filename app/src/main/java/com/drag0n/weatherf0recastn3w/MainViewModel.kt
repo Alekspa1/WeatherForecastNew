@@ -28,10 +28,10 @@ class MainViewModel(private val app: Application): AndroidViewModel(app) {
     private val getGeoNew = GetGeoNew(repository)
 
     fun getApiNameCitiNow(city: String){
-        getApiNameCityNow.getApiNameCity(city, app.applicationContext)
+        viewModelScope.launch {getApiNameCityNow.getApiNameCity(city, app.applicationContext)}
     }
     fun getApiNameCitiWeek(city: String){
-        getApiNameCityWeek.getApiNameCityWeek(city, app.applicationContext)
+        viewModelScope.launch {getApiNameCityWeek.getApiNameCityWeek(city, app.applicationContext)}
     }
 
     fun getGeoNew(lat: String, lon: String){

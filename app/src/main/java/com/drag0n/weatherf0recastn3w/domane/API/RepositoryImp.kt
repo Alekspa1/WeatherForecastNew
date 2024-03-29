@@ -24,56 +24,33 @@ object RepositoryImp: Repository {
     val liveDataCurrentWeek = MutableLiveData<WeatherWeek>()
     val load = MutableLiveData<Boolean>()
 
-    override fun getApiNameCityWeek(city: String, con: Context) {
-        val apiInterface = ApiWeather.create().getWeatherWeekCity(city, Const.APIKEY, language)
-        apiInterface.enqueue(object : Callback<WeatherWeek> {
-
-            override fun onResponse(call: Call<WeatherWeek>, response: Response<WeatherWeek>) {
-                val data = response.body()
-                if (data != null) liveDataCurrentWeek.value = data!!
-                else Toast.makeText(
-                    con,
-                    con.getString(R.string.repository_error_data_onResponse),
-                    Toast.LENGTH_SHORT
-                ).show()
-
-            }
-
-            override fun onFailure(call: Call<WeatherWeek>, t: Throwable) {
-                Toast.makeText(
-                    con,
-                    con.getString(R.string.repository_error_data_onFailure),
-                    Toast.LENGTH_SHORT
-                ).show()
-
-            }
-        })
+    override suspend fun getApiNameCityWeek(city: String, con: Context) {
+        try { val response = ApiWeather.create().getWeatherWeekCity(city, Const.APIKEY, language)
+            if (response.isSuccessful){
+                val resuly = response.body()
+                liveDataCurrentWeek.value = resuly!!
+            } else{
+                Toast.makeText(con, con.getString(R.string.repository_error_data_onResponse), Toast.LENGTH_SHORT).show()}
+        }
+        catch (e: UnknownHostException){
+            load.value = false
+            Toast.makeText(con, con.getString(R.string.repository_error_data_onFailure), Toast.LENGTH_SHORT).show()
+        }
 
     }
 
-    override fun getApiNameCity(city: String, con: Context) {
-        val apiInterface = ApiWeather.create().getWeatherDayNowCity(city, Const.APIKEY, language)
-        apiInterface.enqueue(object : Callback<WeatherDayNow> {
-
-            override fun onResponse(call: Call<WeatherDayNow>, response: Response<WeatherDayNow>) {
-                val data = response.body()
-                if (data != null) liveDataCurrent.value = data!!
-
-                else Toast.makeText(
-                    con,
-                    con.getString(R.string.repository_error_data_onResponse),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-
-            override fun onFailure(call: Call<WeatherDayNow>, t: Throwable) {
-                Toast.makeText(
-                    con,
-                    con.getString(R.string.repository_error_data_onFailure),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        })
+    override suspend fun getApiNameCity(city: String, con: Context) {
+        try { val response = ApiWeather.create().getWeatherDayNowCity(city, Const.APIKEY, language)
+            if (response.isSuccessful){
+                val resuly = response.body()
+                liveDataCurrent.value = resuly!!
+            } else{
+                Toast.makeText(con, con.getString(R.string.repository_error_data_onResponse), Toast.LENGTH_SHORT).show()}
+        }
+        catch (e: UnknownHostException){
+            load.value = false
+            Toast.makeText(con, con.getString(R.string.repository_error_data_onFailure), Toast.LENGTH_SHORT).show()
+        }
     }
 
 
@@ -91,52 +68,33 @@ object RepositoryImp: Repository {
             Toast.makeText(con, con.getString(R.string.repository_error_data_onFailure), Toast.LENGTH_SHORT).show()
         }
     }
-     fun getApiDayNowLocation(lat: String, lon: String, con: Context) {
-        val apiInterface = ApiWeather.create().getWeatherDayNowLocation(lat, lon, Const.APIKEY, language)
-        apiInterface.enqueue(object : Callback<WeatherDayNow> {
+     private suspend fun getApiDayNowLocation(lat: String, lon: String, con: Context) {
+         try { val response = ApiWeather.create().getWeatherDayNowLocation(lat, lon, Const.APIKEY, language)
+             if (response.isSuccessful){
+                 val resuly = response.body()
+                 liveDataCurrent.value = resuly!!
+             } else{
+                 Toast.makeText(con, con.getString(R.string.repository_error_data_onResponse), Toast.LENGTH_SHORT).show()}
+         }
+         catch (e: UnknownHostException){
+             load.value = false
+             Toast.makeText(con, con.getString(R.string.repository_error_data_onFailure), Toast.LENGTH_SHORT).show()
+         }
 
-            override fun onResponse(call: Call<WeatherDayNow>, response: Response<WeatherDayNow>) {
-                val data = response.body()
-                if (data != null) {
-                    liveDataCurrent.value = data!!
-                } else Toast.makeText(
-                    con,
-                    con.getString(R.string.repository_error_data_onResponse),
-                    Toast.LENGTH_SHORT
-                ).show()
-
-
-            }
-
-            override fun onFailure(call: Call<WeatherDayNow>, t: Throwable) {
-
-            }
-        })
     }
 
-     fun getApiWeekLocation(lat: String, lon: String, con: Context) {
-        val apiInterface = ApiWeather.create().getWeatherWeekLocation(lat, lon, Const.APIKEY, language)
-        apiInterface.enqueue(object : Callback<WeatherWeek> {
-
-            override fun onResponse(call: Call<WeatherWeek>, response: Response<WeatherWeek>) {
-                val data = response.body()
-                if (data != null) liveDataCurrentWeek.value = data!!
-                else Toast.makeText(
-                    con,
-                    con.getString(R.string.repository_error_data_onResponse),
-                    Toast.LENGTH_SHORT
-                ).show()
-
-            }
-
-            override fun onFailure(call: Call<WeatherWeek>, t: Throwable) {
-                Toast.makeText(
-                    con,
-                    con.getString(R.string.repository_error_data_onFailure),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        })
+     private suspend fun getApiWeekLocation(lat: String, lon: String, con: Context) {
+         try { val response = ApiWeather.create().getWeatherWeekLocation(lat, lon, Const.APIKEY, language)
+             if (response.isSuccessful){
+                 val resuly = response.body()
+                 liveDataCurrentWeek.value = resuly!!
+             } else{
+                 Toast.makeText(con, con.getString(R.string.repository_error_data_onResponse), Toast.LENGTH_SHORT).show()}
+         }
+         catch (e: UnknownHostException){
+             load.value = false
+             Toast.makeText(con, con.getString(R.string.repository_error_data_onFailure), Toast.LENGTH_SHORT).show()
+         }
     }
 }
 

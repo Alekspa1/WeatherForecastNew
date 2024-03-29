@@ -14,33 +14,33 @@ import retrofit2.http.Query
 
 interface ApiWeather {
     @GET("data/2.5/weather?&&units=metric&")
-    fun getWeatherDayNowLocation(
+    suspend fun getWeatherDayNowLocation(
         @Query("lat") lat: String,
         @Query("lon") lon: String,
         @Query("appid") api: String,
         @Query("lang") lang: String
-    ): Call<WeatherDayNow>
+    ): Response<WeatherDayNow>
     @GET("data/2.5/forecast?&&units=metric&")
-    fun getWeatherWeekLocation(
+    suspend fun getWeatherWeekLocation(
         @Query("lat") lat: String,
         @Query("lon") lon: String,
         @Query("appid") api: String,
         @Query("lang") lang: String
-    ): Call<WeatherWeek>
+    ): Response<WeatherWeek>
 
     @GET("data/2.5/weather?&units=metric&")
-    fun getWeatherDayNowCity(
+    suspend fun getWeatherDayNowCity(
         @Query("q") city: String,
         @Query("appid") api: String,
         @Query("lang") lang: String
-    ): Call<WeatherDayNow>
+    ): Response<WeatherDayNow>
 
     @GET("data/2.5/forecast?&units=metric&")
-    fun getWeatherWeekCity(
+    suspend fun getWeatherWeekCity(
         @Query("q") city: String,
         @Query("appid") api: String,
         @Query("lang") lang: String
-    ): Call<WeatherWeek>
+    ): Response<WeatherWeek>
 
 
     @GET("geo/1.0/reverse?&&limit=1&")
