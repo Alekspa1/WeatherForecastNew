@@ -13,7 +13,7 @@ import com.drag0n.weatherf0recastn3w.domane.API.RepositoryImp
 import kotlinx.coroutines.launch
 
 
-class MainViewModel(private val app: Application): AndroidViewModel(app) {
+class MainViewModel(): ViewModel() {
 
 
     private val repository = RepositoryImp
@@ -27,15 +27,15 @@ class MainViewModel(private val app: Application): AndroidViewModel(app) {
     private val getApiNameCityWeek = GetApiNameCityWeek(repository)
     private val getGeoNew = GetGeoNew(repository)
 
-    fun getApiNameCitiNow(city: String){
-        viewModelScope.launch {getApiNameCityNow.getApiNameCity(city, app.applicationContext)}
+    fun getApiNameCitiNow(city: String, context: Context){
+        viewModelScope.launch {getApiNameCityNow.getApiNameCity(city, context)}
     }
-    fun getApiNameCitiWeek(city: String){
-        viewModelScope.launch {getApiNameCityWeek.getApiNameCityWeek(city, app.applicationContext)}
+    fun getApiNameCitiWeek(city: String, context: Context){
+        viewModelScope.launch {getApiNameCityWeek.getApiNameCityWeek(city, context)}
     }
 
-    fun getGeoNew(lat: String, lon: String){
-        viewModelScope.launch {  getGeoNew.getGeoNew(lat, lon, app.applicationContext) }
+    fun getGeoNew(lat: String, lon: String, context: Context){
+        viewModelScope.launch {  getGeoNew.getGeoNew(lat, lon, context) }
 
     }
 }

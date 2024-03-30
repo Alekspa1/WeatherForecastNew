@@ -27,7 +27,7 @@ class FragmentMap : Fragment() {
     @SuppressLint("SetJavaScriptEnabled")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        model = MainViewModel(Application())
+        model = MainViewModel()
         model.liveDataDayNow.observe(viewLifecycleOwner){
             val lat = model.liveDataDayNow.value?.coord?.lat
             val lon = model.liveDataDayNow.value?.coord?.lon

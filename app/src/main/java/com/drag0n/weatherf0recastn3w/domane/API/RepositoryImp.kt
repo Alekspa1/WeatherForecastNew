@@ -29,12 +29,10 @@ object RepositoryImp: Repository {
             if (response.isSuccessful){
                 val resuly = response.body()
                 liveDataCurrentWeek.value = resuly!!
-            } else{
-                Toast.makeText(con, con.getString(R.string.repository_error_data_onResponse), Toast.LENGTH_SHORT).show()}
-        }
-        catch (e: UnknownHostException){
-            load.value = false
-            Toast.makeText(con, con.getString(R.string.repository_error_data_onFailure), Toast.LENGTH_SHORT).show()
+            } }
+
+        catch (_: UnknownHostException){
+
         }
 
     }
@@ -45,6 +43,7 @@ object RepositoryImp: Repository {
                 val resuly = response.body()
                 liveDataCurrent.value = resuly!!
             } else{
+                load.value = false
                 Toast.makeText(con, con.getString(R.string.repository_error_data_onResponse), Toast.LENGTH_SHORT).show()}
         }
         catch (e: UnknownHostException){
@@ -59,8 +58,9 @@ object RepositoryImp: Repository {
             if (response.isSuccessful){
                 val resuly = response.body()
                 getApiDayNowLocation(resuly?.get(0)?.lat.toString(), resuly?.get(0)?.lon.toString(), con)
-                getApiWeekLocation(resuly?.get(0)?.lat.toString(), resuly?.get(0)?.lon.toString(), con)
+                getApiWeekLocation(resuly?.get(0)?.lat.toString(), resuly?.get(0)?.lon.toString())
             } else{
+                load.value = false
                 Toast.makeText(con, con.getString(R.string.repository_error_data_onResponse), Toast.LENGTH_SHORT).show()}
         }
         catch (e: UnknownHostException){
@@ -74,6 +74,7 @@ object RepositoryImp: Repository {
                  val resuly = response.body()
                  liveDataCurrent.value = resuly!!
              } else{
+                 load.value = false
                  Toast.makeText(con, con.getString(R.string.repository_error_data_onResponse), Toast.LENGTH_SHORT).show()}
          }
          catch (e: UnknownHostException){
@@ -83,17 +84,15 @@ object RepositoryImp: Repository {
 
     }
 
-     private suspend fun getApiWeekLocation(lat: String, lon: String, con: Context) {
+     private suspend fun getApiWeekLocation(lat: String, lon: String) {
          try { val response = ApiWeather.create().getWeatherWeekLocation(lat, lon, Const.APIKEY, language)
              if (response.isSuccessful){
                  val resuly = response.body()
                  liveDataCurrentWeek.value = resuly!!
-             } else{
-                 Toast.makeText(con, con.getString(R.string.repository_error_data_onResponse), Toast.LENGTH_SHORT).show()}
+             }
          }
-         catch (e: UnknownHostException){
-             load.value = false
-             Toast.makeText(con, con.getString(R.string.repository_error_data_onFailure), Toast.LENGTH_SHORT).show()
+         catch (_: UnknownHostException){
+
          }
     }
 }

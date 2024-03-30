@@ -148,25 +148,25 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
                     Toast.makeText(this@MainActivity, getString(R.string.main_error), Toast.LENGTH_SHORT).show()
                 }
             }
-            imBAddMenu.setOnClickListener {
-                DialogManager.nameSitySearchDialog(
-                    this@MainActivity,
-                    object : DialogManager.Listener {
-                        override fun onClick(city: String?) {
-                            if (city!!.isNotEmpty()) {
-                                CoroutineScope(Dispatchers.IO).launch {
-                                    db.CourseDao().insertAll(ItemCity(null, city))
-                                }
-                            } else Toast.makeText(
-                                this@MainActivity,
-                                getString(R.string.main_isNotEmpty),
-                                Toast.LENGTH_SHORT
-                            ).show()
-
-                        }
-
-                    })
-            }
+//            imBAddMenu.setOnClickListener {
+//                DialogManager.nameSitySearchDialog(
+//                    this@MainActivity,
+//                    object : DialogManager.Listener {
+//                        override fun onClick(city: String?) {
+//                            if (city!!.isNotEmpty()) {
+//                                CoroutineScope(Dispatchers.IO).launch {
+//                                    db.CourseDao().insertAll(ItemCity(null, city))
+//                                }
+//                            } else Toast.makeText(
+//                                this@MainActivity,
+//                                getString(R.string.main_isNotEmpty),
+//                                Toast.LENGTH_SHORT
+//                            ).show()
+//
+//                        }
+//
+//                    })
+//            }
         }
 
 
@@ -236,7 +236,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
     private fun getLastLocationHuawey() {
         fLocotionClientHMS.lastLocation.addOnSuccessListener {
             try {
-                model.getGeoNew(it.latitude.toString(), it.longitude.toString())
+                model.getGeoNew(it.latitude.toString(), it.longitude.toString(), this)
             } catch (e: NullPointerException) {
                 getLocationHuawey()
             }
@@ -262,7 +262,8 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
             override fun onLocationResult(it: LocationResult) {
                 model.getGeoNew(
                     it.lastLocation.latitude.toString(),
-                    it.lastLocation.longitude.toString()
+                    it.lastLocation.longitude.toString(),
+                    this@MainActivity
                 )
             }
         }
@@ -288,7 +289,8 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
                 try {
                     model.getGeoNew(
                         it.result.latitude.toString(),
-                        it.result.longitude.toString()
+                        it.result.longitude.toString(),
+                        this@MainActivity
                     )
                 } catch (_: Exception) {
                     Toast.makeText(
@@ -342,8 +344,8 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
         when (action) {
             Const.SEARCH_CITY -> {
                 model.load.value = true
-                model.getApiNameCitiNow(itemCity.name)
-                model.getApiNameCitiWeek(itemCity.name)
+                model.getApiNameCitiNow(itemCity.name, this)
+                model.getApiNameCitiWeek(itemCity.name, this)
                 binding.drawer.closeDrawer(GravityCompat.START)
             }
 

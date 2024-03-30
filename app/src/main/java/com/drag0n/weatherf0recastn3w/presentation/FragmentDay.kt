@@ -2,6 +2,7 @@ package com.drag0n.weatherf0recastn3w.presentation
 
 import android.app.Application
 import android.os.Bundle
+import android.util.Log
 
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -25,6 +26,9 @@ import com.yandex.mobile.ads.interstitial.InterstitialAd
 import com.yandex.mobile.ads.interstitial.InterstitialAdEventListener
 import com.yandex.mobile.ads.interstitial.InterstitialAdLoadListener
 import com.yandex.mobile.ads.interstitial.InterstitialAdLoader
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -51,7 +55,7 @@ class FragmentDay : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        model = MainViewModel(Application())
+        model = MainViewModel()
         date = SimpleDateFormat("dd MMM", Locale.getDefault()).format(Date())
         inAnimation = AnimationUtils.loadAnimation(view.context, R.anim.alpha_in)
         outAnimation = AnimationUtils.loadAnimation(view.context, R.anim.alpha_out)
@@ -128,11 +132,11 @@ class FragmentDay : Fragment() {
 
         }
         binding.ibSearch.setOnClickListener {
-            DialogManager.nameSitySearchDialog(view.context, object : DialogManager.Listener {
+                DialogManager.nameSitySearchDialog(requireContext(), object : DialogManager.Listener {
                 override fun onClick(city: String?) {
                     if (!city.isNullOrEmpty()) {
-                        model.getApiNameCitiNow(city)
-                        model.getApiNameCitiWeek(city)
+                        model.getApiNameCitiNow(city, requireContext())
+                        model.getApiNameCitiWeek(city,requireContext())
                         binding.root.startAnimation(outAnimation)
                         model.load.value = true
                     } else {
@@ -144,7 +148,6 @@ class FragmentDay : Fragment() {
                     }
                 }
             })
-
         }
     }
 

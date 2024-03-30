@@ -33,29 +33,14 @@ class FragmentWeek : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        model = MainViewModel(Application())
+        model = MainViewModel()
 
         val rc = binding.rcDay
         rc.layoutManager = LinearLayoutManager(view.context)
-        CoroutineScope(Dispatchers.Main).launch {
-                adapter = DaysAdapter(get())
-                rc.adapter = adapter
-                Log.d("MyLog", "End: ${get().size}")
-        }
-//        model.liveDataWeek.observe(viewLifecycleOwner) {
-//            adapter = DaysAdapter(it.list)
-//            rc.adapter = adapter
-//        } // Заполнение погоды на неделю
-    }
-   suspend fun get(): List<Spisok> = withContext(Dispatchers.IO){
-       val list = arrayListOf<Spisok>()
-       for (i in 0..10){
-           delay(5000)
-           list.add(Spisok("Счетчик $i", null,null,null,null,null))
-           Log.d("MyLog", "Add: ${list.size}")
-       }
-       return@withContext list
-
+        model.liveDataWeek.observe(viewLifecycleOwner) {
+            adapter = DaysAdapter(it.list)
+            rc.adapter = adapter
+        } // Заполнение погоды на неделю
     }
 
     companion object {
