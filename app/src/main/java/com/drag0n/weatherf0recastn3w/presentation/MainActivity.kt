@@ -1,18 +1,19 @@
 package com.drag0n.weatherf0recastn3w.presentation
 
 import android.Manifest
+import android.app.Activity
 import android.app.AlarmManager
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.icu.util.Calendar
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-
+import android.util.Log
 import android.view.View
-import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -48,10 +49,19 @@ import com.yandex.mobile.ads.common.AdRequest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import ru.rustore.sdk.billingclient.RuStoreBillingClient
+import ru.rustore.sdk.billingclient.RuStoreBillingClientFactory
+import ru.rustore.sdk.billingclient.model.purchase.PaymentResult
+import ru.rustore.sdk.billingclient.model.purchase.Purchase
+import ru.rustore.sdk.billingclient.model.purchase.PurchaseState
+import ru.rustore.sdk.billingclient.usecase.ProductsUseCase
+import ru.rustore.sdk.billingclient.usecase.PurchasesUseCase
+import ru.rustore.sdk.billingclient.utils.pub.checkPurchasesAvailability
+import ru.rustore.sdk.core.feature.model.FeatureAvailabilityResult
+import java.util.UUID
+
 
 class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
-
-
     lateinit var binding: ActivityMainBinding
     private lateinit var vpAdapter: VpAdapter
     private lateinit var pLauncher: ActivityResultLauncher<String>
@@ -61,21 +71,24 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
     private lateinit var db: CityListDataBase
     private val model: MainViewModel by viewModels()
 
+    private lateinit var billingClient: RuStoreBillingClient
+    private lateinit var productsUseCase: ProductsUseCase
+    private lateinit var purchasesUseCase: PurchasesUseCase
+    private lateinit var pref: SharedPreferences
+    private lateinit var edit: SharedPreferences.Editor
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        pLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {}
-        fLocotionClient = LocationServices.getFusedLocationProviderClient(this)
-        fLocotionClientHMS =
-            com.huawei.hms.location.LocationServices.getFusedLocationProviderClient(this)
+        initAll()
+
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        initDb()
-        initVp()
-        initRcView()
-        yaBaner()
+        if (savedInstanceState == null) {
+            billingClient.onNewIntent(intent)
+        }
+        if(!(pref.getBoolean(Const.premium_KEY, false))) yaBaner()
+        Log.d("MyLog",(pref.getBoolean(Const.premium_KEY, false).toString()))
         val calendar = Calendar.getInstance().timeInMillis
-
-
 
         model.load.observe(this){
             if (model.load.value == true) binding.progressBar2.visibility = View.VISIBLE
@@ -148,25 +161,29 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
                     Toast.makeText(this@MainActivity, getString(R.string.main_error), Toast.LENGTH_SHORT).show()
                 }
             }
-//            imBAddMenu.setOnClickListener {
-//                DialogManager.nameSitySearchDialog(
-//                    this@MainActivity,
-//                    object : DialogManager.Listener {
-//                        override fun onClick(city: String?) {
-//                            if (city!!.isNotEmpty()) {
-//                                CoroutineScope(Dispatchers.IO).launch {
-//                                    db.CourseDao().insertAll(ItemCity(null, city))
-//                                }
-//                            } else Toast.makeText(
-//                                this@MainActivity,
-//                                getString(R.string.main_isNotEmpty),
-//                                Toast.LENGTH_SHORT
-//                            ).show()
-//
-//                        }
-//
-//                    })
-//            }
+            imBAddMenu.setOnClickListener {
+                DialogManager.nameSitySearchDialog(
+                    this@MainActivity,
+                    object : DialogManager.Listener {
+                        override fun onClick(city: String?) {
+                            if (city!!.isNotEmpty()) {
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    db.CourseDao().insertAll(ItemCity(null, city))
+                                }
+                            } else Toast.makeText(
+                                this@MainActivity,
+                                getString(R.string.main_isNotEmpty),
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                        }
+
+                    })
+            }
+            bPremium.setOnClickListener {
+                proverkaVozmoznoyOplaty(this@MainActivity)
+                drawer.closeDrawer(GravityCompat.START)
+            }
         }
 
 
@@ -176,29 +193,9 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
         super.onResume()
         chekPermissionLocation()
         model.load.value = true
+        shopingList()
     }
 
-    private fun initVp() {
-        vpAdapter = VpAdapter(this)
-        binding.placeHolder.adapter = vpAdapter
-        TabLayoutMediator(binding.tabLayout, binding.placeHolder) { tab, pos ->
-            tab.text = resources.getStringArray(R.array.vp_title_main)[pos]
-        }.attach()
-        binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                binding.placeHolder.isUserInputEnabled = tab.position != 2
-                if(tab.position == 2) binding.yaMob.visibility = View.GONE
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab?) {
-            }
-
-            override fun onTabReselected(tab: TabLayout.Tab?) {
-            }
-        })
-
-
-    } // инициализирую ViewPager
 
     private fun chekPermissionLocation() {
         if (Const.isPermissionGranted(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
@@ -320,24 +317,8 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
 
     }
 
-    private fun initRcView() {
-        val rcView = binding.rcView
-        adapter = ItemCityAdapter(this)
-        rcView.layoutManager = LinearLayoutManager(this)
-        rcView.adapter = adapter
-        db.CourseDao().getAll().asLiveData().observe(this) {
-            adapter.submitList(it)
-        }
 
 
-    } // инициализировал ресайклер
-
-    private fun initDb() {
-        db = Room.databaseBuilder(
-            this,
-            CityListDataBase::class.java, "CityList"
-        ).build()
-    }
 
 
     override fun onClick(itemCity: ItemCity, action: String) {
@@ -354,6 +335,127 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
             }
         }
 
+    }
+
+
+    private fun proverkaVozmoznoyOplaty(context: Context) {
+        RuStoreBillingClient.checkPurchasesAvailability(context)
+            .addOnSuccessListener { result ->
+                when (result) {
+                    FeatureAvailabilityResult.Available -> {
+                        pokupka()
+                    }
+                    is FeatureAvailabilityResult.Unavailable -> {
+                        Toast.makeText(context, "Оплата временно недоступна", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                }
+            }.addOnFailureListener {
+
+            }
+    } // Проверка возможности оплатить
+    private fun pokupka() {
+        purchasesUseCase.purchaseProduct(
+            productId = "premium_version_weather_forecast",
+            orderId = UUID.randomUUID().toString(),
+            quantity = 1,
+            developerPayload = null,
+        ).addOnSuccessListener { paymentResult: PaymentResult ->
+            when (paymentResult) {
+                is PaymentResult.Success -> {
+                    edit.putBoolean(Const.premium_KEY, true)
+                    edit.apply()
+                    Toast.makeText(
+                        this,
+                        "Поздравляю! Теперь у вас не будет рекламы",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                else -> {
+                    Toast.makeText(
+                        this,
+                        "Произошла ошибка оплаты",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }.addOnFailureListener {
+        }
+    } // Покупка товара
+    private fun shopingList() {
+        purchasesUseCase.getPurchases()
+            .addOnSuccessListener { purchases: List<Purchase> ->
+                if (purchases.isEmpty() && Const.premium) {
+                    edit.putBoolean(Const.premium_KEY, false)
+                    pref.getBoolean(Const.premium_KEY, false)
+                    edit.apply()
+                }
+                purchases.forEach {
+                    if (it.productId == "premium_version_weather_forecast" &&
+                        (it.purchaseState == PurchaseState.PAID ||
+                                it.purchaseState == PurchaseState.CONFIRMED) && !Const.premium
+                    ) {
+                        edit.putBoolean(Const.premium_KEY, true)
+                        pref.getBoolean(Const.premium_KEY, false)
+                        edit.apply()
+                    }
+                }
+
+            }
+            .addOnFailureListener {
+                // Process error
+            }
+
+    } // Запрос ранее совершенных покупок
+    private fun initAll(){
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        pLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {}
+        fLocotionClient = LocationServices.getFusedLocationProviderClient(this)
+        fLocotionClientHMS =
+            com.huawei.hms.location.LocationServices.getFusedLocationProviderClient(this)
+
+        billingClient = RuStoreBillingClientFactory.create(
+            context = this,
+            consoleApplicationId = "2063502125",
+            deeplinkScheme = "yourappscheme"
+        )
+        productsUseCase = billingClient.products
+        purchasesUseCase = billingClient.purchases
+        pref = this.getSharedPreferences("PREMIUM", Context.MODE_PRIVATE)
+        edit = pref.edit()
+
+        db = Room.databaseBuilder(
+            this,
+            CityListDataBase::class.java, "CityList"
+        ).build()
+
+
+        vpAdapter = VpAdapter(this)
+        binding.placeHolder.adapter = vpAdapter
+        TabLayoutMediator(binding.tabLayout, binding.placeHolder) { tab, pos ->
+            tab.text = resources.getStringArray(R.array.vp_title_main)[pos]
+        }.attach()
+        binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                binding.placeHolder.isUserInputEnabled = tab.position != 2
+                if(tab.position == 2) binding.yaMob.visibility = View.GONE
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+            }
+        })
+
+        val rcView = binding.rcView
+        adapter = ItemCityAdapter(this)
+        rcView.layoutManager = LinearLayoutManager(this)
+        rcView.adapter = adapter
+        db.CourseDao().getAll().asLiveData().observe(this) {
+            adapter.submitList(it)
+        }
     }
 }
 

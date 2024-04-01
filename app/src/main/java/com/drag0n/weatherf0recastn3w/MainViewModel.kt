@@ -13,7 +13,7 @@ import com.drag0n.weatherf0recastn3w.domane.API.RepositoryImp
 import kotlinx.coroutines.launch
 
 
-class MainViewModel(): ViewModel() {
+class MainViewModel : ViewModel() {
 
 
     private val repository = RepositoryImp

@@ -32,4 +32,5 @@
     <string name="WeekFragment_min_current">Min. forecast temperature:</string>
     <string name="WeekFragment_max_current">Max. forecast temperature:</string>
     <string name="WeekFragment_precipitation">Chance of precipitation:</string>
+    <string name="menu_premium">Disable advertising</string>
 </resources>

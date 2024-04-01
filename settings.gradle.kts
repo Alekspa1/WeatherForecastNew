@@ -15,6 +15,9 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven ( "https://developer.huawei.com/repo/" )
+        maven {
+            url = uri("https://artifactory-external.vkpartner.ru/artifactory/maven")
+        }
 
     }
 
