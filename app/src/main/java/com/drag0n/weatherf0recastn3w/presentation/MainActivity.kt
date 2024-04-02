@@ -74,20 +74,26 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
     private lateinit var billingClient: RuStoreBillingClient
     private lateinit var productsUseCase: ProductsUseCase
     private lateinit var purchasesUseCase: PurchasesUseCase
-    private lateinit var pref: SharedPreferences
+    lateinit var pref: SharedPreferences
     private lateinit var edit: SharedPreferences.Editor
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        initAll()
-
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        initRustoreBilling()
+        initDB()
+        initLocation()
+        initVP()
+        initRcView()
+        initSharedPreferense()
+        initYaMov()
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         if (savedInstanceState == null) {
             billingClient.onNewIntent(intent)
         }
-        if(!(pref.getBoolean(Const.premium_KEY, false))) yaBaner()
-        Log.d("MyLog",(pref.getBoolean(Const.premium_KEY, false).toString()))
+        Log.d("MyLog", "${pref.getBoolean(Const.premium_KEY,false)}")
+
         val calendar = Calendar.getInstance().timeInMillis
 
         model.load.observe(this){
@@ -184,6 +190,8 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
             bPremium.setOnClickListener {
                 proverkaVozmoznoyOplaty(this@MainActivity)
                 drawer.closeDrawer(GravityCompat.START)
+                edit.putBoolean(Const.premium_KEY, true)
+                edit.apply()
             }
         }
 
@@ -303,18 +311,12 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
 
     } // Функция для получения геолокации Гугла
 
-    private fun yaBaner() {
-        binding.yaMob.setAdUnitId(Const.baner)
-        binding.yaMob.setAdSize(BannerAdSize.stickySize(this, 350))
-        val adRequest = AdRequest.Builder().build()
-        binding.yaMob.loadAd(adRequest)
-    } // яндекс банер
+
 
     private fun insertBackground(backgroud: Int) {
         with(binding) {
             root.setBackgroundResource(backgroud)
         }
-
 
     }
 
@@ -391,6 +393,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
                 if (purchases.isEmpty() && (pref.getBoolean(Const.premium_KEY, false))) {
                     edit.putBoolean(Const.premium_KEY, false)
                     edit.apply()
+                    Log.d("MyLog", "Не купил")
                 }
                 purchases.forEach {
                     if (it.productId == "premium_version_weather_forecast" &&
@@ -404,17 +407,12 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
 
             }
             .addOnFailureListener {
-                // Process error
+                Log.d("MyLog", it.message.toString())
             }
 
     } // Запрос ранее совершенных покупок
-    private fun initAll(){
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        pLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {}
-        fLocotionClient = LocationServices.getFusedLocationProviderClient(this)
-        fLocotionClientHMS =
-            com.huawei.hms.location.LocationServices.getFusedLocationProviderClient(this)
 
+    private fun initRustoreBilling(){
         billingClient = RuStoreBillingClientFactory.create(
             context = this,
             consoleApplicationId = "2063502125",
@@ -422,15 +420,18 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
         )
         productsUseCase = billingClient.products
         purchasesUseCase = billingClient.purchases
+    }
+    private fun initSharedPreferense(){
         pref = this.getSharedPreferences("PREMIUM", Context.MODE_PRIVATE)
         edit = pref.edit()
-
+    }
+    private fun initDB(){
         db = Room.databaseBuilder(
             this,
             CityListDataBase::class.java, "CityList"
         ).build()
-
-
+    }
+    private fun initVP(){
         vpAdapter = VpAdapter(this)
         binding.placeHolder.adapter = vpAdapter
         TabLayoutMediator(binding.tabLayout, binding.placeHolder) { tab, pos ->
@@ -448,7 +449,8 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
             override fun onTabReselected(tab: TabLayout.Tab?) {
             }
         })
-
+    }
+    private fun initRcView(){
         val rcView = binding.rcView
         adapter = ItemCityAdapter(this)
         rcView.layoutManager = LinearLayoutManager(this)
@@ -456,6 +458,19 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
         db.CourseDao().getAll().asLiveData().observe(this) {
             adapter.submitList(it)
         }
+    }
+    private fun initYaMov(){
+        binding.yaMob.setAdUnitId(Const.baner)
+        binding.yaMob.setAdSize(BannerAdSize.stickySize(this, 350))
+        val adRequest = AdRequest.Builder().build()
+        if (!pref.getBoolean(Const.premium_KEY, false))  binding.yaMob.loadAd(adRequest)
+    }
+
+    private fun initLocation(){
+        pLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {}
+        fLocotionClient = LocationServices.getFusedLocationProviderClient(this)
+        fLocotionClientHMS =
+            com.huawei.hms.location.LocationServices.getFusedLocationProviderClient(this)
     }
 }
 

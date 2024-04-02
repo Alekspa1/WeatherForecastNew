@@ -46,7 +46,7 @@ object RepositoryImp: Repository {
                 load.value = false
                 Toast.makeText(con, con.getString(R.string.repository_error_data_onResponse), Toast.LENGTH_SHORT).show()}
         }
-        catch (e: UnknownHostException){
+        catch (e: Exception){
             load.value = false
             Toast.makeText(con, con.getString(R.string.repository_error_data_onFailure), Toast.LENGTH_SHORT).show()
         }
@@ -63,7 +63,8 @@ object RepositoryImp: Repository {
                 load.value = false
                 Toast.makeText(con, con.getString(R.string.repository_error_data_onResponse), Toast.LENGTH_SHORT).show()}
         }
-        catch (e: UnknownHostException){
+        catch (e: Exception){
+            Log.d("MyLog", e.message.toString())
            load.value = false
             Toast.makeText(con, con.getString(R.string.repository_error_data_onFailure), Toast.LENGTH_SHORT).show()
         }
@@ -77,7 +78,7 @@ object RepositoryImp: Repository {
                  load.value = false
                  Toast.makeText(con, con.getString(R.string.repository_error_data_onResponse), Toast.LENGTH_SHORT).show()}
          }
-         catch (e: UnknownHostException){
+         catch (e: Exception){
              load.value = false
              Toast.makeText(con, con.getString(R.string.repository_error_data_onFailure), Toast.LENGTH_SHORT).show()
          }

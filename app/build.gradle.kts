@@ -45,7 +45,7 @@ android {
 }
 
 dependencies {
-    implementation( "ru.rustore.sdk:billingclient:3.2.0" )
+    implementation( "ru.rustore.sdk:billingclient:5.0.0" )
 
     implementation ("com.huawei.hms:location:5.0.0.301")
     implementation ("com.huawei.agconnect:agconnect-core:1.9.1.301")

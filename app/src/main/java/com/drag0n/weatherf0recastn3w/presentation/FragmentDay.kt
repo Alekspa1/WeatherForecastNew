@@ -121,10 +121,10 @@ class FragmentDay : Fragment() {
         } // Заполнение погоды на сегодняшний день
         binding.ibSync.setOnClickListener {
             binding.ibSync.playAnimation()
-           // binding.root.startAnimation(outAnimation)
 
             if (binding.tvCity.text == getString(R.string.dayFragment_loading)
-                || interstitialAd == null) {
+                || interstitialAd == null ||
+                (activity as MainActivity).pref.getBoolean(Const.premium_KEY, false)) {
                 (activity as MainActivity).chekLocation()
                 model.load.value = true
             }
