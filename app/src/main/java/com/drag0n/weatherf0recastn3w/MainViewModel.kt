@@ -1,8 +1,6 @@
 package com.drag0n.weatherf0recastn3w
 
-import android.app.Application
 import android.content.Context
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -20,6 +18,7 @@ class MainViewModel : ViewModel() {
     val liveDataDayNow = repository.liveDataCurrent
     val liveDataWeek = repository.liveDataCurrentWeek
     val load = repository.load
+    val premium = MutableLiveData<Boolean>()
 
 
 

@@ -1,7 +1,6 @@
 package com.drag0n.weatherf0recastn3w.presentation
 
 import android.Manifest
-import android.app.Activity
 import android.app.AlarmManager
 import android.content.Context
 import android.content.Intent
@@ -25,6 +24,7 @@ import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
 import com.drag0n.weatherf0recastn3w.Const
+import com.drag0n.weatherf0recastn3w.Const.PREMIUM_KEY
 import com.drag0n.weatherf0recastn3w.domane.Room.ItemCity
 import com.drag0n.weatherf0recastn3w.DialogManager
 import com.drag0n.weatherf0recastn3w.MainViewModel
@@ -54,7 +54,6 @@ import ru.rustore.sdk.billingclient.RuStoreBillingClientFactory
 import ru.rustore.sdk.billingclient.model.purchase.PaymentResult
 import ru.rustore.sdk.billingclient.model.purchase.Purchase
 import ru.rustore.sdk.billingclient.model.purchase.PurchaseState
-import ru.rustore.sdk.billingclient.usecase.ProductsUseCase
 import ru.rustore.sdk.billingclient.usecase.PurchasesUseCase
 import ru.rustore.sdk.billingclient.utils.pub.checkPurchasesAvailability
 import ru.rustore.sdk.core.feature.model.FeatureAvailabilityResult
@@ -69,33 +68,35 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
     private lateinit var fLocotionClientHMS: com.huawei.hms.location.FusedLocationProviderClient
     private lateinit var adapter: ItemCityAdapter
     private lateinit var db: CityListDataBase
-    private val model: MainViewModel by viewModels()
+    val model: MainViewModel by viewModels()
 
     private lateinit var billingClient: RuStoreBillingClient
-    private lateinit var productsUseCase: ProductsUseCase
     private lateinit var purchasesUseCase: PurchasesUseCase
-    lateinit var pref: SharedPreferences
+    private lateinit var pref: SharedPreferences
     private lateinit var edit: SharedPreferences.Editor
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityMainBinding.inflate(layoutInflater)
+        initSharedPreferense()
+        model.premium.value = pref.getBoolean(PREMIUM_KEY, false)
         initRustoreBilling()
         initDB()
         initLocation()
         initVP()
         initRcView()
-        initSharedPreferense()
-        initYaMov()
+
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         if (savedInstanceState == null) {
             billingClient.onNewIntent(intent)
         }
-        Log.d("MyLog", "${pref.getBoolean(Const.premium_KEY,false)}")
 
         val calendar = Calendar.getInstance().timeInMillis
-
+        model.premium.observe(this){premium->
+            if(premium) binding.yaMob.visibility = View.GONE
+            else initYaMov()
+        }
         model.load.observe(this){
             if (model.load.value == true) binding.progressBar2.visibility = View.VISIBLE
             else binding.progressBar2.visibility = View.GONE
@@ -190,8 +191,6 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
             bPremium.setOnClickListener {
                 proverkaVozmoznoyOplaty(this@MainActivity)
                 drawer.closeDrawer(GravityCompat.START)
-                edit.putBoolean(Const.premium_KEY, true)
-                edit.apply()
             }
         }
 
@@ -367,8 +366,9 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
         ).addOnSuccessListener { paymentResult: PaymentResult ->
             when (paymentResult) {
                 is PaymentResult.Success -> {
-                    edit.putBoolean(Const.premium_KEY, true)
+                    edit.putBoolean(PREMIUM_KEY, true)
                     edit.apply()
+                    model.premium.value = true
                     Toast.makeText(
                         this,
                         "Поздравляю! Теперь у вас не будет рекламы",
@@ -390,24 +390,22 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
     private fun shopingList() {
         purchasesUseCase.getPurchases()
             .addOnSuccessListener { purchases: List<Purchase> ->
-                if (purchases.isEmpty() && (pref.getBoolean(Const.premium_KEY, false))) {
-                    edit.putBoolean(Const.premium_KEY, false)
+                if (purchases.isEmpty() && (model.premium.value == true)) {
+                    edit.putBoolean(PREMIUM_KEY, false)
                     edit.apply()
-                    Log.d("MyLog", "Не купил")
+                    model.premium.value = false
                 }
                 purchases.forEach {
                     if (it.productId == "premium_version_weather_forecast" &&
                         (it.purchaseState == PurchaseState.PAID ||
-                                it.purchaseState == PurchaseState.CONFIRMED) && !(pref.getBoolean(Const.premium_KEY, false)))
+                                it.purchaseState == PurchaseState.CONFIRMED) &&
+                        (model.premium.value == false))
                      {
-                        edit.putBoolean(Const.premium_KEY, true)
+                        edit.putBoolean(PREMIUM_KEY, true)
                         edit.apply()
+                         model.premium.value = true
                     }
                 }
-
-            }
-            .addOnFailureListener {
-                Log.d("MyLog", it.message.toString())
             }
 
     } // Запрос ранее совершенных покупок
@@ -418,7 +416,6 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
             consoleApplicationId = "2063502125",
             deeplinkScheme = "yourappscheme"
         )
-        productsUseCase = billingClient.products
         purchasesUseCase = billingClient.purchases
     }
     private fun initSharedPreferense(){
@@ -463,7 +460,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
         binding.yaMob.setAdUnitId(Const.baner)
         binding.yaMob.setAdSize(BannerAdSize.stickySize(this, 350))
         val adRequest = AdRequest.Builder().build()
-        if (!pref.getBoolean(Const.premium_KEY, false))  binding.yaMob.loadAd(adRequest)
+        if (!pref.getBoolean(PREMIUM_KEY, false))  binding.yaMob.loadAd(adRequest)
     }
 
     private fun initLocation(){
