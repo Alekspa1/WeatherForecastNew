@@ -85,8 +85,6 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
         initLocation()
         initVP()
         initRcView()
-        shopingList()
-
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         if (savedInstanceState == null) {
@@ -197,10 +195,14 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
 
     } // OnCreate
 
+
     override fun onResume() {
         super.onResume()
         chekPermissionLocation()
         model.load.value = true
+        CoroutineScope(Dispatchers.IO).launch {
+            shopingList()
+        }
     }
 
 
@@ -391,9 +393,10 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
                 if (purchases.isEmpty() && (model.premium.value == true)) {
                     edit.putBoolean(PREMIUM_KEY, false)
                     edit.apply()
-                    model.premium.value = false
+                    model.premium.postValue(false)
                 }
                 purchases.forEach {
+
                     if (it.productId == "premium_version_weather_forecast" &&
                         (it.purchaseState == PurchaseState.PAID ||
                                 it.purchaseState == PurchaseState.CONFIRMED) &&
@@ -401,9 +404,11 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
                      {
                         edit.putBoolean(PREMIUM_KEY, true)
                         edit.apply()
-                         model.premium.value = true
+                         model.premium.postValue(true)
                     }
                 }
+            }
+            .addOnFailureListener{
             }
 
     } // Запрос ранее совершенных покупок
