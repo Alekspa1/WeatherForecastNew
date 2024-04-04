@@ -69,7 +69,7 @@ class FragmentDay : Fragment() {
         loadInterstitialAd()
 
         model.liveDataDayNow.observe(viewLifecycleOwner) {
-            binding.root.startAnimation(inAnimation)
+
             val timeSunrise =
                 SimpleDateFormat(" HH : mm ",
                     Locale.getDefault()).format(it.sys.sunrise * 1000L)
@@ -133,7 +133,6 @@ class FragmentDay : Fragment() {
                     if (!city.isNullOrEmpty()) {
                         model.getApiNameCitiNow(city, requireContext())
                         model.getApiNameCitiWeek(city,requireContext())
-                        binding.root.startAnimation(outAnimation)
                         model.load.value = true
                     } else {
                         Toast.makeText(

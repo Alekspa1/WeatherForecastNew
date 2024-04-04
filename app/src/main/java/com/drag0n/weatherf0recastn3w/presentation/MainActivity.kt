@@ -11,7 +11,6 @@ import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -25,6 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
 import com.drag0n.weatherf0recastn3w.Const
 import com.drag0n.weatherf0recastn3w.Const.PREMIUM_KEY
+import com.drag0n.weatherf0recastn3w.Const.RUSTORE
 import com.drag0n.weatherf0recastn3w.domane.Room.ItemCity
 import com.drag0n.weatherf0recastn3w.DialogManager
 import com.drag0n.weatherf0recastn3w.MainViewModel
@@ -85,6 +85,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
         initLocation()
         initVP()
         initRcView()
+        shopingList()
 
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -156,13 +157,12 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
                 }
             }
             bUpdate.setOnClickListener {
-                TODO("МАГАЗИН")
                 try {
                     binding.drawer.closeDrawer(GravityCompat.START)
                     startActivity(
                         Intent(
                             Intent.ACTION_VIEW,
-                            Uri.parse("https://apps.rustore.ru/app/com.drag0n.weatherf0recastn3w")
+                            Uri.parse(RUSTORE)
                         )
                     )
                 } catch (e: Exception) {
@@ -201,7 +201,6 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
         super.onResume()
         chekPermissionLocation()
         model.load.value = true
-        shopingList()
     }
 
 
@@ -348,7 +347,6 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
                         pokupka()
                     }
                     is FeatureAvailabilityResult.Unavailable -> {
-                        Log.d("MyLog", result.cause.toString())
                         Toast.makeText(context, "Оплата временно недоступна", Toast.LENGTH_SHORT)
                             .show()
                     }

@@ -12,6 +12,8 @@ object Const {
     const val SEARCH_CITY = "SEARCH_CITY"
     const val DELETE_CITY = "DELETE_CITY"
     const val PREMIUM_KEY = "premium_KEY"
+    const val RUSTORE = "https://apps.rustore.ru/app/com.drag0n.weatherf0recastn3w"
+    const val APP_GALERY = "premium_KEY"
     var language = Locale.getDefault().language.toString()
     fun isPermissionGranted(con: Context,p: String): Boolean {
         return ContextCompat.checkSelfPermission(con, p) == PackageManager.PERMISSION_GRANTED
