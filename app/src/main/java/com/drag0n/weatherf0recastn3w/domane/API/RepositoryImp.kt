@@ -31,6 +31,7 @@ object RepositoryImp: Repository {
                 liveDataCurrentWeek.value = resuly!!
             } }
 
+
         catch (_: UnknownHostException){
 
         }
@@ -95,6 +96,7 @@ object RepositoryImp: Repository {
          catch (_: UnknownHostException){
 
          }
+
     }
 }
 

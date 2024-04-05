@@ -14,8 +14,11 @@ android {
         applicationId = "com.drag0n.weatherf0recastn3w"
         minSdk = 26
         targetSdk = 33
+
         versionCode = 18
         versionName = "7.3"
+
+
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
