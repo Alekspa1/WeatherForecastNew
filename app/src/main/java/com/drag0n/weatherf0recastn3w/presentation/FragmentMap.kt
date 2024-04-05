@@ -1,6 +1,7 @@
 package com.drag0n.weatherf0recastn3w.presentation
 
 import android.annotation.SuppressLint
+import android.app.Application
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater

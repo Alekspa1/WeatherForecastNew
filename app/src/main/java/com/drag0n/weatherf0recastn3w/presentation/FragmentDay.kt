@@ -69,6 +69,7 @@ class FragmentDay : Fragment() {
         loadInterstitialAd()
 
         model.liveDataDayNow.observe(viewLifecycleOwner) {
+
             val timeSunrise =
                 SimpleDateFormat(" HH : mm ",
                     Locale.getDefault()).format(it.sys.sunrise * 1000L)
@@ -114,11 +115,14 @@ class FragmentDay : Fragment() {
         } // Заполнение погоды на сегодняшний день
         binding.ibSync.setOnClickListener {
             binding.ibSync.playAnimation()
-            binding.root.startAnimation(outAnimation)
 
             if (binding.tvCity.text == getString(R.string.dayFragment_loading)
-                || interstitialAd == null) {
-                (activity as MainActivity).chekLocation()
+
+                || interstitialAd == null
+                || (activity as MainActivity).model.premium.value == true
+                )
+            { (activity as MainActivity).chekLocation()
+
                 model.load.value = true
             }
             else showAd()
@@ -126,13 +130,15 @@ class FragmentDay : Fragment() {
 
         }
         binding.ibSearch.setOnClickListener {
-            DialogManager.nameSitySearchDialog(view.context, object : DialogManager.Listener {
+                DialogManager.nameSitySearchDialog(requireContext(), object : DialogManager.Listener {
                 override fun onClick(city: String?) {
                     if (!city.isNullOrEmpty()) {
+
+                        model.getApiNameCitiNow(city, requireContext())
+                        model.getApiNameCitiWeek(city,requireContext())
                         model.load.value = true
-                        model.getApiNameCitiNow(city, view.context)
-                        model.getApiNameCitiWeek(city, view.context)
-                        binding.root.startAnimation(outAnimation)
+
+
                     } else {
                         Toast.makeText(
                             view.context,
@@ -142,7 +148,6 @@ class FragmentDay : Fragment() {
                     }
                 }
             })
-
         }
     }
 

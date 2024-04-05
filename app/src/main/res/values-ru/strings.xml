@@ -11,6 +11,7 @@
     <string name="menu_myCity">Мой город</string>
     <string name="menu_callBack">Обратная связь</string>
     <string name="menu_upgrate">Проверить обновления</string>
+    <string name="menu_premium">Отключить рекламу</string>
 
     <string name="dialog_search_city_title">Введите название города</string>
     <string name="dialog_search_city_button_search">Поиск</string>

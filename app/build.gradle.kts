@@ -14,8 +14,11 @@ android {
         applicationId = "com.drag0n.weatherf0recastn3w"
         minSdk = 26
         targetSdk = 33
-        versionCode = 16
-        versionName = "7.2"
+
+        versionCode = 18
+        versionName = "7.3"
+
+
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -45,6 +48,8 @@ android {
 }
 
 dependencies {
+    implementation( "ru.rustore.sdk:billingclient:5.0.0" )
+
     implementation ("com.huawei.hms:location:5.0.0.301")
     implementation ("com.huawei.agconnect:agconnect-core:1.9.1.301")
 
@@ -57,8 +62,7 @@ dependencies {
 
 
     implementation("com.github.bumptech.glide:glide:4.15.1")
-    implementation("com.yandex.android:mobileads:6.4.0")
-    implementation("com.yandex.ads.mediation:mobileads-mytarget:5.20.0.0")
+    implementation("com.yandex.android:mobileads:7.0.0")
 
     implementation("com.airbnb.android:lottie:6.1.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")

@@ -8,7 +8,10 @@
     android:layout_gravity="start"
     android:background="@drawable/img_6"
     android:visibility="visible"
-    tools:context=".presentation.MainActivity">
+
+    tools:context=".presentation.MainActivity"
+    tools:openDrawer="start"
+
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -175,6 +178,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/menu_upgrate" />
+
+                <Button
+                    android:id="@+id/bPremium"
+                    style="@android:style/Widget.Holo.Button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/menu_premium" />
 
             </LinearLayout>
 
