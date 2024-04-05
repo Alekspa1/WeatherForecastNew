@@ -201,8 +201,6 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
 
 
     } // OnCreate
-
-
     override fun onResume() {
         super.onResume()
         chekPermissionLocation()
@@ -217,8 +215,6 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
         super.onNewIntent(intent)
         billingClient.onNewIntent(intent)
     }
-
-
     private fun chekPermissionLocation() {
         if (Const.isPermissionGranted(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
             chekLocation()
@@ -226,7 +222,6 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
             pLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
     } // проверяет есть ли разрешение геолокации
-
     fun chekLocation() {
         if (isLocationEnabled()) {
             if (isHuaweiMobileServicesAvailable(this)) getLastLocationHuawey()
@@ -240,18 +235,15 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
             })
         }
     } // Функция проверяет включено ли GPS
-
     private fun isLocationEnabled(): Boolean {
         val lm = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return lm.isProviderEnabled(LocationManager.GPS_PROVIDER)
     } // Функция узнает включено ли GPS
-
     private fun isHuaweiMobileServicesAvailable(context: Context): Boolean {
         val huaweiApiAvailability = HuaweiApiAvailability.getInstance()
         val resultCode = huaweiApiAvailability.isHuaweiMobileServicesAvailable(context)
         return resultCode == com.huawei.hms.api.ConnectionResult.SUCCESS
     }
-
     private fun getLastLocationHuawey() {
         fLocotionClientHMS.lastLocation.addOnSuccessListener {
             try {
@@ -262,7 +254,6 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
         }
 
     } // Функция для получения последней геолокации Хуавея
-
     private fun getLocationHuawey() {
         val locationRequest = LocationRequest.create()
             .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY)
@@ -289,8 +280,6 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
         }
         fLocotionClientHMS.requestLocationUpdates(locationRequest, callback, null)
     } // Функция для получения геолокации Хуавея
-
-
     private fun getLocationGoogle() {
         val ct = CancellationTokenSource()
         if (ActivityCompat.checkSelfPermission(
@@ -324,20 +313,12 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
 
 
     } // Функция для получения геолокации Гугла
-
-
-
     private fun insertBackground(backgroud: Int) {
         with(binding) {
             root.setBackgroundResource(backgroud)
         }
 
     }
-
-
-
-
-
     override fun onClick(itemCity: ItemCity, action: String) {
         when (action) {
             Const.SEARCH_CITY -> {
@@ -353,8 +334,6 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
         }
 
     }
-
-
     private fun proverkaVozmoznoyOplaty(context: Context) {
         RuStoreBillingClient.checkPurchasesAvailability(context)
             .addOnSuccessListener { result ->
@@ -426,7 +405,6 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
             }
 
     } // Запрос ранее совершенных покупок
-
     private fun initRustoreBilling(){
         billingClient = RuStoreBillingClientFactory.create(
             context = this,
@@ -479,7 +457,6 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
         val adRequest = AdRequest.Builder().build()
         if (!pref.getBoolean(PREMIUM_KEY, false))  binding.yaMob.loadAd(adRequest)
     }
-
     private fun initLocation(){
         pLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {}
         fLocotionClient = LocationServices.getFusedLocationProviderClient(this)
