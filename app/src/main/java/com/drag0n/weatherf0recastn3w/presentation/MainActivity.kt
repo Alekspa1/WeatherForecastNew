@@ -213,6 +213,10 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
         }
 
     }
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        billingClient.onNewIntent(intent)
+    }
 
 
     private fun chekPermissionLocation() {
