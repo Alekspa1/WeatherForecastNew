@@ -463,7 +463,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
         binding.yaMob.setAdUnitId(Const.baner)
         binding.yaMob.setAdSize(BannerAdSize.stickySize(this, 350))
         val adRequest = AdRequest.Builder().build()
-        if (!pref.getBoolean(PREMIUM_KEY, false))  binding.yaMob.loadAd(adRequest)
+        binding.yaMob.loadAd(adRequest)
     }
 
     private fun initLocation(){
