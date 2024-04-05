@@ -10,7 +10,7 @@
     android:visibility="visible"
 
     tools:context=".presentation.MainActivity"
-    tools:openDrawer="start"
+    tools:openDrawer="start">
 
 
 
