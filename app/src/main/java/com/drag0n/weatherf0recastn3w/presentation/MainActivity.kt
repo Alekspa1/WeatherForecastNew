@@ -68,12 +68,14 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
     private lateinit var fLocotionClientHMS: com.huawei.hms.location.FusedLocationProviderClient
     private lateinit var adapter: ItemCityAdapter
     private lateinit var db: CityListDataBase
+
     val model: MainViewModel by viewModels()
 
     private lateinit var billingClient: RuStoreBillingClient
     private lateinit var purchasesUseCase: PurchasesUseCase
     private lateinit var pref: SharedPreferences
     private lateinit var edit: SharedPreferences.Editor
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,6 +89,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
         initRcView()
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
         if (savedInstanceState == null) {
             billingClient.onNewIntent(intent)
         }
@@ -96,6 +99,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
             if(premium) binding.yaMob.visibility = View.GONE
             else initYaMov()
         }
+
         model.load.observe(this){
             if (model.load.value == true) binding.progressBar2.visibility = View.VISIBLE
             else binding.progressBar2.visibility = View.GONE
@@ -103,7 +107,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
         model.liveDataDayNow.observe(this) {
             model.load.value = false
             val rassvet = it.sys.sunrise * 1000L
-            val zakat = (it.sys.sunset * 1000L) + AlarmManager.INTERVAL_HALF_HOUR
+            val zakat = (it.sys.sunset * 1000L) + AlarmManager.INTERVAL_FIFTEEN_MINUTES
 
             if (calendar > zakat || calendar < rassvet)
                 when (it.weather[0].id) {
@@ -140,6 +144,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
                 model.load.value = true
                 chekLocation()
                 binding.drawer.closeDrawer(GravityCompat.START)
+
             }
             bCallback.setOnClickListener {
                 try {
@@ -160,7 +165,9 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
                     startActivity(
                         Intent(
                             Intent.ACTION_VIEW,
+
                             Uri.parse(RUSTORE)
+
                         )
                     )
                 } catch (e: Exception) {
@@ -200,9 +207,11 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
         super.onResume()
         chekPermissionLocation()
         model.load.value = true
+
         CoroutineScope(Dispatchers.IO).launch {
             shopingList()
         }
+
     }
 
 
@@ -257,6 +266,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
 
         val callback = object : LocationCallback() {
             override fun onLocationAvailability(p0: LocationAvailability?) {
+                model.load.value = false
                 super.onLocationAvailability(p0)
                 Toast.makeText(
                     this@MainActivity,

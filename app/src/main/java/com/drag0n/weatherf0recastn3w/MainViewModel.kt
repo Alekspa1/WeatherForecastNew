@@ -22,6 +22,7 @@ class MainViewModel : ViewModel() {
 
 
 
+
     private val getApiNameCityNow = GetApiNameCityNow(repository)
     private val getApiNameCityWeek = GetApiNameCityWeek(repository)
     private val getGeoNew = GetGeoNew(repository)

@@ -10,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 
 
 object DialogManager {
+    private val model = MainViewModel()
     fun locationSettingsDialog(context: Context, listener: Listener){
         val builred = AlertDialog.Builder(context)
         val dialog = builred.create()
@@ -22,6 +23,7 @@ object DialogManager {
         }
         dialog.setButton(AlertDialog.BUTTON_NEGATIVE, context.getString(R.string.dialog_location_no)){_,_->
             Toast.makeText(context, context.getString(R.string.dialog_location_toast), Toast.LENGTH_SHORT).show()
+            model.load.value = false
             dialog.dismiss()
         }
 

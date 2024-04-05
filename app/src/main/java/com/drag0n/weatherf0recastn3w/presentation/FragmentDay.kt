@@ -117,10 +117,12 @@ class FragmentDay : Fragment() {
             binding.ibSync.playAnimation()
 
             if (binding.tvCity.text == getString(R.string.dayFragment_loading)
+
                 || interstitialAd == null
                 || (activity as MainActivity).model.premium.value == true
                 )
             { (activity as MainActivity).chekLocation()
+
                 model.load.value = true
             }
             else showAd()
@@ -131,9 +133,12 @@ class FragmentDay : Fragment() {
                 DialogManager.nameSitySearchDialog(requireContext(), object : DialogManager.Listener {
                 override fun onClick(city: String?) {
                     if (!city.isNullOrEmpty()) {
+
                         model.getApiNameCitiNow(city, requireContext())
                         model.getApiNameCitiWeek(city,requireContext())
                         model.load.value = true
+
+
                     } else {
                         Toast.makeText(
                             view.context,
@@ -157,7 +162,7 @@ class FragmentDay : Fragment() {
         interstitialAdLoader?.loadAd(adRequestConfiguration)
     }
 
-    private fun showAd() {
+     fun showAd() {
         interstitialAd?.apply {
             setAdEventListener(object : InterstitialAdEventListener {
                 override fun onAdShown() {
