@@ -14,7 +14,7 @@ object Const {
 
     const val PREMIUM_KEY = "premium_KEY"
     const val RUSTORE = "https://apps.rustore.ru/app/com.drag0n.weatherf0recastn3w"
-    const val APP_GALERY = "https://apps.rustore.ru/app/com.drag0n.weatherf0recastn3w"
+    const val APP_GALERY = "https://weatherforecast.drru.agconnect.link/Xmx7"
 
     var language = Locale.getDefault().language.toString()
     fun isPermissionGranted(con: Context,p: String): Boolean {
