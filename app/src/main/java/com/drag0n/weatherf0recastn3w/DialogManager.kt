@@ -6,11 +6,14 @@ import android.app.AlertDialog
 import android.content.Context
 import android.widget.EditText
 import android.widget.Toast
+import androidx.fragment.app.activityViewModels
+import com.drag0n.weatherf0recastn3w.domane.API.ApiWeather
 import kotlinx.coroutines.Dispatchers
+import javax.inject.Inject
+import javax.inject.Singleton
 
 
 object DialogManager {
-    private val model = MainViewModel()
     fun locationSettingsDialog(context: Context, listener: Listener){
         val builred = AlertDialog.Builder(context)
         val dialog = builred.create()
@@ -23,7 +26,6 @@ object DialogManager {
         }
         dialog.setButton(AlertDialog.BUTTON_NEGATIVE, context.getString(R.string.dialog_location_no)){_,_->
             Toast.makeText(context, context.getString(R.string.dialog_location_toast), Toast.LENGTH_SHORT).show()
-            model.load.value = false
             dialog.dismiss()
         }
 

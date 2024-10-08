@@ -11,6 +11,7 @@ import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -46,6 +47,8 @@ import com.huawei.hms.location.LocationRequest
 import com.huawei.hms.location.LocationResult
 import com.yandex.mobile.ads.banner.BannerAdSize
 import com.yandex.mobile.ads.common.AdRequest
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.scopes.ActivityScoped
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -59,7 +62,7 @@ import ru.rustore.sdk.billingclient.utils.pub.checkPurchasesAvailability
 import ru.rustore.sdk.core.feature.model.FeatureAvailabilityResult
 import java.util.UUID
 
-
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
     lateinit var binding: ActivityMainBinding
     private lateinit var vpAdapter: VpAdapter
@@ -81,13 +84,13 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityMainBinding.inflate(layoutInflater)
         initSharedPreferense()
-        model.premium.value = pref.getBoolean(PREMIUM_KEY, false)
         initRustoreBilling()
         initDB()
         initLocation()
         initVP()
         initRcView()
         super.onCreate(savedInstanceState)
+        model.premium.value = pref.getBoolean(PREMIUM_KEY, false)
         setContentView(binding.root)
 
         if (savedInstanceState == null) {
@@ -104,39 +107,39 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
             if (model.load.value == true) binding.progressBar2.visibility = View.VISIBLE
             else binding.progressBar2.visibility = View.GONE
         }
-        model.liveDataDayNow.observe(this) {
-            model.load.value = false
-            val rassvet = it.sys.sunrise * 1000L
-            val zakat = (it.sys.sunset * 1000L) + AlarmManager.INTERVAL_FIFTEEN_MINUTES
-
-            if (calendar > zakat || calendar < rassvet)
-                when (it.weather[0].id) {
-                    200, 201, 202, 210, 211, 212, 221, 230, 231, 232 -> insertBackground(R.drawable.img_1_night)
-                    // гроза
-                    300, 301, 302, 310, 311, 312, 313, 314, 321 -> insertBackground(R.drawable.img_2_night) // морось
-                    500, 501, 502, 503, 504, 511, 520, 521, 522, 531 -> insertBackground(R.drawable.img_3_night)
-                    // дождь
-                    600, 601, 602, 611, 612, 613, 615, 616, 620, 621, 622 -> insertBackground(R.drawable.img_4_night)
-                    // снег
-                    701, 711, 721, 741 -> insertBackground(R.drawable.img_5_night) // туман
-                    800 -> insertBackground(R.drawable.img_night) // Чистое небо
-                    else -> insertBackground(R.drawable.img_8)
-                } // Меняет фон вечером
-            else {
-                when (it.weather[0].id) {
-                    200, 201, 202, 210, 211, 212, 221, 230, 231, 232 -> insertBackground(R.drawable.img_1_day)
-                    // гроза
-                    300, 301, 302, 310, 311, 312, 313, 314, 321 -> insertBackground(R.drawable.img_2_day) // морось
-                    500, 501, 502, 503, 504, 511, 520, 521, 522, 531 -> insertBackground(R.drawable.img_3_day)
-                    // дождь
-                    600, 601, 602, 611, 612, 613, 615, 616, 620, 621, 622 -> insertBackground(R.drawable.img_4_day)
-                    // снег
-                    701, 711, 721, 741 -> insertBackground(R.drawable.img_5_day) // туман
-                    800 -> insertBackground(R.drawable.img) // Чистое небо
-                    else -> insertBackground(R.drawable.img_6)
-                } // Меняет фон днем
-            }
-        }
+//        model.liveDataDayNow.observe(this) {
+//            model.load.value = false
+//            val rassvet = it.sys.sunrise * 1000L
+//            val zakat = (it.sys.sunset * 1000L) + AlarmManager.INTERVAL_FIFTEEN_MINUTES
+//
+//            if (calendar > zakat || calendar < rassvet)
+//                when (it.weather[0].id) {
+//                    200, 201, 202, 210, 211, 212, 221, 230, 231, 232 -> insertBackground(R.drawable.img_1_night)
+//                    // гроза
+//                    300, 301, 302, 310, 311, 312, 313, 314, 321 -> insertBackground(R.drawable.img_2_night) // морось
+//                    500, 501, 502, 503, 504, 511, 520, 521, 522, 531 -> insertBackground(R.drawable.img_3_night)
+//                    // дождь
+//                    600, 601, 602, 611, 612, 613, 615, 616, 620, 621, 622 -> insertBackground(R.drawable.img_4_night)
+//                    // снег
+//                    701, 711, 721, 741 -> insertBackground(R.drawable.img_5_night) // туман
+//                    800 -> insertBackground(R.drawable.img_night) // Чистое небо
+//                    else -> insertBackground(R.drawable.img_8)
+//                } // Меняет фон вечером
+//            else {
+//                when (it.weather[0].id) {
+//                    200, 201, 202, 210, 211, 212, 221, 230, 231, 232 -> insertBackground(R.drawable.img_1_day)
+//                    // гроза
+//                    300, 301, 302, 310, 311, 312, 313, 314, 321 -> insertBackground(R.drawable.img_2_day) // морось
+//                    500, 501, 502, 503, 504, 511, 520, 521, 522, 531 -> insertBackground(R.drawable.img_3_day)
+//                    // дождь
+//                    600, 601, 602, 611, 612, 613, 615, 616, 620, 621, 622 -> insertBackground(R.drawable.img_4_day)
+//                    // снег
+//                    701, 711, 721, 741 -> insertBackground(R.drawable.img_5_day) // туман
+//                    800 -> insertBackground(R.drawable.img) // Чистое небо
+//                    else -> insertBackground(R.drawable.img_6)
+//                } // Меняет фон днем
+//            }
+//        }
 
         with(binding) {
             imMenu.setOnClickListener { binding.drawer.openDrawer(GravityCompat.START) }
@@ -247,7 +250,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
     private fun getLastLocationHuawey() {
         fLocotionClientHMS.lastLocation.addOnSuccessListener {
             try {
-                model.getGeoNew(it.latitude.toString(), it.longitude.toString(), this)
+               // model.getGeoNew(it.latitude.toString(), it.longitude.toString(), this)
             } catch (e: NullPointerException) {
                 getLocationHuawey()
             }
@@ -271,11 +274,11 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
             }
 
             override fun onLocationResult(it: LocationResult) {
-                model.getGeoNew(
-                    it.lastLocation.latitude.toString(),
-                    it.lastLocation.longitude.toString(),
-                    this@MainActivity
-                )
+//                model.getGeoNew(
+//                    it.lastLocation.latitude.toString(),
+//                    it.lastLocation.longitude.toString(),
+//                    this@MainActivity
+//                )
             }
         }
         fLocotionClientHMS.requestLocationUpdates(locationRequest, callback, null)
@@ -296,11 +299,14 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
         fLocotionClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, ct.token)
             .addOnCompleteListener {
                 try {
-                    model.getGeoNew(
-                        it.result.latitude.toString(),
-                        it.result.longitude.toString(),
-                        this@MainActivity
-                    )
+                    val lat = it.result.latitude.toString()
+                    val lon = it.result.longitude.toString()
+                    model.getForecast("$lat,$lon")
+//                    model.getGeoNew(
+//                        it.result.latitude.toString(),
+//                        it.result.longitude.toString(),
+//                        this@MainActivity
+//                    )
                 } catch (_: Exception) {
                     Toast.makeText(
                         this,
@@ -322,9 +328,8 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
     override fun onClick(itemCity: ItemCity, action: String) {
         when (action) {
             Const.SEARCH_CITY -> {
-                model.load.value = true
-                model.getApiNameCitiNow(itemCity.name, this)
-                model.getApiNameCitiWeek(itemCity.name, this)
+                model.trueLoad()
+                model.getForecast(itemCity.name)
                 binding.drawer.closeDrawer(GravityCompat.START)
             }
 
