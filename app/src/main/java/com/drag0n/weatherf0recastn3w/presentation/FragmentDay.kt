@@ -1,6 +1,5 @@
 package com.drag0n.weatherf0recastn3w.presentation
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -25,7 +24,6 @@ import com.yandex.mobile.ads.interstitial.InterstitialAdEventListener
 import com.yandex.mobile.ads.interstitial.InterstitialAdLoadListener
 import com.yandex.mobile.ads.interstitial.InterstitialAdLoader
 import dagger.hilt.android.AndroidEntryPoint
-import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -51,7 +49,7 @@ class FragmentDay : Fragment() {
     }
 
 
-    @SuppressLint("SimpleDateFormat")
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         date = SimpleDateFormat("dd MMM", Locale.getDefault()).format(Date())
@@ -71,28 +69,30 @@ class FragmentDay : Fragment() {
             })
         }
         loadInterstitialAd()
+        model.responseAstronomy.observe(viewLifecycleOwner){
+            val timeSunrise = it.astronomy.astro.sunrise
+            val convertSunrise = SimpleDateFormat("hh:mm aa", Locale.getDefault()).parse(timeSunrise)
+                ?.let { sunrise -> SimpleDateFormat("HH:mm", Locale.getDefault()).format(sunrise) }
+            val sunrise = getString(R.string.dayFragment_sunrise) +
+                    " $convertSunrise."
 
-        model.response.observe(viewLifecycleOwner){
+            val timeSunset = it.astronomy.astro.sunset
+            val convertSunset = SimpleDateFormat("hh:mm aa").parse(timeSunset)
+                ?.let { sunset -> SimpleDateFormat("HH:mm").format(sunset) }
+            val sunset = getString(R.string.dayFragment_sunset) +
+                    " $convertSunset."
+
+            binding.tvSunrise.text = sunrise
+            binding.tvSunset.text = sunset
+        } // Заполнение рассвета/заката на сегодняшний день
+        model.responseCurrent.observe(viewLifecycleOwner){
             model.falseLoad()
             with(binding){
                 Picasso.get().load("https:${it.current.condition.icon}").into(imWeather)
                 val tempCurent = "${it.current.temp_c.roundToInt()}°C"
 
-//                val timeSunrise = it.location. forecast.forecastday[0].astro.sunrise
-//                val convertSunrise = SimpleDateFormat("hh:mm aa").parse(timeSunrise)
-//                    ?.let { sunrise -> SimpleDateFormat("HH:mm").format(sunrise) }
-//                val sunrise = getString(R.string.dayFragment_sunrise) +
-//                        " $convertSunrise"
-//
-//                val timeSunset = it.forecast.forecastday[0].astro.sunset
-//                val convertSunset = SimpleDateFormat("hh:mm aa").parse(timeSunset)
-//                    ?.let { sunset -> SimpleDateFormat("HH:mm").format(sunset) }
-//                val sunset = getString(R.string.dayFragment_sunset) +
-//                        " $convertSunset"
-
                     val feltTemp = getString(R.string.dayFragment_felt) +
                     " ${it.current.feelslike_c.roundToInt()}°C."
-
 
                     val condition = getString(R.string.dayFragment_condition) +
                     " ${it.current.condition.text}."
@@ -102,7 +102,7 @@ class FragmentDay : Fragment() {
                     val vlaz = getString(R.string.dayFragment_humidity) +
                     " ${it.current.humidity} %."
                     val windSpeed = getString(R.string.dayFragment_windSpeed) +
-                    " ${it.current.wind_mph.roundToInt()} " +
+                    " ${(it.current.wind_mph/2.2).roundToInt()} " +
                     getString(R.string.dayFragment_windSpeed_ms)
 
                 tvCity.text = it.location.name
@@ -113,8 +113,6 @@ class FragmentDay : Fragment() {
                 tvMinMax.text = feltTemp
                 tvVlaz.text = vlaz
                 tvPasc.text = pasc
-                //tvSunrise.text = sunrise
-                //tvSunset.text = sunset
             }
         } // Заполнение погоды на сегодняшний день
 
@@ -140,7 +138,7 @@ class FragmentDay : Fragment() {
                 override fun onClick(city: String?) {
                     if (!city.isNullOrEmpty()) {
                         model.trueLoad()
-                        model.getForecast(city)
+                        model.getCurrent(city)
                     } else {
                         Toast.makeText(
                             view.context,
@@ -164,7 +162,7 @@ class FragmentDay : Fragment() {
         interstitialAdLoader?.loadAd(adRequestConfiguration)
     }
 
-     fun showAd() {
+     private fun showAd() {
         interstitialAd?.apply {
             setAdEventListener(object : InterstitialAdEventListener {
                 override fun onAdShown() {

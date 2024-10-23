@@ -21,7 +21,6 @@ data class Hour(
     val pressure_mb: Double,
     val snow_cm: Double,
     val temp_c: Double,
-    val temp_f: Double,
     val time: String,
     val time_epoch: Int,
     val uv: Double,

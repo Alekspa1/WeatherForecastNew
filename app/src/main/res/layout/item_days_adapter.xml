@@ -7,7 +7,7 @@
     android:paddingBottom="8dp">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView3"
+        android:id="@+id/cardView31"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
@@ -17,7 +17,7 @@
         app:cardElevation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardDay">
+        app:layout_constraintTop_toBottomOf="@+id/cardDay1">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -171,7 +171,7 @@
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardDay"
+        android:id="@+id/cardDay1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:backgroundTint="#AB2C2F32"
@@ -184,7 +184,7 @@
         tools:visibility="visible">
 
         <TextView
-            android:id="@+id/tvDateDay"
+            android:id="@+id/tvDateDay1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"

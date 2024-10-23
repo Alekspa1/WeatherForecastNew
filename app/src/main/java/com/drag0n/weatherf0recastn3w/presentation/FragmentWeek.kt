@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.drag0n.weatherf0recastn3w.MainViewModel
+import com.drag0n.weatherf0recastn3w.adapter.DaysAdapter
 
 import com.drag0n.weatherf0recastn3w.databinding.FragmentWeekBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,7 +23,7 @@ import kotlinx.coroutines.withContext
 class FragmentWeek : Fragment() {
     private lateinit var binding: FragmentWeekBinding
     private val model: MainViewModel by activityViewModels()
-    //private lateinit var adapter: DaysAdapter
+    private lateinit var adapter: DaysAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,10 +38,10 @@ class FragmentWeek : Fragment() {
 
         val rc = binding.rcDay
         rc.layoutManager = LinearLayoutManager(view.context)
-//        model.liveDataWeek.observe(viewLifecycleOwner) {
-//            adapter = DaysAdapter(it.list)
-//            rc.adapter = adapter
-//        } // Заполнение погоды на неделю
+        model.responseForecast.observe(viewLifecycleOwner) {
+            adapter = DaysAdapter(it.forecast.forecastday)
+            rc.adapter = adapter
+        } // Заполнение погоды на неделю
     }
 
     companion object {
