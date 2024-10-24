@@ -57,12 +57,12 @@ class FragmentDay : Fragment() {
         outAnimation = AnimationUtils.loadAnimation(view.context, R.anim.alpha_out)
         interstitialAdLoader = InterstitialAdLoader(view.context).apply {
             setAdLoadListener(object : InterstitialAdLoadListener {
-                override fun onAdLoaded(ad: InterstitialAd) {
-                    interstitialAd = ad
+                override fun onAdLoaded(interstitialAd: InterstitialAd) {
+                    this@FragmentDay.interstitialAd = interstitialAd
                     // The ad was loaded successfully. Now you can show loaded ad.
                 }
 
-                override fun onAdFailedToLoad(adRequestError: AdRequestError) {
+                override fun onAdFailedToLoad(error: AdRequestError) {
                     // Ad failed to load with AdRequestError.
                     // Attempting to load a new ad from the onAdFailedToLoad() method is strongly discouraged.
                 }
@@ -77,8 +77,8 @@ class FragmentDay : Fragment() {
                     " $convertSunrise."
 
             val timeSunset = it.astronomy.astro.sunset
-            val convertSunset = SimpleDateFormat("hh:mm aa").parse(timeSunset)
-                ?.let { sunset -> SimpleDateFormat("HH:mm").format(sunset) }
+            val convertSunset = SimpleDateFormat("hh:mm aa", Locale.getDefault()).parse(timeSunset)
+                ?.let { sunset -> SimpleDateFormat("HH:mm", Locale.getDefault()).format(sunset) }
             val sunset = getString(R.string.dayFragment_sunset) +
                     " $convertSunset."
 

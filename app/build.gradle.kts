@@ -16,8 +16,8 @@ android {
         minSdk = 26
         targetSdk = 33
 
-        versionCode = 18
-        versionName = "7.3"
+        versionCode = 19
+        versionName = "8"
 
 
 
@@ -69,7 +69,7 @@ dependencies {
 
 
     implementation ("com.squareup.picasso:picasso:2.8")
-    implementation("com.yandex.android:mobileads:7.5.0")
+    implementation("com.yandex.android:mobileads:7.6.0")
 
     implementation("com.airbnb.android:lottie:6.1.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")

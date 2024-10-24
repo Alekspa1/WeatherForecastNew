@@ -6,7 +6,7 @@
     <string name="menu_callBack">Feedback</string>
     <string name="menu_upgrate">Check for updates</string>
     <string name="vp_weather_day">Weather for the day</string>
-    <string name="vp_weather_week">Weather for 5 days</string>
+    <string name="vp_weather_week">Weather for 3 days</string>
     <string name="vp_weather_map">Weather map</string>
     <string name="dayFragment_loading">Loading Data</string>
     <string name="dayFragment_condition">The weather outside:</string>
