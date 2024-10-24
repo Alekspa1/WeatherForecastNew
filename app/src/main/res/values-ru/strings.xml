@@ -19,7 +19,7 @@
 
 
     <string name="vp_weather_day">Погода на день</string>
-    <string name="vp_weather_week">Погода на 5 дней</string>
+    <string name="vp_weather_week">Погода на 3 дня</string>
     <string name="vp_weather_map">Карта погоды</string>
 
     <string name="main_error">Ошибка</string>
