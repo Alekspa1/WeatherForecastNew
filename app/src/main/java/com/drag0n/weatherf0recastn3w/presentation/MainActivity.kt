@@ -23,6 +23,7 @@ import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
 import com.drag0n.weatherf0recastn3w.Const
+import com.drag0n.weatherf0recastn3w.Const.APP_GALERY
 import com.drag0n.weatherf0recastn3w.Const.PREMIUM_KEY
 import com.drag0n.weatherf0recastn3w.Const.RUSTORE
 import com.drag0n.weatherf0recastn3w.domane.Room.ItemCity
@@ -182,7 +183,6 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
                     startActivity(
                         Intent(
                             Intent.ACTION_VIEW,
-
                             Uri.parse(RUSTORE)
 
                         )
