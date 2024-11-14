@@ -110,6 +110,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
             else binding.progressBar2.visibility = View.GONE
         }
 
+
         model.responseAstronomy.observe(this) {
             val code = model.responseCurrent.value?.current?.condition?.code
             val timeSunrise = it.astronomy.astro.sunrise

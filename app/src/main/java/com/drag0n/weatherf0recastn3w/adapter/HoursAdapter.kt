@@ -1,6 +1,7 @@
 package com.drag0n.weatherf0recastn3w.adapter
 
 
+import android.icu.util.Calendar
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,7 @@ import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.Animation.AnimationListener
 import android.view.animation.AnimationUtils
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.drag0n.weatherf0recastn3w.R
 import com.drag0n.weatherf0recastn3w.data.forecast.Hour
@@ -35,7 +37,6 @@ class HoursAdapter(private val weatherWeek: List<Hour>) : RecyclerView.Adapter<H
             inAnimationRotate = AnimationUtils.loadAnimation(context, R.anim.rotate_in)
             outAnimation.setAnimationListener(this@Holder)
 
-
             val currentFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).parse(hour.time)
             val convertDate = currentFormat?.let {
                 SimpleDateFormat("HH:mm", Locale.getDefault()).format(
@@ -51,12 +52,9 @@ class HoursAdapter(private val weatherWeek: List<Hour>) : RecyclerView.Adapter<H
             val vlaz = context.getString(R.string.dayFragment_humidity) +
                     " ${hour.humidity} %."
 
-
-
             val windSpeed = context.getString(R.string.dayFragment_windSpeed) +
                     " ${(hour.wind_mph/2.2).roundToInt()} " +
                     context.getString(R.string.dayFragment_windSpeed_ms)
-
             tvTime.text = convertDate
             tvCond.text = hour.condition.text
             Picasso.get().load("https:${hour.condition.icon}").into(imDec)
