@@ -33,11 +33,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="6dp"
         android:layout_marginEnd="4dp"
-        android:background="@color/item"
+        android:background="#002196F3"
         android:elevation="0dp"
-        app:cardBackgroundColor="@color/item"
+        app:cardBackgroundColor="#002196F3"
         app:cardCornerRadius="10dp"
         app:cardElevation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -48,7 +48,7 @@
             android:id="@+id/rcViewHour"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp" />
+            android:layout_marginTop="2dp" />
     </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
