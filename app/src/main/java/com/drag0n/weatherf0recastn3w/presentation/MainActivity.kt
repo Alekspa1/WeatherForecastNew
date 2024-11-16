@@ -10,7 +10,6 @@ import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -110,6 +109,7 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
             else binding.progressBar2.visibility = View.GONE
         }
 
+
         model.responseAstronomy.observe(this) {
             val code = model.responseCurrent.value?.current?.condition?.code
             val timeSunrise = it.astronomy.astro.sunrise
@@ -183,7 +183,6 @@ class MainActivity : AppCompatActivity(), ItemCityAdapter.onClick {
                     startActivity(
                         Intent(
                             Intent.ACTION_VIEW,
-
                             Uri.parse(RUSTORE)
 
                         )

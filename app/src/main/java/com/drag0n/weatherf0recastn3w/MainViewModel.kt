@@ -78,31 +78,6 @@ class MainViewModel
 
     }
 
-//    fun getForecast(latLon: String){
-//        viewModelScope.launch {
-//            try {
-//                api.getForecast(APIKEY, latLon, LANGUAGE).let { responseApi ->
-//                    if (responseApi.isSuccessful) _responseForecast.postValue(responseApi.body())
-//                    else {
-//                        falseLoad()
-//                        Toast.makeText(
-//                            application,
-//                            application.getString(R.string.repository_error_data_onFailure),
-//                            Toast.LENGTH_SHORT
-//                        ).show()
-//                    }
-//                }
-//            } catch (e: Exception) {
-//                falseLoad()
-//                Toast.makeText(
-//                    application,
-//                    application.getString(R.string.repository_error_data_onResponse),
-//                    Toast.LENGTH_SHORT
-//                ).show()
-//            }
-//        }
-//
-//    }
 
     fun falseLoad() {
         load.value = false }
