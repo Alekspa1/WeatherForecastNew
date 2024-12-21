@@ -14,10 +14,10 @@ android {
     defaultConfig {
         applicationId = "com.drag0n.weatherf0recastn3w"
         minSdk = 26
-        targetSdk = 33
+        targetSdk = 35
 
-        versionCode = 22
-        versionName = "9"
+        versionCode = 23
+        versionName = "9.1"
 
 
 
@@ -69,7 +69,8 @@ dependencies {
 
 
     implementation ("com.squareup.picasso:picasso:2.8")
-    implementation("com.yandex.android:mobileads:7.6.0")
+    implementation("com.yandex.android:mobileads:7.8.0")
+    implementation("com.yandex.ads.mediation:mobileads-mytarget:5.22.1.4")
 
     implementation("com.airbnb.android:lottie:6.1.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
